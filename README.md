@@ -1,4 +1,4 @@
-# Kerim Yagci — Modern Portfolio
+# Kerimcan Yagci — Modern Portfolio
 
 A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and Framer Motion.
 
