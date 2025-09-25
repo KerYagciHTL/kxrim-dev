@@ -45,8 +45,8 @@ kerim-portfolio/
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
-   cd kerim-portfolio
+   git clone https://github.com/KerYagciHTL/kxrim-dev.git
+   cd kxrim-dev
    ```
 
 2. **Install dependencies**
@@ -85,7 +85,6 @@ const PROFILE = {
   bio: "Your bio here...",
   github: "KerYagciHTL",         // GitHub username
   email: "your@email.com",       // Optional
-  cvUrl: "cv.pdf",               // Optional - CV in public/
   featured: ["Kerlib", "KCY-Accounting"], // Featured repos
   skills: ["C", "C++", "JavaScript", "..."] // Your skills
 };
@@ -97,11 +96,6 @@ The app fetches your public repositories via the GitHub API. Ensure:
 - `PROFILE.github` is set to your username  
 - Repositories are public  
 - Entries in `PROFILE.featured` exist
-
-### Add your résumé
-
-1. Place your PDF in the `public/` folder.  
-2. Name it `cv.pdf` or adjust `PROFILE.cvUrl`.
 
 ## Design Features
 
