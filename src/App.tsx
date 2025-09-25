@@ -841,27 +841,11 @@ function Experience() {
 }
 
 function Contact() {
-  const [formState, setFormState] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setFormState({ name: '', email: '', message: '' });
-  };
+  // ...existing code...
 
   return (
     <section id="contact" className="relative py-20">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-2xl px-6 flex flex-col items-center">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -877,150 +861,82 @@ function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          <motion.div
-            className="space-y-8"
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
-              <h3 className="text-xl font-bold text-white mb-4">Why work with me?</h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Code2 size={16} className="text-cyan-400" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-white">Clean Code Philosophy</p>
-                    <p className="text-white/70 text-sm">Clean repos, clear readmes, structured code</p>
-                  </div>
+        <motion.div
+          className="w-full max-w-xl flex flex-col gap-8 items-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl w-full">
+            <h3 className="text-xl font-bold text-white mb-4 text-center">Why work with me?</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
+                  <Code2 size={16} className="text-cyan-400" />
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Github size={16} className="text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-white">Open Source Mindset</p>
-                    <p className="text-white/70 text-sm">Transparency and community-oriented development</p>
-                  </div>
+                <div>
+                  <p className="font-semibold text-white">Clean Code Philosophy</p>
+                  <p className="text-white/70 text-sm">Clean repos, clear readmes, structured code</p>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
-                    <Zap size={16} className="text-cyan-400" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-white">Fast Implementation</p>
-                    <p className="text-white/70 text-sm">Turning small ideas into stable, usable building blocks</p>
-                  </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
+                  <Github size={16} className="text-purple-400" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Open Source Mindset</p>
+                  <p className="text-white/70 text-sm">Transparency and community-oriented development</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
+                  <Zap size={16} className="text-cyan-400" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Fast Implementation</p>
+                  <p className="text-white/70 text-sm">Turning small ideas into stable, usable building blocks</p>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
+          <div className="space-y-4 w-full">
+            <motion.a
+              href={`https://github.com/${PROFILE.github}`}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300 w-full"
+              whileHover={{ x: 5 }}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-800 to-black flex items-center justify-center">
+                <Github size={24} className="text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-white">GitHub</p>
+                <p className="text-white/70 text-sm">github.com/{PROFILE.github}</p>
+              </div>
+              <ExternalLink size={16} className="text-white/40 group-hover:text-white transition-colors" />
+            </motion.a>
+
+            {PROFILE.email && (
               <motion.a
-                href={`https://github.com/${PROFILE.github}`}
-                target="_blank"
-                rel="noreferrer"
-                className="group flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300"
+                href={`mailto:${PROFILE.email}`}
+                className="group flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300 w-full"
                 whileHover={{ x: 5 }}
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-800 to-black flex items-center justify-center">
-                  <Github size={24} className="text-white" />
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
+                  <Mail size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-white">GitHub</p>
-                  <p className="text-white/70 text-sm">github.com/{PROFILE.github}</p>
+                  <p className="font-semibold text-white">E-Mail</p>
+                  <p className="text-white/70 text-sm">{PROFILE.email}</p>
                 </div>
                 <ExternalLink size={16} className="text-white/40 group-hover:text-white transition-colors" />
               </motion.a>
-
-              {PROFILE.email && (
-                <motion.a
-                  href={`mailto:${PROFILE.email}`}
-                  className="group flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-300"
-                  whileHover={{ x: 5 }}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
-                    <Mail size={24} className="text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-white">E-Mail</p>
-                    <p className="text-white/70 text-sm">{PROFILE.email}</p>
-                  </div>
-                  <ExternalLink size={16} className="text-white/40 group-hover:text-white transition-colors" />
-                </motion.a>
-              )}
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <form onSubmit={handleSubmit} className="space-y-6 p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
-              <h3 className="text-xl font-bold text-white">Send me a message</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">Name</label>
-                  <input
-                    type="text"
-                    value={formState.name}
-                    onChange={(e) => setFormState({...formState, name: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm text-white placeholder-white/50 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all duration-300"
-                    placeholder="Your name"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">Email</label>
-                  <input
-                    type="email"
-                    value={formState.email}
-                    onChange={(e) => setFormState({...formState, email: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm text-white placeholder-white/50 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all duration-300"
-                    placeholder="your@email.com"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">Message</label>
-                  <textarea
-                    rows={6}
-                    value={formState.message}
-                    onChange={(e) => setFormState({...formState, message: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm text-white placeholder-white/50 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 focus:outline-none transition-all duration-300 resize-none"
-                    placeholder="Tell me about your idea or project..."
-                    required
-                  />
-                </div>
-              </div>
-
-              <motion.button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
-                whileHover={!isSubmitting ? { scale: 1.02, y: -2 } : {}}
-                whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Sending message...
-                  </div>
-                ) : (
-                  'Send message'
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
-        </div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
