@@ -21,5 +21,4 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["vite.config.ts"]
-  //test commit
 }
