@@ -12,7 +12,7 @@ const PROFILE = {
   github: "KerYagciHTL",
   email: "k.yagci@students.htl-leonding.ac.at",
   cvUrl: "cv.pdf",
-  featured: ["Kerlib", "KCY-Accounting"],
+  featured: ["Kerlib", "KCY-Accounting", "kxrim-dev"],
   skills: [
     "C", "C++", ".NET/C#", "Java", "JavaScript", "TypeScript", "Node.js", "React", "SQL/Oracle XE", "Linux", "Git/GitHub"
   ],
@@ -128,7 +128,7 @@ function Navbar({ dark, setDark }: { dark: boolean; setDark: (v: boolean) => voi
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          kerim.dev
+          kxrim.dev
         </motion.a>
         <nav className="flex items-center gap-8 text-sm">
           {['projects', 'experience', 'contact'].map((section) => (

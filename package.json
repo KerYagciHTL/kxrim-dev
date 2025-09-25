@@ -12,7 +12,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
-  "homepage": "https://kxrim.github.io/kxrim-dev",
+  "homepage": "https://kxrim.is-a.dev/",
   "dependencies": {
     "framer-motion": "^11.11.17",
     "lucide-react": "^0.544.0",
