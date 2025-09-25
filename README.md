@@ -1,167 +1,167 @@
-# Kerim Yagci - Modern Portfolio
+# Kerim Yagci — Modern Portfolio
 
-Ein modernes, responsives Portfolio mit React, TypeScript, Tailwind CSS und Framer Motion.
+A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and Framer Motion.
 
 ## Features
 
-- **Modernes Design**: Glassmorphism, Gradient-Hintergründe, coole Animationen
-- **Performance**: Optimiert für schnelle Ladezeiten
-- **Responsive**: Perfekte Darstellung auf allen Geräten
-- **Animationen**: Smooth Framer Motion Animationen
-- **Glitch Effect**: Cooler Name-Wechsel-Effekt zwischen "KerYagciHTL" und "Kerimcan"
-- **Dark Mode**: Elegantes dunkles Theme
-- **GitHub Integration**: Automatisches Laden der GitHub Repositories
-- **Smooth Scrolling**: Flüssige Navigation zwischen Sektionen
+- **Modern design**: Glassmorphism, gradient backgrounds, refined animations  
+- **Performance**: Optimized for fast load times  
+- **Responsive**: Looks great on all devices  
+- **Animations**: Smooth Framer Motion transitions  
+- **Glitch effect**: Name flips between “KerYagciHTL” and “Kerimcan”  
+- **Dark mode**: Elegant dark theme  
+- **GitHub integration**: Automatically loads GitHub repositories  
+- **Smooth scrolling**: Fluid navigation between sections
 
 ## Tech Stack
 
-- **React 18** - UI Framework
-- **TypeScript** - Type Safety
-- **Tailwind CSS** - Styling
-- **Framer Motion** - Animationen
-- **Vite** - Build Tool
-- **Lucide React** - Icons
+- **React 18** — UI framework  
+- **TypeScript** — Type safety  
+- **Tailwind CSS** — Styling  
+- **Framer Motion** — Animations  
+- **Vite** — Build tool  
+- **Lucide React** — Icons
 
-## Projektstruktur
+## Project Structure
 
 ```
 kerim-portfolio/
 ├── public/
-│   ├── cv.pdf                 # Dein Lebenslauf (optional)
-│   └── favicon.svg           # Favicon
+│   ├── cv.pdf                 # Your résumé (optional)
+│   └── favicon.svg            # Favicon
 ├── src/
-│   ├── App.tsx              # Haupt-App-Komponente
-│   ├── main.tsx             # App Entry Point
-│   └── index.css            # Global Styles
-├── index.html               # HTML Template
-├── package.json             # Dependencies
-├── tailwind.config.js       # Tailwind Konfiguration
-├── vite.config.ts          # Vite Konfiguration
-├── tsconfig.json           # TypeScript Konfiguration
-└── postcss.config.js       # PostCSS Konfiguration
+│   ├── App.tsx                # Main app component
+│   ├── main.tsx               # App entry point
+│   └── index.css              # Global styles
+├── index.html                 # HTML template
+├── package.json               # Dependencies
+├── tailwind.config.js         # Tailwind config
+├── vite.config.ts             # Vite config
+├── tsconfig.json              # TypeScript config
+└── postcss.config.js          # PostCSS config
 ```
 
 ## Installation & Setup
 
-1. **Repository klonen**
+1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
    cd kerim-portfolio
    ```
 
-2. **Dependencies installieren**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Entwicklungsserver starten**
+3. **Start the dev server**
    ```bash
    npm run dev
    ```
 
-4. **Build für Production**
+4. **Production build**
    ```bash
    npm run build
    ```
 
-5. **Preview Build**
+5. **Preview build**
    ```bash
    npm run preview
    ```
 
-## Konfiguration
+## Configuration
 
-### Persönliche Daten anpassen
+### Customize personal data
 
-Bearbeite die `PROFILE` Konstante in `src/App.tsx`:
+Edit the `PROFILE` constant in `src/App.tsx`:
 
 ```typescript
 const PROFILE = {
   name: "Kerim Yagci",
-  glitchName: "Kerimcan",        // Name für Glitch-Effekt
-  displayName: "KerYagciHTL",    // Standard-Display-Name
-  tag: "Schüler • HTL Leonding • Softwareentwicklung",
+  glitchName: "Kerimcan",        // Name for glitch effect
+  displayName: "KerYagciHTL",    // Default display name
+  tag: "Student • HTL Leonding • Software Engineering",
   location: "Leonding, AT",
-  bio: "Deine Bio hier...",
-  github: "KerYagciHTL",         // GitHub Username
-  email: "deine@email.com",      // Optional
-  cvUrl: "cv.pdf",               // Optional - CV in public/ Ordner
-  featured: ["Kerlib", "KCY-Accounting"], // Featured Repos
-  skills: ["C", "C++", "JavaScript", "..."] // Deine Skills
+  bio: "Your bio here...",
+  github: "KerYagciHTL",         // GitHub username
+  email: "your@email.com",       // Optional
+  cvUrl: "cv.pdf",               // Optional - CV in public/
+  featured: ["Kerlib", "KCY-Accounting"], // Featured repos
+  skills: ["C", "C++", "JavaScript", "..."] // Your skills
 };
 ```
 
-### GitHub Integration
+### GitHub integration
 
-Die App lädt automatisch deine GitHub Repositories über die GitHub API. Stelle sicher, dass:
-- Dein GitHub Username korrekt in `PROFILE.github` eingetragen ist
-- Deine Repositories public sind
-- Die Featured Repositories in `PROFILE.featured` existieren
+The app fetches your public repositories via the GitHub API. Ensure:
+- `PROFILE.github` is set to your username  
+- Repositories are public  
+- Entries in `PROFILE.featured` exist
 
-### Lebenslauf hinzufügen
+### Add your résumé
 
-1. Platziere deine PDF-Datei in den `public/` Ordner
-2. Benenne sie `cv.pdf` oder passe `PROFILE.cvUrl` entsprechend an
+1. Place your PDF in the `public/` folder.  
+2. Name it `cv.pdf` or adjust `PROFILE.cvUrl`.
 
 ## Design Features
 
-### Glitch Text Animation
-- Automatischer Wechsel zwischen "KerYagciHTL" und "Kerimcan"
-- Coole Glitch-Effekte mit Farbverschiebungen
-- Läuft alle 4 Sekunden
+### Glitch text animation
+- Automatically flips between “KerYagciHTL” and “Kerimcan”  
+- Glitch effect with color shifts  
+- Runs every 4 seconds
 
-### Code Window Animation
-- Typewriter-Effekt für Code
-- Syntax-Highlighting
-- Terminal-ähnliches Design
+### Code window animation
+- Typewriter effect for code  
+- Syntax-like styling  
+- Terminal-styled UI
 
-### Particle System
-- Floating Particles im Hintergrund
-- Mouse-Following Cursor
-- Gradient-Partikel
+### Particle system
+- Floating background particles  
+- Cursor follow behavior  
+- Gradient particles
 
-### Responsive Design
-- Mobile-First Approach
-- Perfekte Darstellung auf allen Bildschirmgrößen
-- Touch-optimierte Interaktionen
+### Responsive design
+- Mobile-first  
+- Scales across all screen sizes  
+- Touch-friendly interactions
 
-## 🔧 Anpassungen
+## Customization
 
-### Farbschema ändern
-Bearbeite `tailwind.config.js` für Custom Colors:
+### Change color scheme
+Edit `tailwind.config.js`:
 
 ```javascript
 colors: {
   primary: {
-    // Deine Primary Colors
+    // Your primary colors
   },
   secondary: {
-    // Deine Secondary Colors  
+    // Your secondary colors
   }
 }
 ```
 
-### Animationen anpassen
-Alle Framer Motion Animationen sind in der `App.tsx` konfiguriert. Du kannst:
-- Timing ändern (`duration`, `delay`)
-- Easing-Funktionen anpassen
-- Neue Animationen hinzufügen
+### Adjust animations
+All Framer Motion variants live in `App.tsx`. You can modify:
+- Timing (`duration`, `delay`)  
+- Easing functions  
+- Add new animations
 
-### Neue Sektionen hinzufügen
-1. Erstelle eine neue Funktion-Komponente
-2. Füge sie zur App-Komponente hinzu
-3. Erweitere die Navigation entsprechend
+### Add new sections
+1. Create a new functional component.  
+2. Import and render it in `App.tsx`.  
+3. Extend navigation as needed.
 
 ## Performance
 
-- **Lighthouse Score**: 90+
-- **Bundle Size**: Optimiert durch Code-Splitting
-- **Loading Time**: < 2s auf schneller Verbindung
-- **SEO**: Meta-Tags und strukturierte Daten
+- **Lighthouse**: 90+  
+- **Bundle size**: Code-splitting applied  
+- **Load time**: < 2 s on fast networks  
+- **SEO**: Meta tags and structured data
 
 ## Deployment
 
-### Vercel (Empfohlen)
+### Vercel (recommended)
 ```bash
 npm install -g vercel
 vercel
@@ -170,31 +170,31 @@ vercel
 ### Netlify
 ```bash
 npm run build
-# Upload dist/ Ordner zu Netlify
+# Upload the dist/ folder to Netlify
 ```
 
 ### GitHub Pages
 ```bash
 npm run build
-# Push dist/ Inhalt zu gh-pages branch
+# Push the dist/ contents to the gh-pages branch
 ```
 
-## 🤝 Contributing
+## Contributing
 
-1. Fork das Repository
-2. Erstelle einen Feature Branch
-3. Committe deine Änderungen
-4. Push zum Branch
-5. Öffne einen Pull Request
+1. Fork the repository.  
+2. Create a feature branch.  
+3. Commit your changes.  
+4. Push the branch.  
+5. Open a pull request.
 
-## 📝 License
+## License
 
-Dieses Projekt steht unter der MIT License.
+This project is licensed under the MIT License.
 
-## 🔗 Links
+## Links
 
-- **Live Demo**: [https://kxrim-dev.is-a.dev](kxrim-dev.is-a.dev)
-- **GitHub**: [https://github.com/KerYagciHTL](https://github.com/KerYagciHTL)
+- **Live Demo**: [kxrim-dev.is-a.dev](https://kxrim-dev.is-a.dev)  
+- **GitHub**: [github.com/KerYagciHTL](https://github.com/KerYagciHTL)
 
 ---
 
