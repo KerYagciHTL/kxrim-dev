@@ -3,7 +3,7 @@ import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import { Github, Mail, School, Sun, Moon, ExternalLink, MapPin, Terminal, Code2, Zap, Star, GitBranch, Calendar } from "lucide-react";
 
 const PROFILE = {
-  name: "Kerim Yagci",
+  name: "Kerimcan Yagci",
   glitchName: "kxrim",
   displayName: "Kerimcan",
   tag: "Student • HTL Leonding • Software Development",
@@ -689,12 +689,12 @@ function Experience() {
       icon: <School size={24} />,
       title: "HTL Leonding",
       subtitle: "Higher Department of Computer Science",
-      period: "2020 - 2025",
+      period: "2022 - 2027",
       description: "Focus: Software development, databases, operating systems.",
-      skills: ["C", "C++", "C#", "Java", "JS/TS", "Oracle XE", "Linux"],
+      skills: ["C", "C#", "Java", "JS/TS", "Oracle XE", "Testing","Linux"],
       highlights: [
-        "Development of Kerlib - A comprehensive C++ library",
-        "KCY-Accounting - Modern accounting software",
+        "KCY-Accounting - Modern accounting software with C# and Avalonia",
+        "Clean code standards and documentation",
         "Linux workflow and Git integration in all projects"
       ]
     },
@@ -702,12 +702,12 @@ function Experience() {
       icon: <Zap size={24} />,
       title: "Personal Projects",
       subtitle: "Open Source & Experiments",
-      period: "2019 - Present",
+      period: "2023 - Present",
       description: "Focus on clean, testable tools and innovative solutions.",
-      skills: ["GitHub", "CI/CD", "Testing", "Documentation"],
+      skills: ["C++", "GitHub", "CI/CD", "batch","Documentation"],
       highlights: [
         "10+ Open Source Repositories",
-        "Clean code standards and documentation",
+        "Development of Kerlib - comprehensive C# graphic library",
         "Community building and collaboration"
       ]
     }
@@ -824,7 +824,7 @@ function Experience() {
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
                   <Zap size={24} className="text-purple-400" />
                 </div>
-                <p className="font-medium">Roblox/game prototypes on Linux</p>
+                <p className="font-medium">Performance and reliability in development</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
