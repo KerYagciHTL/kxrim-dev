@@ -47,7 +47,7 @@ This project is licensed under the MIT License.
 
 ## Links
 
-- **Live Demo**: [kxrim-dev.is-a.dev](https://kxrim-dev.is-a.dev)  
+- **Live Demo**: [kxrim.is-a.dev](https://kxrim.is-a.dev)  
 - **GitHub**: [github.com/KerYagciHTL](https://github.com/KerYagciHTL)
 
 ---
