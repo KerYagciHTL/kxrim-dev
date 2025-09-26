@@ -253,10 +253,8 @@ function GlitchText() {
         {currentText}
       </motion.h1>
 
-      {/* RGB separation layers during glitch */}
       {isGlitching && (
         <>
-          {/* Red channel offset */}
           <motion.h1
             className="absolute inset-0 text-6xl md:text-8xl font-black leading-none text-red-500 mix-blend-multiply"
             style={{ fontFamily: 'monospace' }}
@@ -273,7 +271,6 @@ function GlitchText() {
             {currentText}
           </motion.h1>
 
-          {/* Cyan channel offset */}
           <motion.h1
             className="absolute inset-0 text-6xl md:text-8xl font-black leading-none text-cyan-400 mix-blend-multiply"
             style={{ fontFamily: 'monospace' }}
@@ -292,7 +289,6 @@ function GlitchText() {
         </>
       )}
 
-      {/* Digital noise bars */}
       {isGlitching && (
         <motion.div
           className="absolute inset-0 pointer-events-none overflow-hidden"
@@ -323,7 +319,6 @@ function GlitchText() {
         </motion.div>
       )}
 
-      {/* Scan line effect */}
       {isGlitching && (
         <motion.div
           className="absolute inset-0 pointer-events-none"
@@ -345,7 +340,6 @@ function GlitchText() {
         />
       )}
 
-      {/* Electro spark */}
       {isGlitching && (
         <motion.div
           className="absolute -right-4 top-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"
