@@ -8,7 +8,7 @@ A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and F
 - **Performance**: Optimized for fast load times  
 - **Responsive**: Looks great on all devices  
 - **Animations**: Smooth Framer Motion transitions  
-- **Glitch effect**: Name flips between “KerYagciHTL” and “Kerimcan”  
+- **Glitch effect**: Name flips between "kxrim" and “Kerimcan”  
 - **Dark mode**: Elegant dark theme  
 - **GitHub integration**: Automatically loads GitHub repositories  
 - **Smooth scrolling**: Fluid navigation between sections
