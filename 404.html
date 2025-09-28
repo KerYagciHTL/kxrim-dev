@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | kxrim.dev</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          animation: {
+            'glitch': 'glitch 2s infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          fontFamily: {
+            'mono': ['Monaco', 'Menlo', 'Ubuntu Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      10% { transform: translate(-2px, -1px); }
+      20% { transform: translate(2px, 1px); }
+      30% { transform: translate(-1px, 2px); }
+      40% { transform: translate(1px, -2px); }
+      50% { transform: translate(-2px, 1px); }
+      60% { transform: translate(2px, -1px); }
+      70% { transform: translate(-1px, -2px); }
+      80% { transform: translate(1px, 2px); }
+      90% { transform: translate(-2px, -1px); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .bg-grid {
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    .glitch-text {
+      position: relative;
+    }
+    
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .glitch-text::before {
+      color: #06b6d4;
+      z-index: -1;
+      animation: glitch 2s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    }
+    
+    .glitch-text::after {
+      color: #a855f7;
+      z-index: -2;
+      animation: glitch 2s infinite reverse;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
+  <!-- Background Grid -->
+  <div class="fixed inset-0 bg-grid opacity-20"></div>
+  
+  <!-- Floating Particles -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute w-2 h-2 bg-cyan-400 rounded-full animate-float" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="absolute w-1 h-1 bg-purple-400 rounded-full animate-float" style="top: 60%; left: 20%; animation-delay: 1s;"></div>
+    <div class="absolute w-3 h-3 bg-cyan-300 rounded-full animate-float" style="top: 30%; left: 80%; animation-delay: 2s;"></div>
+    <div class="absolute w-1 h-1 bg-purple-300 rounded-full animate-float" style="top: 70%; left: 70%; animation-delay: 3s;"></div>
+    <div class="absolute w-2 h-2 bg-cyan-500 rounded-full animate-float" style="top: 40%; left: 90%; animation-delay: 4s;"></div>
+    <div class="absolute w-1 h-1 bg-purple-500 rounded-full animate-float" style="top: 80%; left: 15%; animation-delay: 5s;"></div>
+  </div>
+
+  <!-- Mouse Follower -->
+  <div id="mouseFollower" class="fixed w-6 h-6 rounded-full bg-gradient-to-r from-cyan-400 to-purple-500 pointer-events-none z-50 mix-blend-difference transition-transform duration-100 ease-out" style="transform: translate(-50%, -50%);"></div>
+
+  <main class="relative z-10 min-h-screen flex items-center justify-center px-6">
+    <div class="text-center max-w-4xl mx-auto">
+      <!-- 404 Number -->
+      <div class="mb-8">
+        <h1 class="glitch-text text-8xl md:text-9xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent font-mono select-none" data-text="404">
+          404
+        </h1>
+      </div>
+      
+      <!-- Error Message -->
+      <div class="mb-8 space-y-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-white">
+          Page Not Found
+        </h2>
+        <p class="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed">
+          The page you're looking for seems to have wandered into the digital void. 
+          <br>Don't worry, even the best developers get lost sometimes.
+        </p>
+      </div>
+
+      <!-- Code Block -->
+      <div class="mb-12 max-w-lg mx-auto">
+        <div class="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl shadow-2xl overflow-hidden">
+          <div class="flex items-center gap-3 px-6 py-4 border-b border-white/10 bg-white/5">
+            <div class="flex gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <div class="flex items-center gap-2 text-white/60 text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3"></path>
+              </svg>
+              <span>error.log</span>
+            </div>
+          </div>
+          
+          <div class="p-6 font-mono text-sm text-left">
+            <div class="flex items-center gap-4 py-1 text-white/60">
+              <span class="text-white/30 text-xs w-6 text-right">1</span>
+              <span class="text-red-400">Error:</span>
+              <span class="text-white">Resource not found</span>
+            </div>
+            <div class="flex items-center gap-4 py-1 text-white/60">
+              <span class="text-white/30 text-xs w-6 text-right">2</span>
+              <span class="text-cyan-400">Status:</span>
+              <span class="text-yellow-400">404</span>
+            </div>
+            <div class="flex items-center gap-4 py-1 text-white/60">
+              <span class="text-white/30 text-xs w-6 text-right">3</span>
+              <span class="text-purple-400">Solution:</span>
+              <span class="text-green-400">Navigate home</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+        <a href="/" class="group relative overflow-hidden rounded-2xl px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+          <div class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="relative flex items-center gap-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Back to Home</span>
+          </div>
+        </a>
+        
+        <button onclick="history.back()" class="group px-8 py-4 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm text-white font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105">
+          <div class="flex items-center gap-3">
+            <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span>Go Back</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Fun Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div class="text-2xl font-bold text-cyan-400 mb-2">∞</div>
+          <div class="text-sm text-white/70">Possible paths</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div class="text-2xl font-bold text-purple-400 mb-2">404</div>
+          <div class="text-sm text-white/70">Error code</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div class="text-2xl font-bold text-cyan-400 mb-2">1</div>
+          <div class="text-sm text-white/70">Way home</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Mouse follower
+    const mouseFollower = document.getElementById('mouseFollower');
+    let mouseX = 0, mouseY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      mouseFollower.style.left = mouseX + 'px';
+      mouseFollower.style.top = mouseY + 'px';
+    });
+    
+    // Add some interactive sparkles
+    document.addEventListener('click', (e) => {
+      createSparkle(e.clientX, e.clientY);
+    });
+    
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'fixed pointer-events-none z-40';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.innerHTML = `
+        <div class="w-2 h-2 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full animate-ping"></div>
+      `;
+      document.body.appendChild(sparkle);
+      
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1000);
+    }
+    
+    // Glitch effect trigger
+    let glitchTimeout;
+    const glitchText = document.querySelector('.glitch-text');
+    
+    function triggerGlitch() {
+      glitchText.style.animation = 'none';
+      setTimeout(() => {
+        glitchText.style.animation = '';
+      }, 100);
+    }
+    
+    // Random glitch every 3-6 seconds
+    function scheduleGlitch() {
+      glitchTimeout = setTimeout(() => {
+        triggerGlitch();
+        scheduleGlitch();
+      }, Math.random() * 3000 + 3000);
+    }
+    
+    scheduleGlitch();
+    
+    // Konami code easter egg (↑↑↓↓←→←→BA)
+    let konamiCode = [];
+    const konamiSequence = [
+      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+      'KeyB', 'KeyA'
+    ];
+    
+    document.addEventListener('keydown', (e) => {
+      konamiCode.push(e.code);
+      if (konamiCode.length > konamiSequence.length) {
+        konamiCode.shift();
+      }
+      
+      if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => {
+          document.body.style.filter = '';
+        }, 2000);
+        konamiCode = [];
+      }
+    });
+  </script>
+</body>
+</html>
