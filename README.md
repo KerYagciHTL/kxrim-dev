@@ -12,6 +12,7 @@ A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and F
 - **Dark mode**: Elegant dark theme  
 - **GitHub integration**: Automatically loads GitHub repositories  
 - **Smooth scrolling**: Fluid navigation between sections
+- **Custom 404 Page**: Try searching some random directory on the site
 
 ## Tech Stack
 
@@ -49,6 +50,7 @@ This project is licensed under the MIT License.
 
 - **Live Demo**: [kxrim.is-a.dev](https://kxrim.is-a.dev)  
 - **GitHub**: [github.com/KerYagciHTL](https://github.com/KerYagciHTL)
+- **Try 404 error**: [kxrim.is-a.dev/uhhh](https://kxrim.is-a.dev/uhhh)
 
 ---
 
