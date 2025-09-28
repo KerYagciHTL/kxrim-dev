@@ -187,78 +187,180 @@ function GlitchText() {
   const [currentText, setCurrentText] = useState(PROFILE.displayName);
   const [isGlitching, setIsGlitching] = useState(false);
 
+  const corruptChars = ['█', '▓', '▒', '░', 'X', '#', '@', '0', '1'];
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isGlitching) {
-        setIsGlitching(true);
-        
-        // Glitch sequence
-        const glitchSequence = [
-          PROFILE.displayName.slice(0, 3) + "###" + PROFILE.displayName.slice(6),
-          PROFILE.displayName.slice(0, 2) + "@#" + PROFILE.glitchName.slice(2, 6) + "#@",
-          "K3r1mc4n",
-          PROFILE.glitchName,
-          PROFILE.glitchName,
-          PROFILE.glitchName,
-          "K3r#m¢4n",
-          PROFILE.displayName.slice(0, 4) + "###" + PROFILE.displayName.slice(7),
-          PROFILE.displayName,
-        ];
+    const triggerGlitch = () => {
+      setIsGlitching(true);
+      
+      // Create some corrupted text
+      const createCorruption = (original: string) => {
+        return original.split('').map(char => 
+          Math.random() < 0.3 ? corruptChars[Math.floor(Math.random() * corruptChars.length)] : char
+        ).join('');
+      };
+      
+      // More dramatic flicker sequence
+      const sequence = [
+        createCorruption(PROFILE.displayName),
+        PROFILE.glitchName,
+        createCorruption(PROFILE.glitchName),
+        PROFILE.displayName,
+        createCorruption(PROFILE.displayName),
+        PROFILE.glitchName,
+        PROFILE.displayName
+      ];
+      
+      sequence.forEach((text, index) => {
+        setTimeout(() => {
+          setCurrentText(text);
+          
+          if (index === sequence.length - 1) {
+            setIsGlitching(false);
+          }
+        }, index * 80);
+      });
+    };
 
-        glitchSequence.forEach((text, index) => {
-          setTimeout(() => {
-            setCurrentText(text);
-            if (index === glitchSequence.length - 1) {
-              setTimeout(() => setIsGlitching(false), 100);
-            }
-          }, index * 80);
-        });
-      }
-    }, 4000);
+    const scheduleGlitch = () => {
+      setTimeout(() => {
+        triggerGlitch();
+        scheduleGlitch();
+      }, 4000 + Math.random() * 4000);
+    };
 
-    return () => clearInterval(interval);
-  }, [isGlitching]);
+    // Start first glitch after 1 second
+    setTimeout(() => {
+      triggerGlitch();
+      scheduleGlitch();
+    }, 1000);
+  }, []);
 
   return (
-    <motion.h1
-      className={`text-6xl md:text-8xl font-black leading-none bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent relative ${
-        isGlitching ? 'animate-pulse' : ''
-      }`}
-      style={{
-        fontFamily: 'monospace',
-        textShadow: isGlitching ? '0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(147, 51, 234, 0.3)' : 'none',
-      }}
-    >
-      {currentText}
+    <motion.div className="relative">
+      <motion.h1
+        className="text-6xl md:text-8xl font-black leading-none bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent relative z-10"
+        style={{ fontFamily: 'monospace' }}
+        animate={{
+          x: isGlitching ? [0, -2, 2, -1, 1, 0] : 0,
+          y: isGlitching ? [0, -1, 1, 0] : 0,
+        }}
+        transition={{
+          duration: 0.05,
+          repeat: isGlitching ? 3 : 0,
+        }}
+      >
+        {currentText}
+      </motion.h1>
+
+      {/* RGB separation layers during glitch */}
       {isGlitching && (
         <>
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-purple-400/20 mix-blend-multiply"
+          {/* Red channel offset */}
+          <motion.h1
+            className="absolute inset-0 text-6xl md:text-8xl font-black leading-none text-red-500 mix-blend-multiply"
+            style={{ fontFamily: 'monospace' }}
             animate={{
-              x: [0, -2, 2, -1, 1, 0],
-              opacity: [0.5, 0.8, 0.3, 0.9, 0.4, 0.6]
+              x: [-2, -3, -1],
+              opacity: [0.7, 0.5, 0.8]
             }}
             transition={{
-              duration: 0.1,
+              duration: 0.05,
               repeat: Infinity,
-              repeatType: "mirror"
+              repeatType: "reverse"
             }}
-          />
-          <motion.div
-            className="absolute inset-0 bg-red-500/10 mix-blend-multiply"
+          >
+            {currentText}
+          </motion.h1>
+
+          {/* Cyan channel offset */}
+          <motion.h1
+            className="absolute inset-0 text-6xl md:text-8xl font-black leading-none text-cyan-400 mix-blend-multiply"
+            style={{ fontFamily: 'monospace' }}
             animate={{
-              x: [0, 1, -2, 1, -1, 0],
-              opacity: [0.3, 0.7, 0.2, 0.8, 0.3, 0.5]
+              x: [2, 3, 1],
+              opacity: [0.6, 0.8, 0.4]
             }}
             transition={{
               duration: 0.08,
               repeat: Infinity,
-              repeatType: "reverse"
+              repeatType: "mirror"
             }}
-          />
+          >
+            {currentText}
+          </motion.h1>
         </>
       )}
-    </motion.h1>
+
+      {/* Digital noise bars */}
+      {isGlitching && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-full bg-white mix-blend-difference"
+              style={{
+                height: '2px',
+                top: `${20 + i * 30}%`,
+              }}
+              animate={{
+                x: [-100, 100],
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: 0.15,
+                delay: i * 0.05,
+                repeat: 2,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </motion.div>
+      )}
+
+      {/* Scan line effect */}
+      {isGlitching && (
+        <motion.div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: `repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 2px,
+              rgba(0, 255, 255, 0.05) 2px,
+              rgba(0, 255, 255, 0.05) 4px
+            )`
+          }}
+          animate={{
+            opacity: [0, 0.6, 0],
+          }}
+          transition={{
+            duration: 0.3,
+          }}
+        />
+      )}
+
+      {/* Electro spark */}
+      {isGlitching && (
+        <motion.div
+          className="absolute -right-4 top-1/2 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50"
+          animate={{
+            scale: [0, 1.5, 0],
+            opacity: [0, 1, 0],
+            x: [0, 10, 0]
+          }}
+          transition={{
+            duration: 0.2,
+            delay: 0.1
+          }}
+        />
+      )}
+    </motion.div>
   );
 }
 
