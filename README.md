@@ -28,7 +28,7 @@ A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and F
 ```
 kerim-portfolio/
 ├── public/
-│   ├── cv.pdf                 # Your résumé (optional)
+│   ├── 404.html
 │   └── favicon.svg            # Favicon
 ├── src/
 │   ├── App.tsx                # Main app component
