@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { initializeAnalytics, trackPageView } from "./utils/analytics";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import {
   MouseFollower,
   BackgroundGrid,
@@ -36,16 +37,18 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-black dark:via-slate-900 dark:to-black text-white selection:bg-cyan-400 selection:text-black overflow-x-hidden relative">
-      <MouseFollower mousePosition={mousePosition} />
-      <BackgroundGrid />
-      <ProgressBar />
-      <Navbar dark={dark} setDark={setDark} />
-      <Hero />
-      <Projects />
-      <Experience />
-      <Contact />
-      <Footer />
-    </div>
+    <LanguageProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-black dark:via-slate-900 dark:to-black text-white selection:bg-cyan-400 selection:text-black overflow-x-hidden relative">
+        <MouseFollower mousePosition={mousePosition} />
+        <BackgroundGrid />
+        <ProgressBar />
+        <Navbar dark={dark} setDark={setDark} />
+        <Hero />
+        <Projects />
+        <Experience />
+        <Contact />
+        <Footer />
+      </div>
+    </LanguageProvider>
   );
 }

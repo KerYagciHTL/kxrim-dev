@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Languages } from "lucide-react";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface NavbarProps {
   dark: boolean;
@@ -9,6 +10,7 @@ interface NavbarProps {
 
 export function Navbar({ dark, setDark }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -36,15 +38,15 @@ export function Navbar({ dark, setDark }: NavbarProps) {
         >
           kxrim.dev
         </motion.a>
-        <nav className="flex items-center gap-8 text-sm">
+        <nav className="flex items-center gap-4 md:gap-8 text-sm">
           {['projects', 'experience', 'contact'].map((section) => (
             <motion.a
               key={section}
-              className="relative text-white/70 hover:text-white transition-colors duration-300 capitalize"
+              className="relative text-white/70 hover:text-white transition-colors duration-300 capitalize hidden sm:block"
               href={`#${section}`}
               whileHover={{ y: -2 }}
             >
-              {section === 'projects' ? 'Projects' : section === 'experience' ? 'Experience' : 'Contact'}
+              {t(`nav.${section}`)}
               <motion.div
                 className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400"
                 initial={{ width: 0 }}
@@ -53,6 +55,42 @@ export function Navbar({ dark, setDark }: NavbarProps) {
               />
             </motion.a>
           ))}
+          
+          {/* Mobile navigation menu - simplified */}
+          <div className="sm:hidden flex items-center gap-2">
+            <motion.select
+              value=""
+              onChange={(e) => {
+                if (e.target.value) {
+                  document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="bg-transparent border border-white/20 rounded-lg px-2 py-1 text-xs text-white/70"
+              whileHover={{ scale: 1.05 }}
+            >
+              <option value="" className="bg-slate-800">Menu</option>
+              <option value="#projects" className="bg-slate-800">{t('nav.projects')}</option>
+              <option value="#experience" className="bg-slate-800">{t('nav.experience')}</option>
+              <option value="#contact" className="bg-slate-800">{t('nav.contact')}</option>
+            </motion.select>
+          </div>
+          
+          {/* Language toggle button */}
+          <motion.button
+            onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}
+            className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 flex items-center gap-1"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            title={language === 'en' ? 'Switch to German' : 'Switch to English'}
+          >
+            <Languages size={16} className="md:hidden" />
+            <span className="hidden md:block text-xs font-semibold">
+              {language === 'en' ? 'DE' : 'EN'}
+            </span>
+            <span className="md:hidden text-xs font-semibold">
+              {language === 'en' ? 'DE' : 'EN'}
+            </span>
+          </motion.button>
           <motion.button
             onClick={() => setDark(!dark)}
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"

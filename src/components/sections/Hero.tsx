@@ -2,17 +2,20 @@ import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Github, ExternalLink, MapPin } from "lucide-react";
 import { PROFILE } from "../../constants/profile";
+import { useLanguage } from "../../contexts/LanguageContext";
 import { FloatingParticles } from "../ui/FloatingParticles";
 import { GlitchText } from "../ui/GlitchText";
 import { CodeWindow } from "../ui/CodeWindow";
 
 export function Hero() {
+  const { t } = useLanguage();
+  
   const greeting = useMemo(() => {
     const h = new Date().getHours();
-    if (h < 12) return "Good morning";
-    if (h < 18) return "Good afternoon";
-    return "Good evening";
-  }, []);
+    if (h < 12) return t("hero.greeting.morning");
+    if (h < 18) return t("hero.greeting.afternoon");
+    return t("hero.greeting.evening");
+  }, [t]);
 
   return (
     <section id="top" className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -50,7 +53,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
           >
-            {PROFILE.bio}
+            {t("hero.description")}
           </motion.p>
 
           <motion.div
@@ -60,18 +63,29 @@ export function Hero() {
             transition={{ delay: 0.6, duration: 0.6 }}
           >
             <motion.a
-              href={`https://github.com/${PROFILE.github}`}
-              target="_blank"
-              rel="noreferrer"
+              href="#projects"
               className="group relative overflow-hidden rounded-2xl px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold shadow-2xl"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative flex items-center gap-3">
+                <ExternalLink size={20} />
+                <span>{t("hero.viewProjects")}</span>
+              </div>
+            </motion.a>
+            
+            <motion.a
+              href={PROFILE.cvUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative overflow-hidden rounded-2xl px-8 py-4 border-2 border-white/20 text-white font-semibold hover:bg-white/5 transition-all duration-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="relative flex items-center gap-3">
                 <Github size={20} />
-                <span>GitHub Profile</span>
-                <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+                <span>{t("hero.downloadCV")}</span>
               </div>
             </motion.a>
           </motion.div>
