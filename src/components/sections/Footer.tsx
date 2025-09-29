@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Github, Mail } from "lucide-react";
 import { PROFILE } from "../../constants/profile";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
+  
   return (
     <footer className="relative py-12 border-t border-white/10">
       <div className="mx-auto max-w-7xl px-6">
@@ -15,10 +18,10 @@ export function Footer() {
           >
             <p className="text-white/60">
               © {new Date().getFullYear()} {PROFILE.name}. 
-              <span className="ml-2">Built with React, Tailwind, and Framer Motion.</span>
+              <span className="ml-2">{t("footer.builtWith")}</span>
             </p>
             <p className="text-white/40 text-sm mt-1">
-              Developed with ❤️ and lots of ☕
+              {t("footer.developedWith")}
             </p>
           </motion.div>
           

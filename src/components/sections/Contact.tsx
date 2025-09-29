@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Github, Mail, ExternalLink, Code2, Zap } from "lucide-react";
 import { PROFILE } from "../../constants/profile";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export function Contact() {
+  const { t } = useLanguage();
+  
   return (
     <section id="contact" className="relative py-20">
       <div className="mx-auto max-w-2xl px-6 flex flex-col items-center">
@@ -14,10 +17,10 @@ export function Contact() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-5xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-            Let's talk
+            {t("contact.title")}
           </h2>
           <p className="mt-4 text-white/70 text-lg max-w-2xl mx-auto">
-            Open for internships, side projects, and exciting collaborations
+            {t("contact.subtitle")}
           </p>
         </motion.div>
 
@@ -29,15 +32,15 @@ export function Contact() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl w-full">
-            <h3 className="text-xl font-bold text-white mb-4 text-center">Why work with me?</h3>
+            <h3 className="text-xl font-bold text-white mb-4 text-center">{t("contact.whyWork")}</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-4">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center flex-shrink-0">
                   <Code2 size={16} className="text-cyan-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Clean Code Philosophy</p>
-                  <p className="text-white/70 text-sm">Clean repos, clear readmes, structured code</p>
+                  <p className="font-semibold text-white">{t("contact.cleanCode")}</p>
+                  <p className="text-white/70 text-sm">{t("contact.cleanCodeDesc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -45,8 +48,8 @@ export function Contact() {
                   <Github size={16} className="text-purple-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Open Source Mindset</p>
-                  <p className="text-white/70 text-sm">Transparency and community-oriented development</p>
+                  <p className="font-semibold text-white">{t("contact.openSource")}</p>
+                  <p className="text-white/70 text-sm">{t("contact.openSourceDesc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -54,8 +57,8 @@ export function Contact() {
                   <Zap size={16} className="text-cyan-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-white">Fast Implementation</p>
-                  <p className="text-white/70 text-sm">Turning small ideas into stable, usable building blocks</p>
+                  <p className="font-semibold text-white">{t("contact.fastImpl")}</p>
+                  <p className="text-white/70 text-sm">{t("contact.fastImplDesc")}</p>
                 </div>
               </div>
             </div>
@@ -73,7 +76,7 @@ export function Contact() {
                 <Github size={24} className="text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white">GitHub</p>
+                <p className="font-semibold text-white">{t("contact.github")}</p>
                 <p className="text-white/70 text-sm">github.com/{PROFILE.github}</p>
               </div>
               <ExternalLink size={16} className="text-white/40 group-hover:text-white transition-colors" />
@@ -89,7 +92,7 @@ export function Contact() {
                   <Mail size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-white">E-Mail</p>
+                  <p className="font-semibold text-white">{t("contact.email")}</p>
                   <p className="text-white/70 text-sm">{PROFILE.email}</p>
                 </div>
                 <ExternalLink size={16} className="text-white/40 group-hover:text-white transition-colors" />

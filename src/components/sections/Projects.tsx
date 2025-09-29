@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Repo } from "../../types/repo";
 import { PROFILE } from "../../constants/profile";
+import { useLanguage } from "../../contexts/LanguageContext";
 import { RepoCard } from "../ui/RepoCard";
 import { RepoSkeletonGrid } from "../ui/RepoSkeletonGrid";
 
 export function Projects() {
+  const { t } = useLanguage();
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'featured'>('featured');
@@ -39,10 +41,10 @@ export function Projects() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-5xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-            My Projects
+            {t("projects.title")}
           </h2>
           <p className="mt-4 text-white/70 text-lg max-w-2xl mx-auto">
-            A selection of my best work and open source contributions
+            {t("projects.subtitle")}
           </p>
         </motion.div>
 
@@ -64,7 +66,7 @@ export function Projects() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            All Projects
+            {t("projects.allProjects")}
           </motion.button>
         </motion.div>
 
@@ -74,7 +76,7 @@ export function Projects() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <p className="text-red-400">{err}</p>
+            <p className="text-red-400">{t("projects.error")}</p>
           </motion.div>
         )}
 

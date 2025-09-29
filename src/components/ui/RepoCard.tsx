@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Star, Code2, GitBranch, Calendar, ExternalLink } from "lucide-react";
 import { Repo } from "../../types/repo";
 import { PROFILE } from "../../constants/profile";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface RepoCardProps {
   repo: Repo;
@@ -9,6 +10,7 @@ interface RepoCardProps {
 }
 
 export function RepoCard({ repo, index }: RepoCardProps) {
+  const { t } = useLanguage();
   const isFeatured = PROFILE.featured.includes(repo.name);
   
   return (
@@ -42,13 +44,13 @@ export function RepoCard({ repo, index }: RepoCardProps) {
               whileHover={{ scale: 1.1 }}
             >
               <Star size={12} className="inline mr-1" />
-              Featured
+              {t("projects.featured")}
             </motion.div>
           )}
           
           {repo.archived && (
             <span className="px-2 py-1 text-xs bg-amber-500/20 text-amber-400 rounded-full border border-amber-400/30">
-              Archived
+              {t("projects.archived")}
             </span>
           )}
         </div>
@@ -87,7 +89,7 @@ export function RepoCard({ repo, index }: RepoCardProps) {
         <div className="flex items-center justify-between text-xs text-white/50">
           <div className="flex items-center gap-1">
             <Calendar size={12} />
-            <span>Updated {new Date(repo.pushed_at).toLocaleDateString()}</span>
+            <span>{t("projects.updated")} {new Date(repo.pushed_at).toLocaleDateString()}</span>
           </div>
           
           <motion.div
@@ -95,7 +97,7 @@ export function RepoCard({ repo, index }: RepoCardProps) {
             whileHover={{ x: 3 }}
           >
             <ExternalLink size={12} />
-            <span>View</span>
+            <span>{t("projects.view")}</span>
           </motion.div>
         </div>
       </motion.a>

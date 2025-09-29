@@ -1,32 +1,35 @@
 import { motion } from "framer-motion";
 import { School, Zap, Code2, Terminal } from "lucide-react";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export function Experience() {
+  const { t } = useLanguage();
+  
   const experiences = [
     {
       icon: <School size={24} />,
-      title: "HTL Leonding",
-      subtitle: "Higher Department of Computer Science",
-      period: "2022 - 2027",
-      description: "Focus: Software development, databases, operating systems.",
+      title: t("experience.htl.title"),
+      subtitle: t("experience.htl.subtitle"),
+      period: t("experience.htl.period"),
+      description: t("experience.htl.description"),
       skills: ["C", "C#", "Java", "JS/TS", "Oracle XE", "Testing","Linux"],
       highlights: [
-        "KCY-Accounting - Modern accounting software with C# and Avalonia",
-        "Clean code standards and documentation",
-        "Linux workflow and Git integration in all projects"
+        t("experience.htl.highlight1"),
+        t("experience.htl.highlight2"),
+        t("experience.htl.highlight3")
       ]
     },
     {
       icon: <Zap size={24} />,
-      title: "Personal Projects",
-      subtitle: "Open Source & Experiments",
-      period: "2023 - Present",
-      description: "Focus on clean, testable tools and innovative solutions.",
+      title: t("experience.projects.title"),
+      subtitle: t("experience.projects.subtitle"),
+      period: t("experience.projects.period"),
+      description: t("experience.projects.description"),
       skills: ["C++", "GitHub", "CI/CD", "batch","Documentation"],
       highlights: [
-        "10+ Open Source Repositories",
-        "Development of Kerlib - comprehensive C# graphic library",
-        "Community building and collaboration"
+        t("experience.projects.highlight1"),
+        t("experience.projects.highlight2"),
+        t("experience.projects.highlight3")
       ]
     }
   ];
@@ -42,10 +45,10 @@ export function Experience() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-5xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent">
-            My Journey
+            {t("experience.title")}
           </h2>
           <p className="mt-4 text-white/70 text-lg max-w-2xl mx-auto">
-            From education to personal projects
+            {t("experience.subtitle")}
           </p>
         </motion.div>
 
@@ -81,7 +84,7 @@ export function Experience() {
                 <p className="text-white/70 mb-6">{exp.description}</p>
 
                 <div className="mb-6">
-                  <h4 className="text-white font-semibold mb-3">Highlights:</h4>
+                  <h4 className="text-white font-semibold mb-3">{t("experience.highlights")}</h4>
                   <ul className="space-y-2">
                     {exp.highlights.map((highlight, i) => (
                       <motion.li
@@ -100,7 +103,7 @@ export function Experience() {
                 </div>
 
                 <div>
-                  <h4 className="text-white font-semibold mb-3">Technologien:</h4>
+                  <h4 className="text-white font-semibold mb-3">{t("experience.technologies")}</h4>
                   <div className="flex flex-wrap gap-2">
                     {exp.skills.map((skill, i) => (
                       <motion.span
@@ -130,25 +133,25 @@ export function Experience() {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <div className="inline-block p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
-            <h3 className="text-2xl font-bold text-white mb-4">My Goals</h3>
+            <h3 className="text-2xl font-bold text-white mb-4">{t("experience.goals")}</h3>
             <div className="grid md:grid-cols-3 gap-6 text-white/80">
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
                   <Code2 size={24} className="text-cyan-400" />
                 </div>
-                <p className="font-medium">Clean, testable tools and libraries</p>
+                <p className="font-medium">{t("experience.goal1")}</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
                   <Zap size={24} className="text-purple-400" />
                 </div>
-                <p className="font-medium">Performance and reliability in development</p>
+                <p className="font-medium">{t("experience.goal2")}</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 flex items-center justify-center">
                   <Terminal size={24} className="text-cyan-400" />
                 </div>
-                <p className="font-medium">Practice in controlling/accounting apps</p>
+                <p className="font-medium">{t("experience.goal3")}</p>
               </div>
             </div>
           </div>

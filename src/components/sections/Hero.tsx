@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Github, ExternalLink, MapPin } from "lucide-react";
+import { ExternalLink, MapPin } from "lucide-react";
 import { PROFILE } from "../../constants/profile";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { FloatingParticles } from "../ui/FloatingParticles";
@@ -72,20 +72,6 @@ export function Hero() {
               <div className="relative flex items-center gap-3">
                 <ExternalLink size={20} />
                 <span>{t("hero.viewProjects")}</span>
-              </div>
-            </motion.a>
-            
-            <motion.a
-              href={PROFILE.cvUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="group relative overflow-hidden rounded-2xl px-8 py-4 border-2 border-white/20 text-white font-semibold hover:bg-white/5 transition-all duration-300"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="relative flex items-center gap-3">
-                <Github size={20} />
-                <span>{t("hero.downloadCV")}</span>
               </div>
             </motion.a>
           </motion.div>
