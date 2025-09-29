@@ -14,6 +14,21 @@ A modern, responsive portfolio built with React, TypeScript, Tailwind CSS, and F
 - **Smooth scrolling**: Fluid navigation between sections
 - **Custom 404 Page**: Try searching some random directory on the site
 
+## Language Support
+
+The portfolio features a complete bilingual experience:
+
+- **English/German Toggle**: Click the EN/DE button in the navbar to switch languages
+- **Real-time Updates**: All content translates instantly
+- **Mobile Responsive**: Language toggle works seamlessly on all devices
+- **Comprehensive Coverage**: Every section supports both languages including:
+  - Navigation menu
+  - Hero section with dynamic greetings
+  - Project descriptions and labels
+  - Experience timeline ("My Journey")
+  - Contact information
+  - Footer text
+
 ## Tech Stack
 
 - **React 18** — UI framework  
@@ -33,7 +48,15 @@ kerim-portfolio/
 ├── src/
 │   ├── App.tsx                # Main app component
 │   ├── main.tsx               # App entry point
-│   └── index.css              # Global styles
+│   ├── index.css              # Global styles
+│   ├── components/            # React components
+│   │   ├── sections/          # Page sections (Hero, Projects, etc.)
+│   │   └── ui/               # Reusable UI components
+│   ├── contexts/             # React contexts
+│   │   └── LanguageContext.tsx  # Language toggle system
+│   ├── constants/            # App constants
+│   ├── types/               # TypeScript type definitions
+│   └── utils/               # Utility functions
 ├── index.html                 # HTML template
 ├── package.json               # Dependencies
 ├── tailwind.config.js         # Tailwind config
