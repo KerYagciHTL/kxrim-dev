@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import { Github, Mail, School, Sun, Moon, ExternalLink, MapPin, Terminal, Code2, Zap, Star, GitBranch, Calendar } from "lucide-react";
+import { initializeAnalytics, trackPageView } from "./utils/analytics";
 
 const PROFILE = {
   name: "Kerimcan Yagci",
@@ -47,6 +48,12 @@ export default function App() {
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Initialize analytics tracking
+  useEffect(() => {
+    initializeAnalytics();
+    trackPageView('/');
   }, []);
 
   return (

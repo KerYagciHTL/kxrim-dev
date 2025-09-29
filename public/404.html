@@ -248,6 +248,60 @@
     
     scheduleGlitch();
     
+    // Analytics tracking for 404 page
+    function trackPageView() {
+      try {
+        // Simple localStorage tracking
+        const ANALYTICS_KEY = 'kxrim_analytics';
+        const VISITOR_KEY = 'kxrim_visitor_id';
+        
+        // Generate or get visitor ID
+        let visitorId = localStorage.getItem(VISITOR_KEY);
+        if (!visitorId) {
+          visitorId = 'visitor_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+          localStorage.setItem(VISITOR_KEY, visitorId);
+        }
+        
+        // Get current analytics data
+        let data = { pageViews: {}, uniqueVisitors: 0, lastVisit: '', firstVisit: '' };
+        const stored = localStorage.getItem(ANALYTICS_KEY);
+        if (stored) {
+          try {
+            data = JSON.parse(stored);
+          } catch (e) {
+            console.warn('Failed to parse analytics data:', e);
+          }
+        }
+        
+        // Update page views for 404
+        const pageName = '/404';
+        data.pageViews[pageName] = (data.pageViews[pageName] || 0) + 1;
+        data.lastVisit = new Date().toISOString();
+        if (!data.firstVisit) {
+          data.firstVisit = new Date().toISOString();
+        }
+        
+        // Save updated data
+        localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
+        
+        // Track with GoatCounter if available
+        if (window.goatcounter && window.goatcounter.count) {
+          window.goatcounter.count({
+            path: pageName,
+            title: '404 - Page Not Found | kxrim.dev',
+            event: true
+          });
+        }
+        
+        console.log('404 page view tracked');
+      } catch (error) {
+        console.warn('Failed to track page view:', error);
+      }
+    }
+    
+    // Track page view on load
+    trackPageView();
+    
     // Konami code easter egg (↑↑↓↓←→←→BA)
     let konamiCode = [];
     const konamiSequence = [
@@ -271,5 +325,9 @@
       }
     });
   </script>
+  
+  <!-- GoatCounter Analytics -->
+  <script data-goatcounter="https://kxrim.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
