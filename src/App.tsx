@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
-import { Github, Mail, School, Sun, Moon, ExternalLink, MapPin, Terminal, Code2, Zap, Star, GitBranch, Calendar } from "lucide-react";
+import { Github, Mail, School, Sun, Moon, ExternalLink, MapPin, Terminal, Code2, Zap, Star, GitBranch, Calendar, BarChart3 } from "lucide-react";
 import { initializeAnalytics, trackPageView } from "./utils/analytics";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
 
 const PROFILE = {
   name: "Kerimcan Yagci",
@@ -36,6 +37,7 @@ interface Repo {
 export default function App() {
   const [dark, setDark] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -61,12 +63,16 @@ export default function App() {
       <MouseFollower mousePosition={mousePosition} />
       <BackgroundGrid />
       <ProgressBar />
-      <Navbar dark={dark} setDark={setDark} />
+      <Navbar dark={dark} setDark={setDark} showAnalytics={showAnalytics} setShowAnalytics={setShowAnalytics} />
       <Hero />
       <Projects />
       <Experience />
       <Contact />
       <Footer />
+      <AnalyticsDashboard 
+        isOpen={showAnalytics} 
+        onClose={() => setShowAnalytics(false)} 
+      />
     </div>
   );
 }
@@ -108,7 +114,7 @@ function BackgroundGrid() {
   );
 }
 
-function Navbar({ dark, setDark }: { dark: boolean; setDark: (v: boolean) => void }) {
+function Navbar({ dark, setDark, showAnalytics, setShowAnalytics }: { dark: boolean; setDark: (v: boolean) => void; showAnalytics: boolean; setShowAnalytics: (v: boolean) => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -154,6 +160,15 @@ function Navbar({ dark, setDark }: { dark: boolean; setDark: (v: boolean) => voi
               />
             </motion.a>
           ))}
+          <motion.button
+            onClick={() => setShowAnalytics(!showAnalytics)}
+            className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            title="Analytics Dashboard"
+          >
+            <BarChart3 size={18} />
+          </motion.button>
           <motion.button
             onClick={() => setDark(!dark)}
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
