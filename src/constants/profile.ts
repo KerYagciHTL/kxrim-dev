@@ -8,7 +8,7 @@ export const PROFILE = {
   github: "KerYagciHTL",
   email: "k.yagci@students.htl-leonding.ac.at",
   cvUrl: "cv.pdf",
-  featured: ["Kerlib", "KCY-Accounting", "kxrim-dev"],
+  featured: ["Kerlib", "KCY-Accounting", "kxrim-dev", "K-Chat"],
   skills: [
     "C", "C++", ".NET/C#", "Java", "JavaScript", "TypeScript", "Node.js", "React", "SQL/Oracle XE", "Linux", "Git/GitHub"
   ],
