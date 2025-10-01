@@ -30,7 +30,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      # gh-pages auschecken in Unterordner
       - name: Checkout gh-pages worktree
         uses: actions/checkout@v4
         with:
@@ -38,18 +37,14 @@ jobs:
           path: gh-pages
           fetch-depth: 0
 
-      # Build-Ergebnis in die gh-pages-Arbeitskopie kopieren
       - name: Sync build output into gh-pages worktree
         run: |
-          rm -rf gh-pages/* gh-pages/.[!.]* || true
-          mkdir -p gh-pages
-          cp -r dist/* gh-pages/
+          rsync -a --delete --exclude ".git" --exclude ".github" dist/ gh-pages/
           echo "kxrim.is-a.dev" > gh-pages/CNAME
           touch gh-pages/.nojekyll
           echo "== listing =="
-          ls -la gh-pages
+          ls -la gh-pages | head -n 50
 
-      # PR erstellen (ohne Labels, mit expliziter Author/Committer-Identität)
       - name: Create PR to gh-pages
         uses: peter-evans/create-pull-request@v6
         with:
@@ -59,7 +54,7 @@ jobs:
           branch: pages/update-${{ github.sha }}
           base: gh-pages
           title: "Update GitHub Pages from main build"
-          body: "Automated PR updating gh-pages from ${{ github.sha }}."
+          body: "Automated PR updating gh-pages from commit ${{ github.sha }}."
           signoff: true
           author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
