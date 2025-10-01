@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROFILE_GITHUB = 'KerYagciHTL';
-const FALLBACK_PATH = path.join(__dirname, 'src', 'data', 'repos-fallback.json');
+const FALLBACK_PATH = path.join(__dirname, 'public', 'repos-fallback.json');
 
 function httpsGet(url) {
   return new Promise((resolve, reject) => {

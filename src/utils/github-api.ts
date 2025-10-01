@@ -1,7 +1,28 @@
 import { Repo } from '../types/repo';
 import { PROFILE } from '../constants/profile';
-import fallbackRepos from '../data/repos-fallback.json';
 
+/**
+ * Fetches fallback repository data from public JSON file
+ */
+async function getFallbackRepos(): Promise<Repo[]> {
+  try {
+    const response = await fetch('/repos-fallback.json');
+    if (!response.ok) {
+      throw new Error('Failed to fetch fallback data');
+    }
+    return await response.json();
+  } catch (error) {
+    console.warn('Failed to load fallback data, using empty array');
+    return [];
+  }
+}
+
+/**
+ * Fetches repository data from GitHub API with automatic fallback to local JSON
+ * @param username GitHub username
+ * @param timeout Request timeout in milliseconds (default: 5000)
+ * @returns Promise<Repo[]> Array of repositories
+ */
 export async function fetchRepositories(username: string = PROFILE.github, timeout: number = 5000): Promise<Repo[]> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -29,7 +50,7 @@ export async function fetchRepositories(username: string = PROFILE.github, timeo
 
   } catch (error) {
     clearTimeout(timeoutId);
-    return fallbackRepos as Repo[];
+    return await getFallbackRepos();
   }
 }
 

@@ -27,6 +27,9 @@ jobs:
       - name: Install deps
         run: npm ci || npm i
 
+      - name: Fetch latest repository data
+        run: npm run fetchRepos
+
       - name: Build
         run: npm run build
 

@@ -19,7 +19,6 @@ export function GlitchText() {
         ).join('');
       };
       
-      // More dramatic flicker sequence
       const sequence = [
         createCorruption(PROFILE.displayName),
         PROFILE.glitchName,
