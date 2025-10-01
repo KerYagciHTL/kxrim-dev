@@ -68,14 +68,14 @@
       "releases_url": "https://api.github.com/repos/KerYagciHTL/kxrim-dev/releases{/id}",
       "deployments_url": "https://api.github.com/repos/KerYagciHTL/kxrim-dev/deployments",
       "created_at": "2025-09-24T19:52:32Z",
-      "updated_at": "2025-10-01T10:20:57Z",
-      "pushed_at": "2025-10-01T10:20:54Z",
+      "updated_at": "2025-10-01T10:29:26Z",
+      "pushed_at": "2025-10-01T10:29:23Z",
       "git_url": "git://github.com/KerYagciHTL/kxrim-dev.git",
       "ssh_url": "git@github.com:KerYagciHTL/kxrim-dev.git",
       "clone_url": "https://github.com/KerYagciHTL/kxrim-dev.git",
       "svn_url": "https://github.com/KerYagciHTL/kxrim-dev",
       "homepage": null,
-      "size": 397,
+      "size": 433,
       "stargazers_count": 3,
       "watchers_count": 3,
       "language": "TypeScript",
@@ -506,6 +506,6 @@
       "default_branch": "main"
     }
   ],
-  "lastUpdated": "2025-10-01T10:21:08.381Z",
+  "lastUpdated": "2025-10-01T10:29:42.845Z",
   "source": "fallback"
 }
