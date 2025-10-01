@@ -1,9 +1,3 @@
-/**
- * Analytics utility for tracking page views and visitor statistics
- * Uses multiple approaches for GitHub Pages compatibility
- */
-
-// Simple analytics using localStorage for basic tracking
 interface AnalyticsData {
   pageViews: Record<string, number>;
   uniqueVisitors: number;
@@ -14,7 +8,6 @@ interface AnalyticsData {
 const ANALYTICS_KEY = 'kxrim_analytics';
 const VISITOR_KEY = 'kxrim_visitor_id';
 
-// Generate a simple visitor ID
 function generateVisitorId(): string {
   return 'visitor_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
 }
@@ -29,7 +22,6 @@ function getVisitorId(): string {
   return visitorId;
 }
 
-// Get current analytics data
 function getAnalyticsData(): AnalyticsData {
   const stored = localStorage.getItem(ANALYTICS_KEY);
   if (stored) {
@@ -48,7 +40,6 @@ function getAnalyticsData(): AnalyticsData {
   };
 }
 
-// Save analytics data
 function saveAnalyticsData(data: AnalyticsData): void {
   try {
     localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data));
@@ -60,20 +51,15 @@ function saveAnalyticsData(data: AnalyticsData): void {
 // Track a page view
 export function trackPageView(pageName: string = window.location.pathname): void {
   try {
-    // Get visitor ID (creates one if doesn't exist)
     getVisitorId();
     
-    // Get current analytics data
     const data = getAnalyticsData();
     
-    // Update page views
     data.pageViews[pageName] = (data.pageViews[pageName] || 0) + 1;
     data.lastVisit = new Date().toISOString();
     
-    // Save updated data
     saveAnalyticsData(data);
     
-    // Also send to external analytics if available
     trackWithGoatCounter(pageName);
     
     console.log(`Page view tracked: ${pageName}`);
@@ -82,7 +68,6 @@ export function trackPageView(pageName: string = window.location.pathname): void
   }
 }
 
-// Track with GoatCounter (free analytics service that works well with GitHub Pages)
 function trackWithGoatCounter(path: string): void {
   try {
     if (window.goatcounter && window.goatcounter.count) {
@@ -97,7 +82,6 @@ function trackWithGoatCounter(path: string): void {
   }
 }
 
-// Get analytics summary
 export function getAnalyticsSummary(): {
   totalPageViews: number;
   uniquePages: number;
@@ -124,12 +108,9 @@ export function getAnalyticsSummary(): {
   };
 }
 
-// Initialize analytics
 export function initializeAnalytics(): void {
-  // Track initial page load
   trackPageView();
   
-  // Set up GoatCounter if not already loaded
   if (!window.goatcounter && !document.querySelector('script[data-goatcounter]')) {
     const script = document.createElement('script');
     script.setAttribute('data-goatcounter', 'https://kxrim.goatcounter.com/count');
@@ -139,7 +120,6 @@ export function initializeAnalytics(): void {
   }
 }
 
-// Declare global GoatCounter interface
 declare global {
   interface Window {
     goatcounter?: {
@@ -148,5 +128,4 @@ declare global {
   }
 }
 
-// Export for manual tracking
 export { getVisitorId, getAnalyticsData };

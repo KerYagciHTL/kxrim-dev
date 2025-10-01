@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "fetchRepos": "node fetchRepos.js"
   },
   "homepage": "https://kxrim.is-a.dev/",
   "dependencies": {

@@ -5,6 +5,7 @@ import { PROFILE } from "../../constants/profile";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { RepoCard } from "../ui/RepoCard";
 import { RepoSkeletonGrid } from "../ui/RepoSkeletonGrid";
+import { fetchOrganizedRepositories } from "../../utils/github-api";
 
 export function Projects() {
   const { t } = useLanguage();
@@ -13,19 +14,21 @@ export function Projects() {
   const [filter, setFilter] = useState<'all' | 'featured'>('featured');
 
   useEffect(() => {
-    const c = new AbortController();
+    const controller = new AbortController();
+
     (async () => {
       try {
-        const r = await fetch(`https://api.github.com/users/${PROFILE.github}/repos?per_page=100&sort=updated`, { signal: c.signal });
-        if (!r.ok) throw new Error(`GitHub API ${r.status}`);
-        const all: Repo[] = await r.json();
-        const byName = new Map(all.map(x => [x.name, x] as const));
-        const feat = PROFILE.featured.map(n => byName.get(n)).filter(Boolean) as Repo[];
-        const rest = all.filter(x => !PROFILE.featured.includes(x.name) && !x.archived).sort((a,b)=>new Date(b.pushed_at).getTime()-new Date(a.pushed_at).getTime());
-        setRepos([...feat, ...rest]);
-      } catch (e:any) { if (e.name !== 'AbortError') setErr(e.message || String(e)); }
+        setErr(null);
+        const organizedRepos = await fetchOrganizedRepositories();
+        setRepos(organizedRepos);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        setErr(errorMessage);
+        console.error('Failed to fetch repositories:', error);
+      }
     })();
-    return () => c.abort();
+
+    return () => controller.abort();
   }, []);
 
   const displayRepos = repos ? (filter === 'featured' ? repos.filter(r => PROFILE.featured.includes(r.name)) : repos.slice(0, 12)) : [];
