@@ -53,7 +53,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: gh-pages
-          commit-message: "chore(pages): update built site from ${{ github.sha }}"
+          commit-message: "deploy: ${{ github.sha }}"
           branch: pages/update-${{ github.sha }}
           base: gh-pages
           title: "Update GitHub Pages from main build"
