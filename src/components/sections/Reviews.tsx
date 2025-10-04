@@ -1,110 +1,126 @@
 import { motion } from "framer-motion";
-import { Star, Quote, ArrowLeft } from "lucide-react";
+import { ArrowLeft, Github, MessageSquare, Send, Calendar, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
 
-
-interface Review {
-  id: number;
-  name: string;
-  role: string;
-  company: string;
-  rating: number;
-  date: string;
+interface Comment {
+  id: string;
+  author: {
+    name: string;
+    username: string;
+    avatar: string;
+    profileUrl: string;
+  };
   content: string;
-  avatar?: string;
-  project?: string;
+  timestamp: Date;
+}
+
+interface GitHubUser {
+  login: string;
+  name: string;
+  avatar_url: string;
+  html_url: string;
 }
 
 export function Reviews() {
+  const [user, setUser] = useState<GitHubUser | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const reviews: Review[] = [
-    {
-      id: 1,
-      name: "Max Mustermann",
-      role: "Project Manager",
-      company: "TechCorp GmbH",
-      rating: 5,
-      date: "2024-09-15",
-      content: "Kerimcan delivered exceptional work on our accounting software. His attention to clean code and documentation standards exceeded our expectations. The C# implementation was robust and well-structured.",
-      project: "KCY-Accounting"
-    },
-    {
-      id: 2,
-      name: "Sarah Johnson",
-      role: "Lead Developer",
-      company: "Innovation Labs",
-      rating: 5,
-      date: "2024-08-22",
-      content: "Working with Kerimcan was a pleasure. His expertise in modern web technologies and his commitment to best practices made our collaboration smooth and productive.",
-      project: "Web Application"
-    },
-    {
-      id: 3,
-      name: "Dr. Andreas Weber",
-      role: "CTO",
-      company: "StartupXYZ",
-      rating: 4,
-      date: "2024-07-10",
-      content: "Kerimcan's work on our React frontend was impressive. Clean, maintainable code with excellent TypeScript implementation. Great communication throughout the project.",
-      project: "Frontend Development"
-    },
-    {
-      id: 4,
-      name: "Lisa Chen",
-      role: "Software Architect",
-      company: "DevSolutions",
-      rating: 5,
-      date: "2024-06-30",
-      content: "Outstanding performance optimization work. Kerimcan's deep understanding of performance bottlenecks and his systematic approach to solving them was exactly what we needed.",
-      project: "Performance Optimization"
-    },
-    {
-      id: 5,
-      name: "Thomas Müller",
-      role: "Product Owner",
-      company: "FinTech Pro",
-      rating: 5,
-      date: "2024-05-18",
-      content: "Kerimcan's contribution to our open-source library was invaluable. His code quality and documentation standards set a new benchmark for our team.",
-      project: "Kerlib Library"
-    },
-    {
-      id: 6,
-      name: "Emma Rodriguez",
-      role: "Senior Developer",
-      company: "CloudFirst",
-      rating: 4,
-      date: "2024-04-25",
-      content: "Reliable, professional, and delivers quality work on time. Kerimcan's Linux expertise and Git workflow knowledge made him a valuable team member.",
-      project: "DevOps Integration"
+  // Load comments from localStorage on mount
+  useEffect(() => {
+    const savedComments = localStorage.getItem('portfolio-comments');
+    if (savedComments) {
+      try {
+        const parsed = JSON.parse(savedComments);
+        setComments(parsed.map((c: any) => ({
+          ...c,
+          timestamp: new Date(c.timestamp)
+        })));
+      } catch (error) {
+        console.error('Failed to load comments:', error);
+      }
     }
-  ];
+  }, []);
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        size={16}
-        className={i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-400"}
-      />
-    ));
+  // Save comments to localStorage whenever comments change
+  useEffect(() => {
+    if (comments.length > 0) {
+      localStorage.setItem('portfolio-comments', JSON.stringify(comments));
+    }
+  }, [comments]);
+
+  const handleGitHubAuth = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate GitHub OAuth (in a real app, you'd use proper OAuth)
+      const username = prompt("Enter your GitHub username to continue:");
+      if (!username) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch GitHub user data
+      const response = await fetch(`https://api.github.com/users/${username}`);
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        alert("GitHub user not found. Please check your username.");
+      }
+    } catch (error) {
+      console.error('GitHub auth error:', error);
+      alert("Failed to connect to GitHub. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+  const handleSubmitComment = () => {
+    if (!user || !newComment.trim()) return;
+
+    const comment: Comment = {
+      id: Date.now().toString(),
+      author: {
+        name: user.name || user.login,
+        username: user.login,
+        avatar: user.avatar_url,
+        profileUrl: user.html_url
+      },
+      content: newComment.trim(),
+      timestamp: new Date()
+    };
+
+    setComments(prev => [comment, ...prev]);
+    setNewComment("");
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      handleSubmitComment();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* Background Effects */}
       <div className="fixed inset-0 opacity-20">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5"></div>
       </div>
       
       <div className="relative z-10 px-6 py-12">
+        {/* Header */}
         <motion.div
-          className="max-w-6xl mx-auto mb-12"
+          className="max-w-4xl mx-auto mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center justify-between mb-8">
             <motion.a
               href="/"
               className="flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
@@ -113,123 +129,196 @@ export function Reviews() {
               <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
               <span>Back to Portfolio</span>
             </motion.a>
+
+            {user && (
+              <motion.button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </motion.button>
+            )}
           </div>
           
           <h1 className="text-6xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
-            Client Reviews
+            Visitor Comments
           </h1>
           
           <p className="text-xl text-white/70 max-w-3xl">
-            Feedback from clients and collaborators who have worked with me on various projects.
+            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-6 mt-8">
+          {/* Stats */}
+          <div className="grid md:grid-cols-2 gap-6 mt-8">
             <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
-              <div className="text-3xl font-bold text-cyan-400 mb-2">{reviews.length}</div>
-              <div className="text-white/70">Total Reviews</div>
-            </div>
-            <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <span className="text-3xl font-bold text-yellow-400">{averageRating.toFixed(1)}</span>
-                <Star size={24} className="text-yellow-400 fill-yellow-400" />
-              </div>
-              <div className="text-white/70">Average Rating</div>
+              <div className="text-3xl font-bold text-cyan-400 mb-2">{comments.length}</div>
+              <div className="text-white/70">Total Comments</div>
             </div>
             <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
               <div className="text-3xl font-bold text-purple-400 mb-2">
-                {Math.round((reviews.filter(r => r.rating === 5).length / reviews.length) * 100)}%
+                {new Set(comments.map(c => c.author.username)).size}
               </div>
-              <div className="text-white/70">5-Star Reviews</div>
+              <div className="text-white/70">Unique Visitors</div>
             </div>
           </div>
         </motion.div>
 
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-          {reviews.map((review, index) => (
+        {/* Comment Form */}
+        <div className="max-w-4xl mx-auto mb-12">
+          {!user ? (
             <motion.div
-              key={review.id}
-              className="group relative"
-              initial={{ opacity: 0, y: 50 }}
+              className="text-center p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-105" />
+              <MessageSquare size={48} className="mx-auto text-cyan-400 mb-4" />
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Connect with GitHub to Comment
+              </h3>
+              <p className="text-white/70 mb-6 max-w-2xl mx-auto">
+                To ensure authenticity and prevent spam, please connect your GitHub account to leave a comment.
+              </p>
+              <motion.button
+                onClick={handleGitHubAuth}
+                disabled={isLoading}
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-2xl hover:from-gray-700 hover:to-gray-900 transition-all duration-300 disabled:opacity-50"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Github size={24} />
+                <span>{isLoading ? 'Connecting...' : 'Connect with GitHub'}</span>
+              </motion.button>
+            </motion.div>
+          ) : (
+            <motion.div
+              className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <img
+                  src={user.avatar_url}
+                  alt={user.name || user.login}
+                  className="w-12 h-12 rounded-full border-2 border-cyan-400"
+                />
+                <div>
+                  <h3 className="text-white font-semibold">{user.name || user.login}</h3>
+                  <p className="text-white/60 text-sm">@{user.login}</p>
+                </div>
+              </div>
               
-              <div className="relative p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-500 h-full">
-                <motion.div
-                  className="absolute top-6 right-6 text-cyan-400/30"
-                  whileHover={{ scale: 1.2, rotate: 15 }}
-                >
-                  <Quote size={32} />
-                </motion.div>
-
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg text-white">{review.name}</h3>
-                    <p className="text-white/80">{review.role}</p>
-                    <p className="text-white/60 text-sm">{review.company}</p>
-                    {review.project && (
-                      <span className="inline-block mt-2 px-3 py-1 text-xs bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-cyan-400 rounded-full border border-cyan-400/30">
-                        {review.project}
-                      </span>
-                    )}
-                  </div>
+              <div className="space-y-4">
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Write your comment... (Ctrl+Enter to submit)"
+                  className="w-full h-32 p-4 rounded-xl bg-white/5 border border-white/20 text-white placeholder-white/50 resize-none focus:outline-none focus:border-cyan-400/50 transition-colors"
+                />
+                
+                <div className="flex justify-between items-center">
+                  <p className="text-white/50 text-sm">
+                    Tip: Use Ctrl+Enter to submit quickly
+                  </p>
+                  <motion.button
+                    onClick={handleSubmitComment}
+                    disabled={!newComment.trim()}
+                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Send size={16} />
+                    <span>Post Comment</span>
+                  </motion.button>
                 </div>
-
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex gap-1">
-                    {renderStars(review.rating)}
-                  </div>
-                  <span className="text-white/60 text-sm">
-                    {new Date(review.date).toLocaleDateString()}
-                  </span>
-                </div>
-
-                <p className="text-white/80 leading-relaxed">
-                  "{review.content}"
-                </p>
               </div>
             </motion.div>
-          ))}
+          )}
         </div>
 
-        <motion.div
-          className="max-w-4xl mx-auto mt-16 text-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <div className="p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to Work Together?
+        {/* Comments List */}
+        {comments.length > 0 && (
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <MessageSquare size={24} className="text-cyan-400" />
+              Recent Comments ({comments.length})
             </h2>
-            <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-              Join these satisfied clients and let's create something amazing together. 
-              I'm always excited to take on new challenges and deliver exceptional results.
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <motion.a
-                href="/#contact"
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Get In Touch
-              </motion.a>
-              <motion.a
-                href="/#projects"
-                className="px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-2xl hover:bg-white/5 transition-all duration-300"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                View My Work
-              </motion.a>
+            
+            <div className="space-y-6">
+              {comments.map((comment, index) => (
+                <motion.div
+                  key={comment.id}
+                  className="group relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-500"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.05 }}
+                >
+                  {/* Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                  
+                  <div className="relative">
+                    {/* Author Info */}
+                    <div className="flex items-center gap-4 mb-4">
+                      <a 
+                        href={comment.author.profileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:scale-105 transition-transform"
+                      >
+                        <img
+                          src={comment.author.avatar}
+                          alt={comment.author.name}
+                          className="w-10 h-10 rounded-full border-2 border-cyan-400/50"
+                        />
+                      </a>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={comment.author.profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-white hover:text-cyan-400 transition-colors"
+                          >
+                            {comment.author.name}
+                          </a>
+                          <span className="text-white/60 text-sm">@{comment.author.username}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-white/50 text-sm">
+                          <Calendar size={12} />
+                          <span>{comment.timestamp.toLocaleDateString()} at {comment.timestamp.toLocaleTimeString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Comment Content */}
+                    <div className="text-white/80 leading-relaxed whitespace-pre-wrap">
+                      {comment.content}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
-        </motion.div>
+        )}
+
+        {/* Empty State */}
+        {comments.length === 0 && user && (
+          <motion.div
+            className="max-w-4xl mx-auto text-center p-12 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <MessageSquare size={48} className="mx-auto text-white/40 mb-4" />
+            <h3 className="text-xl font-semibold text-white/70 mb-2">No comments yet</h3>
+            <p className="text-white/50">Be the first to leave a comment!</p>
+          </motion.div>
+        )}
       </div>
     </div>
   );
