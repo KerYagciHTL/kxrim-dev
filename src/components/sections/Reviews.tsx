@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Github, MessageSquare, Send, Calendar, LogOut } from "lucide-react";
+import { ArrowLeft, Github, MessageSquare, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface Comment {
@@ -14,18 +14,8 @@ interface Comment {
   timestamp: Date;
 }
 
-interface GitHubUser {
-  login: string;
-  name: string;
-  avatar_url: string;
-  html_url: string;
-}
-
 export function Reviews() {
-  const [user, setUser] = useState<GitHubUser | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [loadingComments, setLoadingComments] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,108 +79,7 @@ export function Reviews() {
     }
   };
 
-  const saveComments = async (comment: Comment) => {
-    try {
-      const response = await fetch(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`,
-        {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: `Comment by ${comment.author.name}`,
-            body: JSON.stringify({
-              author: comment.author,
-              content: comment.content,
-              timestamp: comment.timestamp.toISOString()
-            }),
-            labels: [COMMENT_LABEL]
-          }),
-        }
-      );
 
-      if (!response.ok) {
-        throw new Error('Failed to save comment');
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error('Error saving comment:', error);
-      throw error;
-    }
-  };
-
-  const handleGitHubAuth = async () => {
-    setIsLoading(true);
-    try {
-      const username = prompt("Enter your GitHub username to continue:");
-      if (!username) {
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await fetch(`https://api.github.com/users/${username}`);
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
-        alert("GitHub user not found. Please check your username.");
-      }
-    } catch (error) {
-      console.error('GitHub auth error:', error);
-      alert("Failed to connect to GitHub. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmitComment = async () => {
-    if (!user || !newComment.trim() || isLoading) return;
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const commentData: Comment = {
-        id: Date.now().toString(),
-        author: {
-          name: user.name || user.login,
-          username: user.login,
-          avatar: user.avatar_url,
-          profileUrl: user.html_url
-        },
-        content: newComment,
-        timestamp: new Date()
-      };
-
-      await saveComments(commentData);
-      
-      setComments([commentData, ...comments]);
-      setNewComment('');
-      
-      setTimeout(() => {
-        loadComments();
-      }, 1000);
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-      setError('Failed to submit comment. Please try again.');
-      await loadComments();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      handleSubmitComment();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
@@ -205,7 +94,7 @@ export function Reviews() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-8">
             <motion.a
               href="/"
               className="flex items-center gap-2 text-white/70 hover:text-white transition-colors group"
@@ -214,18 +103,6 @@ export function Reviews() {
               <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
               <span>Back to Portfolio</span>
             </motion.a>
-
-            {user && (
-              <motion.button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </motion.button>
-            )}
           </div>
           
           <h1 className="text-6xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
@@ -261,77 +138,82 @@ export function Reviews() {
         </motion.div>
 
         <div className="max-w-4xl mx-auto mb-12">
-          {!user ? (
-            <motion.div
-              className="text-center p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
+          <motion.div
+            className="p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="text-center mb-8">
               <MessageSquare size={48} className="mx-auto text-cyan-400 mb-4" />
               <h3 className="text-2xl font-bold text-white mb-4">
-                Connect with GitHub to Comment
+                Leave a Comment via GitHub Issues
               </h3>
               <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-                To ensure authenticity and prevent spam, please connect your GitHub account to leave a comment.
+                Want to leave a comment? Create a new issue on the GitHub repository with the proper format below. 
+                Comments with invalid format will be ignored.
               </p>
-              <motion.button
-                onClick={handleGitHubAuth}
-                disabled={isLoading}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-2xl hover:from-gray-700 hover:to-gray-900 transition-all duration-300 disabled:opacity-50"
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Github size={24} />
-                <span>{isLoading ? 'Connecting...' : 'Connect with GitHub'}</span>
-              </motion.button>
-            </motion.div>
-          ) : (
-            <motion.div
-              className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={user.avatar_url}
-                  alt={user.name || user.login}
-                  className="w-12 h-12 rounded-full border-2 border-cyan-400"
-                />
-                <div>
-                  <h3 className="text-white font-semibold">{user.name || user.login}</h3>
-                  <p className="text-white/60 text-sm">@{user.login}</p>
+            </div>
+
+            <div className="space-y-6">
+              <div className="p-6 rounded-xl bg-white/5 border border-white/10">
+                <h4 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                  <Github size={20} className="text-cyan-400" />
+                  How to Comment
+                </h4>
+                <ol className="space-y-3 text-white/70">
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">1</span>
+                    <span>Go to <a href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">GitHub Issues</a></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">2</span>
+                    <span>Add the label <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code></span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">3</span>
+                    <span>Use the JSON format shown below in the issue body</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div className="p-6 rounded-xl bg-black/20 border border-white/10">
+                <h4 className="text-lg font-semibold text-white mb-3">Required JSON Format</h4>
+                <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
+                  <pre className="text-green-400 text-sm font-mono whitespace-pre">
+{`{
+  "author": {
+    "name": "Your Name",
+    "username": "your-github-username",
+    "avatar": "https://github.com/your-username.png",
+    "profileUrl": "https://github.com/your-username"
+  },
+  "content": "Your comment text here...",
+  "rating": 5
+}`}
+                  </pre>
+                </div>
+                <div className="mt-4 text-white/60 text-sm">
+                  <p><strong>Rating:</strong> Use 1-5 stars (1=⭐, 2=⭐⭐, 3=⭐⭐⭐, 4=⭐⭐⭐⭐, 5=⭐⭐⭐⭐⭐)</p>
+                  <p><strong>Note:</strong> Issues without proper JSON format or missing the <code className="px-1 bg-white/10 rounded">portfolio-comment</code> label will be ignored.</p>
                 </div>
               </div>
-              
-              <div className="space-y-4">
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder="Write your comment... (Ctrl+Enter to submit)"
-                  className="w-full h-32 p-4 rounded-xl bg-white/5 border border-white/20 text-white placeholder-white/50 resize-none focus:outline-none focus:border-cyan-400/50 transition-colors"
-                />
-                
-                <div className="flex justify-between items-center">
-                  <p className="text-white/50 text-sm">
-                    Tip: Use Ctrl+Enter to submit quickly
-                  </p>
-                  <motion.button
-                    onClick={handleSubmitComment}
-                    disabled={!newComment.trim() || isLoading}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Send size={16} className={isLoading ? "animate-pulse" : ""} />
-                    <span>{isLoading ? 'Posting...' : 'Post Comment'}</span>
-                  </motion.button>
-                </div>
+
+              <div className="text-center">
+                <motion.a
+                  href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-2xl hover:from-gray-700 hover:to-gray-900 transition-all duration-300"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Github size={24} />
+                  <span>Create GitHub Issue</span>
+                </motion.a>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </motion.div>
         </div>
 
         {loadingComments && (
@@ -408,7 +290,7 @@ export function Reviews() {
           </div>
         )}
 
-        {!loadingComments && comments.length === 0 && user && (
+        {!loadingComments && comments.length === 0 && (
           <motion.div
             className="max-w-4xl mx-auto text-center p-12 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
             initial={{ opacity: 0, y: 30 }}
@@ -417,7 +299,7 @@ export function Reviews() {
           >
             <MessageSquare size={48} className="mx-auto text-white/40 mb-4" />
             <h3 className="text-xl font-semibold text-white/70 mb-2">No comments yet</h3>
-            <p className="text-white/50">Be the first to leave a comment!</p>
+            <p className="text-white/50">Be the first to leave a comment via GitHub Issues!</p>
           </motion.div>
         )}
       </div>
