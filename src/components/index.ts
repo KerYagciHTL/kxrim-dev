@@ -15,3 +15,7 @@ export { Projects } from './sections/Projects';
 export { Experience } from './sections/Experience';
 export { Contact } from './sections/Contact';
 export { Footer } from './sections/Footer';
+export { Reviews } from './sections/Reviews';
+
+// Page Components
+export { Home } from './pages/Home';
