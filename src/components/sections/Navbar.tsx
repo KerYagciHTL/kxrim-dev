@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Languages } from "lucide-react";
+import { Sun, Moon, Languages, Star } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 
 interface NavbarProps {
@@ -62,7 +62,11 @@ export function Navbar({ dark, setDark }: NavbarProps) {
               value=""
               onChange={(e) => {
                 if (e.target.value) {
-                  document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
+                  if (e.target.value === "/reviews") {
+                    window.location.href = "/reviews";
+                  } else {
+                    document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }
               }}
               className="bg-transparent border border-white/20 rounded-lg px-2 py-1 text-xs text-white/70"
@@ -72,9 +76,24 @@ export function Navbar({ dark, setDark }: NavbarProps) {
               <option value="#projects" className="bg-slate-800">{t('nav.projects')}</option>
               <option value="#experience" className="bg-slate-800">{t('nav.experience')}</option>
               <option value="#contact" className="bg-slate-800">{t('nav.contact')}</option>
+              <option value="/reviews" className="bg-slate-800">⭐ {t('nav.reviews')}</option>
             </motion.select>
           </div>
           
+          {/* Reviews button */}
+          <motion.a
+            href="/reviews"
+            className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 flex items-center gap-1"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.9 }}
+            title={t('nav.reviews')}
+          >
+            <Star size={16} className="text-yellow-400 fill-yellow-400" />
+            <span className="hidden lg:block text-xs font-semibold text-yellow-400">
+              {t('nav.reviews')}
+            </span>
+          </motion.a>
+
           {/* Language toggle button */}
           <motion.button
             onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}
