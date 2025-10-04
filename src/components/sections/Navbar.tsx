@@ -56,7 +56,6 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             </motion.a>
           ))}
           
-          {/* Mobile navigation menu - simplified */}
           <div className="sm:hidden flex items-center gap-2">
             <motion.select
               value=""
@@ -80,7 +79,6 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             </motion.select>
           </div>
           
-          {/* Reviews button */}
           <motion.a
             href="/reviews"
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 flex items-center gap-1"
@@ -94,7 +92,6 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             </span>
           </motion.a>
 
-          {/* Language toggle button */}
           <motion.button
             onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 flex items-center gap-1"

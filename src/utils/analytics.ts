@@ -48,7 +48,6 @@ function saveAnalyticsData(data: AnalyticsData): void {
   }
 }
 
-// Track a page view
 export function trackPageView(pageName: string = window.location.pathname): void {
   try {
     getVisitorId();

@@ -1,9 +1,6 @@
 import { Repo } from '../types/repo';
 import { PROFILE } from '../constants/profile';
 
-/**
- * Fetches fallback repository data from public JSON file
- */
 async function getFallbackRepos(): Promise<Repo[]> {
   try {
     const response = await fetch('/repos-fallback.json');
@@ -17,12 +14,6 @@ async function getFallbackRepos(): Promise<Repo[]> {
   }
 }
 
-/**
- * Fetches repository data from GitHub API with automatic fallback to local JSON
- * @param username GitHub username
- * @param timeout Request timeout in milliseconds (default: 5000)
- * @returns Promise<Repo[]> Array of repositories
- */
 export async function fetchRepositories(username: string = PROFILE.github, timeout: number = 5000): Promise<Repo[]> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -78,11 +69,6 @@ export async function fetchOrganizedRepositories(
   }
 }
 
-/**
- * Simple function to get just repo names and descriptions
- * @param username GitHub username
- * @returns Promise<Array<{name: string, description: string}>>
- */
 export async function fetchRepoNamesAndDescriptions(username: string = PROFILE.github) {
   try {
     const repos = await fetchRepositories(username);

@@ -93,13 +93,11 @@ export function Reviews() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-      {/* Background Effects */}
       <div className="fixed inset-0 opacity-20">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5"></div>
       </div>
       
       <div className="relative z-10 px-6 py-12">
-        {/* Header */}
         <motion.div
           className="max-w-6xl mx-auto mb-12"
           initial={{ opacity: 0, y: 30 }}
@@ -125,7 +123,6 @@ export function Reviews() {
             Feedback from clients and collaborators who have worked with me on various projects.
           </p>
 
-          {/* Stats */}
           <div className="grid md:grid-cols-3 gap-6 mt-8">
             <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
               <div className="text-3xl font-bold text-cyan-400 mb-2">{reviews.length}</div>
@@ -147,7 +144,6 @@ export function Reviews() {
           </div>
         </motion.div>
 
-        {/* Reviews Grid */}
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
           {reviews.map((review, index) => (
             <motion.div
@@ -157,11 +153,9 @@ export function Reviews() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              {/* Glow Effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:scale-105" />
               
               <div className="relative p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all duration-500 h-full">
-                {/* Quote Icon */}
                 <motion.div
                   className="absolute top-6 right-6 text-cyan-400/30"
                   whileHover={{ scale: 1.2, rotate: 15 }}
@@ -169,7 +163,6 @@ export function Reviews() {
                   <Quote size={32} />
                 </motion.div>
 
-                {/* Header */}
                 <div className="flex items-start gap-4 mb-6">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
                     {review.name.charAt(0)}
@@ -186,7 +179,6 @@ export function Reviews() {
                   </div>
                 </div>
 
-                {/* Rating */}
                 <div className="flex items-center gap-2 mb-4">
                   <div className="flex gap-1">
                     {renderStars(review.rating)}
@@ -196,7 +188,6 @@ export function Reviews() {
                   </span>
                 </div>
 
-                {/* Content */}
                 <p className="text-white/80 leading-relaxed">
                   "{review.content}"
                 </p>
@@ -205,7 +196,6 @@ export function Reviews() {
           ))}
         </div>
 
-        {/* Call to Action */}
         <motion.div
           className="max-w-4xl mx-auto mt-16 text-center"
           initial={{ opacity: 0, y: 30 }}
