@@ -33,7 +33,7 @@ const translations: Translations = {
     'hero.intro': 'I\'m',
     'hero.description': 'A passionate software developer from Austria, specializing in modern web technologies and system programming.',
     'hero.viewProjects': 'View Projects',
-    'hero.reviewsFromClients': 'Reviews from clients',
+    'hero.reviewsFromClients': 'Reviews from visitors',
 
     'hero.location': 'Ansfelden, AT',
     
@@ -109,7 +109,7 @@ const translations: Translations = {
     'hero.intro': 'Ich bin',
     'hero.description': 'Ein leidenschaftlicher Softwareentwickler aus Österreich, spezialisiert auf moderne Webtechnologien und Systemprogrammierung.',
     'hero.viewProjects': 'Projekte Ansehen',
-    'hero.reviewsFromClients': 'Bewertungen von Kunden',
+    'hero.reviewsFromClients': 'Bewertungen von Besuchern',
 
     'hero.location': 'Ansfelden, AT',
     
