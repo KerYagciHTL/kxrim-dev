@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Github, MessageSquare, Calendar } from "lucide-react";
+import { ArrowLeft, Github, MessageSquare, Calendar, MapPin, Building } from "lucide-react";
 import { useState, useEffect } from "react";
+import { fetchPortfolioComments } from "../../utils/github-api";
 
 interface Comment {
   id: string;
@@ -9,9 +10,14 @@ interface Comment {
     username: string;
     avatar: string;
     profileUrl: string;
+    bio: string | null;
+    location: string | null;
+    company: string | null;
   };
   content: string;
   timestamp: Date;
+  issueUrl: string;
+  issueNumber: number;
 }
 
 export function Reviews() {
@@ -21,7 +27,6 @@ export function Reviews() {
 
   const GITHUB_OWNER = 'KerYagciHTL';
   const GITHUB_REPO = 'kxrim-dev';
-  const COMMENT_LABEL = 'portfolio-comment';
 
   useEffect(() => {
     loadComments();
@@ -32,44 +37,8 @@ export function Reviews() {
     setError(null);
     
     try {
-      const response = await fetch(
-        `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?labels=${COMMENT_LABEL}&state=open&sort=created&direction=desc`,
-        {
-          headers: {
-            'Accept': 'application/vnd.github.v3+json',
-          },
-        }
-      );
-
-      if (response.ok) {
-        const issues = await response.json();
-        const commentsData = issues.map((issue: any) => {
-          try {
-            const commentData = JSON.parse(issue.body);
-            return {
-              id: issue.id.toString(),
-              author: commentData.author,
-              content: commentData.content,
-              timestamp: new Date(issue.created_at)
-            };
-          } catch (parseError) {
-            return {
-              id: issue.id.toString(),
-              author: {
-                name: issue.user.login,
-                username: issue.user.login,
-                avatar: issue.user.avatar_url,
-                profileUrl: issue.user.html_url
-              },
-              content: issue.body,
-              timestamp: new Date(issue.created_at)
-            };
-          }
-        });
-        setComments(commentsData);
-      } else {
-        throw new Error('Failed to load comments');
-      }
+      const commentsData = await fetchPortfolioComments(GITHUB_OWNER, GITHUB_REPO);
+      setComments(commentsData);
     } catch (error) {
       console.error('Error loading comments:', error);
       setError('Failed to load comments. Please refresh the page.');
@@ -150,8 +119,8 @@ export function Reviews() {
                 Leave a Comment via GitHub Issues
               </h3>
               <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-                Want to leave a comment? Create a new issue on the GitHub repository with the proper format below. 
-                Comments with invalid format will be ignored.
+                Want to leave a comment? Simply create a GitHub issue with the <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code> label. 
+                Your GitHub profile information will be automatically pulled, and the issue content will be displayed as your comment.
               </p>
             </div>
 
@@ -172,30 +141,32 @@ export function Reviews() {
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">3</span>
-                    <span>Use the JSON format shown below in the issue body</span>
+                    <span>Write your comment in the issue description - that's it!</span>
                   </li>
                 </ol>
               </div>
 
               <div className="p-6 rounded-xl bg-black/20 border border-white/10">
-                <h4 className="text-lg font-semibold text-white mb-3">Required JSON Format</h4>
+                <h4 className="text-lg font-semibold text-white mb-3">Example Comment</h4>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
                   <pre className="text-green-400 text-sm font-mono whitespace-pre">
-{`{
-  "author": {
-    "name": "Your Name",
-    "username": "your-github-username",
-    "avatar": "https://github.com/your-username.png",
-    "profileUrl": "https://github.com/your-username"
-  },
-  "content": "Your comment text here...",
-  "rating": 5
-}`}
+{`Title: Great work on the portfolio!
+
+Hey Kerim, I really love the design of your portfolio website! 
+The animations are smooth and the dark theme looks fantastic. 
+Keep up the great work! 🚀
+
+Looking forward to seeing more of your projects.`}
                   </pre>
                 </div>
                 <div className="mt-4 text-white/60 text-sm">
-                  <p><strong>Rating:</strong> Use 1-5 stars (1=⭐, 2=⭐⭐, 3=⭐⭐⭐, 4=⭐⭐⭐⭐, 5=⭐⭐⭐⭐⭐)</p>
-                  <p><strong>Note:</strong> Issues without proper JSON format or missing the <code className="px-1 bg-white/10 rounded">portfolio-comment</code> label will be ignored.</p>
+                  <p><strong>Automatic Features:</strong></p>
+                  <ul className="list-disc list-inside space-y-1 mt-2">
+                    <li>Your GitHub profile information (name, avatar, bio, location, company) is automatically fetched</li>
+                    <li>The issue content becomes your comment text</li>
+                    <li>Comments are sorted by creation date (newest first)</li>
+                    <li>Only issues with the <code className="px-1 bg-white/10 rounded">portfolio-comment</code> label are displayed</li>
+                  </ul>
                 </div>
               </div>
 
@@ -248,21 +219,21 @@ export function Reviews() {
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
                   
                   <div className="relative">
-                    <div className="flex items-center gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-4">
                       <a 
                         href={comment.author.profileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:scale-105 transition-transform"
+                        className="hover:scale-105 transition-transform flex-shrink-0"
                       >
                         <img
                           src={comment.author.avatar}
                           alt={comment.author.name}
-                          className="w-10 h-10 rounded-full border-2 border-cyan-400/50"
+                          className="w-12 h-12 rounded-full border-2 border-cyan-400/50"
                         />
                       </a>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <a
                             href={comment.author.profileUrl}
                             target="_blank"
@@ -273,9 +244,42 @@ export function Reviews() {
                           </a>
                           <span className="text-white/60 text-sm">@{comment.author.username}</span>
                         </div>
-                        <div className="flex items-center gap-1 text-white/50 text-sm">
-                          <Calendar size={12} />
-                          <span>{comment.timestamp.toLocaleDateString()} at {comment.timestamp.toLocaleTimeString()}</span>
+                        
+                        {/* Bio, Location, Company */}
+                        <div className="mt-1 space-y-1">
+                          {comment.author.bio && (
+                            <p className="text-white/60 text-sm italic">{comment.author.bio}</p>
+                          )}
+                          <div className="flex items-center gap-4 text-white/50 text-xs">
+                            {comment.author.location && (
+                              <div className="flex items-center gap-1">
+                                <MapPin size={10} />
+                                <span>{comment.author.location}</span>
+                              </div>
+                            )}
+                            {comment.author.company && (
+                              <div className="flex items-center gap-1">
+                                <Building size={10} />
+                                <span>{comment.author.company}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-4 mt-2 text-white/50 text-xs">
+                          <div className="flex items-center gap-1">
+                            <Calendar size={10} />
+                            <span>{comment.timestamp.toLocaleDateString()} at {comment.timestamp.toLocaleTimeString()}</span>
+                          </div>
+                          <a
+                            href={comment.issueUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 hover:text-cyan-400 transition-colors"
+                          >
+                            <Github size={10} />
+                            <span>Issue #{comment.issueNumber}</span>
+                          </a>
                         </div>
                       </div>
                     </div>
