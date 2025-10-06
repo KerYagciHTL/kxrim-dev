@@ -299,19 +299,22 @@
       }
     }
     
-    // Single Page Apps for GitHub Pages
+    // Single Page Apps for GitHub Pages - Modified to handle SPA routes
     // MIT License
     // https://github.com/rafgraph/spa-github-pages
     var pathSegmentsToKeep = 0;
 
     var l = window.location;
-    l.replace(
-      l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-      '/?/' +
-      l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
-      (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-      l.hash
-    );
+    // Only redirect if this is a SPA route (like /reviews), not a real 404
+    if (l.pathname === '/reviews' || l.pathname.startsWith('/reviews/')) {
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    }
     
     // Track page view on load
     trackPageView();
