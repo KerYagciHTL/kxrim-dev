@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Languages, Star } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   dark: boolean;
@@ -11,6 +12,7 @@ interface NavbarProps {
 export function Navbar({ dark, setDark }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -62,7 +64,7 @@ export function Navbar({ dark, setDark }: NavbarProps) {
               onChange={(e) => {
                 if (e.target.value) {
                   if (e.target.value === "/reviews") {
-                    window.location.href = "/reviews";
+                    navigate('/reviews');
                   } else {
                     document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
                   }
@@ -81,6 +83,7 @@ export function Navbar({ dark, setDark }: NavbarProps) {
           
           <motion.a
             href="/reviews"
+            onClick={(e) => { e.preventDefault(); navigate('/reviews'); }}
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 flex items-center gap-1"
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9 }}
