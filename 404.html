@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>404 - Page Not Found | kxrim.dev</title>
+  <title>Redirecting... | kxrim.dev</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          animation: {
-            'glitch': 'glitch 2s infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
+    // GitHub Pages SPA redirect
+    // Store the path in sessionStorage and redirect to index.html
+    sessionStorage.redirect = location.href;
+    location.replace(location.origin);
+  </script>
+</head>
+<body>
+  <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
+    <div style="text-align: center;">
+      <h2>Redirecting...</h2>
+      <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
+    </div>
+  </div>
+</body>
+</html>
           fontFamily: {
             'mono': ['Monaco', 'Menlo', 'Ubuntu Mono', 'monospace'],
           }
