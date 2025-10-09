@@ -114,7 +114,6 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
       cacheKey
     );
     
-    // Process each issue - use basic user data from issues to avoid extra API calls
     const comments = [];
     
     for (const issue of issues) {
@@ -122,13 +121,13 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
         comments.push({
           id: issue.id.toString(),
           author: {
-            name: issue.user.login, // Use login as name since we can't fetch full profile
+            name: issue.user.login,
             username: issue.user.login,
             avatar: issue.user.avatar_url,
             profileUrl: issue.user.html_url,
-            bio: null, // Not available without additional API call
-            location: null, // Not available without additional API call
-            company: null // Not available without additional API call
+            bio: null,
+            location: null,
+            company: null
           },
           content: issue.body || 'No content provided',
           timestamp: new Date(issue.created_at),
@@ -137,7 +136,6 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
         });
       } catch (error) {
         console.warn('Error processing issue:', issue.number, error);
-        // Still add basic comment data
         comments.push({
           id: issue.id.toString(),
           author: {
@@ -161,7 +159,6 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
   } catch (error) {
     console.error('Error fetching portfolio comments:', error);
     
-    // Check if it's a rate limit error and provide helpful message
     if (error instanceof Error && error.message.includes('403')) {
       const enhancedError = new Error(
         'GitHub API rate limit exceeded. The site is experiencing high traffic. Please try again in a few minutes.'

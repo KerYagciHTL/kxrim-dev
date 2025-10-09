@@ -11,7 +11,6 @@ export function Projects() {
   const { t } = useLanguage();
   const [repos, setRepos] = useState<Repo[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'featured'>('featured');
 
   useEffect(() => {
     const controller = new AbortController();
@@ -31,7 +30,7 @@ export function Projects() {
     return () => controller.abort();
   }, []);
 
-  const displayRepos = repos ? (filter === 'featured' ? repos.filter(r => PROFILE.featured.includes(r.name)) : repos.slice(0, 12)) : [];
+  const displayRepos = repos ? repos.filter(r => PROFILE.featured.includes(r.name)) : [];
 
   return (
     <section id="projects" className="relative py-20">
@@ -58,19 +57,16 @@ export function Projects() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <motion.button
-            key="featured"
-            onClick={() => setFilter('featured')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              filter === 'featured'
-                ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg'
-                : 'bg-white/5 border border-white/20 text-white/70 hover:bg-white/10'
-            }`}
+          <motion.a
+            href="https://github.com/KerYagciHTL?tab=repositories"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-lg hover:from-cyan-600 hover:to-purple-700"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
             {t("projects.allProjects")}
-          </motion.button>
+          </motion.a>
         </motion.div>
 
         {err && (
