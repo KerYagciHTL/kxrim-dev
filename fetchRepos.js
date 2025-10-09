@@ -9,12 +9,16 @@ const FALLBACK_PATH = path.join(__dirname, 'public', 'repos-fallback.json');
 
 function httpsGet(url) {
   return new Promise((resolve, reject) => {
-    const options = {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'kxrim-dev-portfolio'
-      }
+    const headers = {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'kxrim-dev-portfolio'
     };
+    
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+    }
+    
+    const options = { headers };
 
     const req = https.get(url, options, (res) => {
       let data = '';
@@ -88,13 +92,11 @@ async function main() {
   try {
     const repos = await fetchRepositories();
 
-    // Ensure directory exists
     const dir = path.dirname(FALLBACK_PATH);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
-    // Save to fallback file
     fs.writeFileSync(FALLBACK_PATH, JSON.stringify(repos, null, 2));
     console.log(`Saved ${repos.length} repositories to ${FALLBACK_PATH}`);
 

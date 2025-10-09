@@ -1,6 +1,47 @@
 import { Repo } from '../types/repo';
 import { PROFILE } from '../constants/profile';
 
+// Rate limiting and cache configuration
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+const REQUEST_DELAY = 100; // Delay between requests in milliseconds
+
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+const apiCache = new Map<string, CacheEntry<any>>();
+
+// Helper function for cached API requests
+async function cachedFetch<T>(url: string, cacheKey: string): Promise<T> {
+  // Check cache first
+  const cached = apiCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+
+  // Add small delay to avoid rapid-fire requests
+  await new Promise(resolve => setTimeout(resolve, REQUEST_DELAY));
+
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'kxrim-dev-portfolio',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  
+  // Cache the result
+  apiCache.set(cacheKey, { data, timestamp: Date.now() });
+  
+  return data;
+}
+
 async function getFallbackRepos(): Promise<Repo[]> {
   try {
     const response = await fetch('/repos-fallback.json');
@@ -14,33 +55,17 @@ async function getFallbackRepos(): Promise<Repo[]> {
   }
 }
 
-export async function fetchRepositories(username: string = PROFILE.github, timeout: number = 5000): Promise<Repo[]> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
-
+export async function fetchRepositories(username: string = PROFILE.github): Promise<Repo[]> {
   try {
-    const response = await fetch(
+    const cacheKey = `repos-${username}`;
+    const repos: Repo[] = await cachedFetch(
       `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`,
-      {
-        signal: controller.signal,
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'kxrim-dev-portfolio'
-        }
-      }
+      cacheKey
     );
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
-    }
-
-    const repos: Repo[] = await response.json();
     return repos;
 
   } catch (error) {
-    clearTimeout(timeoutId);
+    console.warn('Failed to fetch repositories from API, using fallback:', error);
     return await getFallbackRepos();
   }
 }
@@ -83,81 +108,68 @@ export async function fetchRepoNamesAndDescriptions(username: string = PROFILE.g
 
 export async function fetchPortfolioComments(owner: string, repo: string): Promise<any[]> {
   try {
-    const response = await fetch(
+    const cacheKey = `comments-${owner}-${repo}`;
+    const issues: any[] = await cachedFetch(
       `https://api.github.com/repos/${owner}/${repo}/issues?labels=portfolio-comment&state=open&sort=created&direction=desc`,
-      {
-        headers: {
-          'Accept': 'application/vnd.github.v3+json',
-          'User-Agent': 'kxrim-dev-portfolio'
-        }
-      }
+      cacheKey
     );
-
-    if (!response.ok) {
-      throw new Error(`GitHub API returned ${response.status}: ${response.statusText}`);
-    }
-
-    const issues = await response.json();
     
-    // Process each issue and automatically fetch user data
-    const comments = await Promise.all(
-      issues.map(async (issue: any) => {
-        try {
-          // Fetch detailed user information
-          const userResponse = await fetch(issue.user.url, {
-            headers: {
-              'Accept': 'application/vnd.github.v3+json',
-              'User-Agent': 'kxrim-dev-portfolio'
-            }
-          });
-
-          let userData = issue.user; // Fallback to basic user data
-          if (userResponse.ok) {
-            userData = await userResponse.json();
-          }
-
-          return {
-            id: issue.id.toString(),
-            author: {
-              name: userData.name || userData.login,
-              username: userData.login,
-              avatar: userData.avatar_url,
-              profileUrl: userData.html_url,
-              bio: userData.bio || null,
-              location: userData.location || null,
-              company: userData.company || null
-            },
-            content: issue.body || 'No content provided',
-            timestamp: new Date(issue.created_at),
-            issueUrl: issue.html_url,
-            issueNumber: issue.number
-          };
-        } catch (error) {
-          console.warn('Error processing issue:', issue.number, error);
-          // Return basic data if detailed fetch fails
-          return {
-            id: issue.id.toString(),
-            author: {
-              name: issue.user.login,
-              username: issue.user.login,
-              avatar: issue.user.avatar_url,
-              profileUrl: issue.user.html_url,
-              bio: null,
-              location: null,
-              company: null
-            },
-            content: issue.body || 'No content provided',
-            timestamp: new Date(issue.created_at),
-            issueUrl: issue.html_url,
-            issueNumber: issue.number
-          };
-        }
-      })
-    );
+    // Process each issue - use basic user data from issues to avoid extra API calls
+    const comments = [];
+    
+    for (const issue of issues) {
+      try {
+        comments.push({
+          id: issue.id.toString(),
+          author: {
+            name: issue.user.login, // Use login as name since we can't fetch full profile
+            username: issue.user.login,
+            avatar: issue.user.avatar_url,
+            profileUrl: issue.user.html_url,
+            bio: null, // Not available without additional API call
+            location: null, // Not available without additional API call
+            company: null // Not available without additional API call
+          },
+          content: issue.body || 'No content provided',
+          timestamp: new Date(issue.created_at),
+          issueUrl: issue.html_url,
+          issueNumber: issue.number
+        });
+      } catch (error) {
+        console.warn('Error processing issue:', issue.number, error);
+        // Still add basic comment data
+        comments.push({
+          id: issue.id.toString(),
+          author: {
+            name: issue.user.login,
+            username: issue.user.login,
+            avatar: issue.user.avatar_url,
+            profileUrl: issue.user.html_url,
+            bio: null,
+            location: null,
+            company: null
+          },
+          content: issue.body || 'No content provided',
+          timestamp: new Date(issue.created_at),
+          issueUrl: issue.html_url,
+          issueNumber: issue.number
+        });
+      }
+    }
 
     return comments;
   } catch (error) {
     console.error('Error fetching portfolio comments:', error);
+    
+    // Check if it's a rate limit error and provide helpful message
+    if (error instanceof Error && error.message.includes('403')) {
+      const enhancedError = new Error(
+        'GitHub API rate limit exceeded. The site is experiencing high traffic. Please try again in a few minutes.'
+      );
+      enhancedError.name = 'RateLimitError';
+      throw enhancedError;
+    }
+    
     throw error;
   }
 }

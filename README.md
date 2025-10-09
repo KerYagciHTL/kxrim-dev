@@ -38,6 +38,38 @@ The portfolio features a complete bilingual experience:
 - **Vite** — Build tool  
 - **Lucide React** — Icons
 
+## Setup & Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/KerYagciHTL/kxrim-dev.git
+   cd kxrim-dev
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+## Rate Limiting Considerations
+
+The portfolio uses GitHub's public API to fetch repository information and comments. The API has a rate limit of 60 requests per hour per IP address for unauthenticated requests. To mitigate this:
+
+- **Caching**: The app caches API responses for 5 minutes to reduce requests
+- **Request delays**: Small delays between API calls prevent rapid-fire requests
+- **Fallback data**: Repository data falls back to a static JSON file if API is unavailable
+- **Graceful errors**: Rate limit errors show user-friendly messages with retry options
+
 ## Project Structure
 
 ```

@@ -41,7 +41,20 @@ export function Reviews() {
       setComments(commentsData);
     } catch (error) {
       console.error('Error loading comments:', error);
-      setError('Failed to load comments. Please refresh the page.');
+      
+      let errorMessage = 'Failed to load comments. Please refresh the page.';
+      
+      if (error instanceof Error) {
+        if (error.name === 'RateLimitError') {
+          errorMessage = error.message;
+        } else if (error.message.includes('403')) {
+          errorMessage = 'GitHub API rate limit exceeded. This happens when many people visit the site. Please try again in a few minutes.';
+        } else if (error.message.includes('404')) {
+          errorMessage = 'Comments repository not found. Please check the configuration.';
+        }
+      }
+      
+      setError(errorMessage);
       setComments([]);
     } finally {
       setLoadingComments(false);
@@ -294,7 +307,7 @@ Looking forward to seeing more of your projects.`}
           </div>
         )}
 
-        {!loadingComments && comments.length === 0 && (
+        {!loadingComments && comments.length === 0 && !error && (
           <motion.div
             className="max-w-4xl mx-auto text-center p-12 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl"
             initial={{ opacity: 0, y: 30 }}
@@ -304,6 +317,25 @@ Looking forward to seeing more of your projects.`}
             <MessageSquare size={48} className="mx-auto text-white/40 mb-4" />
             <h3 className="text-xl font-semibold text-white/70 mb-2">No comments yet</h3>
             <p className="text-white/50">Be the first to leave a comment via GitHub Issues!</p>
+          </motion.div>
+        )}
+
+        {!loadingComments && error && (
+          <motion.div
+            className="max-w-4xl mx-auto text-center p-12 rounded-2xl border border-red-500/20 bg-red-500/5 backdrop-blur-xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <MessageSquare size={48} className="mx-auto text-red-400/60 mb-4" />
+            <h3 className="text-xl font-semibold text-red-400 mb-2">Unable to Load Comments</h3>
+            <p className="text-red-400/80 mb-4 max-w-2xl mx-auto leading-relaxed">{error}</p>
+            <button
+              onClick={loadComments}
+              className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 font-medium"
+            >
+              Try Again
+            </button>
           </motion.div>
         )}
       </div>
