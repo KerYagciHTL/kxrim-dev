@@ -5,9 +5,12 @@ import { Reviews } from './components/sections/Reviews';
 import { NotFound } from './components/pages/NotFound';
 
 export default function App() {
+  // Use the base path from Vite config
+  const basename = import.meta.env.BASE_URL;
+  
   return (
     <LanguageProvider>
-      <Router>
+      <Router basename={basename}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reviews" element={<Reviews />} />

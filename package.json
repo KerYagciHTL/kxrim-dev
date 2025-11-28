@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:proxmox": "tsc -b && vite build --config vite.config.proxmox.ts",
     "preview": "vite preview",
+    "preview:proxmox": "vite preview --config vite.config.proxmox.ts",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "predeploy": "npm run build",
