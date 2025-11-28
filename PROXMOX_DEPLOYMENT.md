@@ -14,7 +14,7 @@ cd kxrim-dev
 # Install dependencies
 npm install
 
-# Build for Proxmox
+# Build for Proxmox (ROOT deployment - default)
 npm run build:proxmox
 
 # The dist folder is now ready for deployment
@@ -22,12 +22,21 @@ npm run build:proxmox
 
 ## Configuration
 
-The `proxmox` branch has the following specific configurations:
+The `proxmox` branch has TWO build configurations:
 
-### 1. Base Path
+### 1. Root Deployment (DEFAULT - RECOMMENDED)
+- **File**: `vite.config.proxmox-root.ts`
+- **Command**: `npm run build:proxmox`
+- **Setting**: `base: '/'`
+- **Access**: `http://10.9.14.x/`
+- Use this if deploying to the root of the web server
+
+### 2. Subdirectory Deployment (OPTIONAL)
 - **File**: `vite.config.proxmox.ts`
+- **Command**: `npm run build:proxmox-subdir`
 - **Setting**: `base: '/kxrim/'`
-- Change this if the website will be served from a different subdirectory on Proxmox
+- **Access**: `http://10.9.14.x/kxrim/`
+- Use this if deploying to a subdirectory
 
 ### 2. Build Script
 - **Command**: `npm run build:proxmox`
@@ -41,11 +50,15 @@ The `proxmox` branch has the following specific configurations:
 
 ## Deployment Steps
 
-### Method 1: Manual Copy
-After building, copy the `dist` folder contents to the web server:
+### Method 1: Manual Copy (RECOMMENDED)
+After building, copy the `dist` folder contents to the web server root:
 
 ```bash
-# On Proxmox server (adjust path as needed)
+# On Proxmox server - for ROOT deployment
+sudo cp -r dist/* /var/www/html/
+
+# OR for subdirectory deployment (if using build:proxmox-subdir)
+sudo mkdir -p /var/www/html/kxrim
 sudo cp -r dist/* /var/www/html/kxrim/
 ```
 
@@ -54,13 +67,30 @@ sudo cp -r dist/* /var/www/html/kxrim/
 # Build locally
 npm run build:proxmox
 
-# Deploy to Proxmox
+# Deploy to Proxmox ROOT
+rsync -avz --delete dist/ user@10.9.14.x:/var/www/html/
+
+# OR deploy to subdirectory
 rsync -avz --delete dist/ user@10.9.14.x:/var/www/html/kxrim/
 ```
 
 ## Web Server Configuration
 
-### Apache (.htaccess in /var/www/html/kxrim/)
+### Apache (.htaccess in /var/www/html/)
+For ROOT deployment:
+```apache
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule . /index.html [L]
+</IfModule>
+```
+
+For subdirectory deployment (.htaccess in /var/www/html/kxrim/):
 ```apache
 <IfModule mod_rewrite.c>
   RewriteEngine On
@@ -74,6 +104,15 @@ rsync -avz --delete dist/ user@10.9.14.x:/var/www/html/kxrim/
 ```
 
 ### Nginx (in server block)
+For ROOT deployment:
+```nginx
+location / {
+    root /var/www/html;
+    try_files $uri $uri/ /index.html;
+}
+```
+
+For subdirectory deployment:
 ```nginx
 location /kxrim/ {
     alias /var/www/html/kxrim/;
@@ -83,42 +122,44 @@ location /kxrim/ {
 
 ## Accessing the Site
 
-After deployment, access the site at:
-```
-http://10.9.14.x/kxrim/
-```
+After deployment:
+- **ROOT deployment**: `http://10.9.14.x/`
+- **Subdirectory deployment**: `http://10.9.14.x/kxrim/`
 
 ## Customizing the Base Path
 
-If you need to change the deployment subdirectory:
+The default build (`npm run build:proxmox`) uses ROOT path (`/`).
 
+If you need subdirectory deployment:
+1. Use `npm run build:proxmox-subdir` instead
+2. Deploys with `/kxrim/` base path
+
+To change the subdirectory name:
 1. Edit `vite.config.proxmox.ts`:
    ```typescript
    base: '/your-new-path/',
    ```
-
-2. Rebuild:
-   ```bash
-   npm run build:proxmox
-   ```
-
-3. Update web server configuration to match the new path
+2. Rebuild with `npm run build:proxmox-subdir`
+3. Update web server configuration to match
 
 ## Preview Locally
 
 To test the Proxmox build locally before deployment:
 
 ```bash
+# For ROOT deployment
 npm run build:proxmox
 npm run preview:proxmox
-```
 
-This will serve the site at `http://localhost:4173/kxrim/`
+# For subdirectory deployment
+npm run build:proxmox-subdir
+npm run preview
+```
 
 ## Differences from Main Branch
 
 - **Main branch**: Deployed at root (`/`) for https://kxrim.is-a.dev/
-- **Proxmox branch**: Deployed in subdirectory (`/kxrim/`) for http://10.9.14.x/kxrim/
+- **Proxmox branch**: Flexible deployment - root or subdirectory for http://10.9.14.x/
 
 The main branch and production site remain unchanged.
 
