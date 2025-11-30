@@ -42,7 +42,8 @@ jobs:
 
       - name: Sync build output into gh-pages worktree
         run: |
-          rsync -a --delete --exclude ".git" --exclude ".github" dist/ gh-pages/
+          # Sync files but keep old assets to prevent 404s for cached users
+          rsync -a --exclude ".git" --exclude ".github" dist/ gh-pages/
           echo "kxrim.is-a.dev" > gh-pages/CNAME
           touch gh-pages/.nojekyll
           # Force a change to ensure PR is created
