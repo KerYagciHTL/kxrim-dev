@@ -131,6 +131,42 @@ export function Navbar({ dark, setDark }: NavbarProps) {
           </motion.button>
         </nav>
       </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: '100vh' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="sm:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 overflow-hidden h-screen"
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-8 pb-20">
+              {['projects', 'experience', 'contact'].map((section) => (
+                <motion.a
+                  key={section}
+                  href={`#${section}`}
+                  onClick={() => setIsOpen(false)}
+                  className="text-2xl font-bold text-white/80 hover:text-white capitalize"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {t(`nav.${section}`)}
+                </motion.a>
+              ))}
+              <motion.a
+                href="/reviews"
+                onClick={(e) => { e.preventDefault(); setIsOpen(false); navigate('/reviews'); }}
+                className="text-2xl font-bold text-white/80 hover:text-white capitalize flex items-center gap-2"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.reviews')} <Star size={20} className="text-yellow-400 fill-yellow-400" />
+              </motion.a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
