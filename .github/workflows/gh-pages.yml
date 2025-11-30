@@ -45,6 +45,8 @@ jobs:
           rsync -a --delete --exclude ".git" --exclude ".github" dist/ gh-pages/
           echo "kxrim.is-a.dev" > gh-pages/CNAME
           touch gh-pages/.nojekyll
+          # Force a change to ensure PR is created
+          echo "Build Run ID: ${{ github.run_id }} - $(date)" > gh-pages/build-info.txt
 
       - name: Debug git status
         working-directory: gh-pages
