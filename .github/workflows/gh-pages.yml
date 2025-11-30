@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Build & Propose Pages Update
 
 on:
   push:
@@ -7,13 +7,16 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
-  deploy:
+  build-and-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout source (main)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -21,8 +24,8 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install deps
+        run: npm ci || npm i
 
       - name: Fetch latest repository data
         run: npm run fetchRepos
@@ -30,9 +33,30 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Checkout gh-pages worktree
+        uses: actions/checkout@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          cname: kxrim.is-a.dev
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+
+      - name: Sync build output into gh-pages worktree
+        run: |
+          rsync -a --delete --exclude ".git" --exclude ".github" dist/ gh-pages/
+          echo "kxrim.is-a.dev" > gh-pages/CNAME
+          touch gh-pages/.nojekyll
+
+      - name: Create PR to gh-pages
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: gh-pages
+          commit-message: "deploy: ${{ github.sha }}"
+          branch: pages/update-${{ github.sha }}
+          base: gh-pages
+          title: "Update GitHub Pages from main build"
+          body: "Automated PR updating gh-pages from commit ${{ github.sha }}."
+          signoff: true
+          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          draft: false
