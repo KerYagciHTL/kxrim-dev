@@ -92,7 +92,7 @@ export function Reviews() {
           </h1>
           
           <p className="text-xl text-white/70 max-w-3xl">
-            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment.
+            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment. 
           </p>
 
           {error && (
