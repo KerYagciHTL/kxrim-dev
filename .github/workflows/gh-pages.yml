@@ -46,13 +46,19 @@ jobs:
           echo "kxrim.is-a.dev" > gh-pages/CNAME
           touch gh-pages/.nojekyll
 
+      - name: Debug git status
+        working-directory: gh-pages
+        run: |
+          ls -la
+          git status
+
       - name: Create PR to gh-pages
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: gh-pages
           commit-message: "deploy: ${{ github.sha }}"
-          branch: pages/update-${{ github.sha }}
+          branch: pages/update-${{ github.run_id }}
           base: gh-pages
           title: "Update GitHub Pages from main build"
           body: "Automated PR updating gh-pages from commit ${{ github.sha }}."
