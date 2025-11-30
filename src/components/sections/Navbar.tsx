@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Languages, Star } from "lucide-react";
+import { Sun, Moon, Languages, Star, Menu, X } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ dark, setDark }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
@@ -59,26 +60,14 @@ export function Navbar({ dark, setDark }: NavbarProps) {
           ))}
           
           <div className="sm:hidden flex items-center gap-2">
-            <motion.select
-              value=""
-              onChange={(e) => {
-                if (e.target.value) {
-                  if (e.target.value === "/reviews") {
-                    navigate('/reviews');
-                  } else {
-                    document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }
-              }}
-              className="bg-transparent border border-white/20 rounded-lg px-2 py-1 text-xs text-white/70"
-              whileHover={{ scale: 1.05 }}
+            <motion.button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <option value="" className="bg-slate-800">Menu</option>
-              <option value="#projects" className="bg-slate-800">{t('nav.projects')}</option>
-              <option value="#experience" className="bg-slate-800">{t('nav.experience')}</option>
-              <option value="#contact" className="bg-slate-800">{t('nav.contact')}</option>
-              <option value="/reviews" className="bg-slate-800">⭐ {t('nav.reviews')}</option>
-            </motion.select>
+              {isOpen ? <X size={18} /> : <Menu size={18} />}
+            </motion.button>
           </div>
           
           <motion.a
