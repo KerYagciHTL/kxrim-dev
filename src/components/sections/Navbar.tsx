@@ -135,19 +135,34 @@ export function Navbar({ dark, setDark }: NavbarProps) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: '100vh' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={{
+              closed: { 
+                opacity: 0, 
+                height: 0,
+                transition: { staggerChildren: 0.05, staggerDirection: -1 }
+              },
+              open: { 
+                opacity: 1, 
+                height: "100vh",
+                transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+              }
+            }}
             className="sm:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 overflow-hidden h-screen"
           >
-            <div className="flex flex-col items-center justify-center h-full gap-8 pb-20">
+            <div className="flex flex-col items-center justify-center h-full gap-8 pb-32">
               {['projects', 'experience', 'contact'].map((section) => (
                 <motion.a
                   key={section}
                   href={`#${section}`}
                   onClick={() => setIsOpen(false)}
-                  className="text-2xl font-bold text-white/80 hover:text-white capitalize"
+                  className="text-3xl font-bold text-white/80 hover:text-white capitalize"
+                  variants={{
+                    closed: { opacity: 0, y: 20 },
+                    open: { opacity: 1, y: 0 }
+                  }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -157,12 +172,40 @@ export function Navbar({ dark, setDark }: NavbarProps) {
               <motion.a
                 href="/reviews"
                 onClick={(e) => { e.preventDefault(); setIsOpen(false); navigate('/reviews'); }}
-                className="text-2xl font-bold text-white/80 hover:text-white capitalize flex items-center gap-2"
+                className="text-3xl font-bold text-white/80 hover:text-white capitalize flex items-center gap-2"
+                variants={{
+                  closed: { opacity: 0, y: 20 },
+                  open: { opacity: 1, y: 0 }
+                }}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {t('nav.reviews')} <Star size={20} className="text-yellow-400 fill-yellow-400" />
+                {t('nav.reviews')} <Star size={24} className="text-yellow-400 fill-yellow-400" />
               </motion.a>
+
+              {/* Mobile Menu Footer Actions */}
+              <motion.div 
+                className="flex gap-6 mt-8"
+                variants={{
+                  closed: { opacity: 0, y: 20 },
+                  open: { opacity: 1, y: 0 }
+                }}
+              >
+                <button
+                  onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10"
+                >
+                  <Languages size={18} />
+                  <span>{language === 'en' ? 'Deutsch' : 'English'}</span>
+                </button>
+                <button
+                  onClick={() => setDark(!dark)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10"
+                >
+                  {dark ? <Sun size={18} /> : <Moon size={18} />}
+                  <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
+              </motion.div>
             </div>
           </motion.div>
         )}
