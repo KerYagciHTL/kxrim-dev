@@ -1,4 +1,4 @@
-name: Build & Propose Pages Update
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -7,10 +7,9 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
-  build-and-pr:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source (main)
@@ -46,26 +45,19 @@ jobs:
           rsync -a --exclude ".git" --exclude ".github" dist/ gh-pages/
           echo "kxrim.is-a.dev" > gh-pages/CNAME
           touch gh-pages/.nojekyll
-          # Force a change to ensure PR is created
-          echo "Build Run ID: ${{ github.run_id }} - $(date)" > gh-pages/build-info.txt
-
-      - name: Debug git status
-        working-directory: gh-pages
-        run: |
-          ls -la
-          git status
-
-      - name: Create PR to gh-pages
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: gh-pages
-          commit-message: "deploy: ${{ github.sha }}"
-          branch: pages/update-${{ github.run_id }}
-          base: gh-pages
-          title: "Update GitHub Pages from main build"
-          body: "Automated PR updating gh-pages from commit ${{ github.sha }}."
-          signoff: true
-          author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          committer: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          draft: false
+          
+          # Configure git
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Add changes
+          git add .
+          
+          # Commit and push if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Deploy: ${{ github.sha }}"
+            git push
+          fi
