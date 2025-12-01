@@ -33,7 +33,7 @@ const translations: Translations = {
     'hero.greeting.afternoon': 'Good afternoon',
     'hero.greeting.evening': 'Good evening',
     'hero.intro': 'I\'m',
-    'hero.description': 'A passionate software developer from Austria, specializing in modern web technologies and system programming.',
+    'hero.description': 'A software developer from Austria, specializing in modern web technologies and system programming.',
     'hero.viewProjects': 'View Projects',
     'hero.reviewsFromClients': 'Comments from visitors',
 
@@ -113,7 +113,7 @@ const translations: Translations = {
     'hero.greeting.afternoon': 'Guten Tag',
     'hero.greeting.evening': 'Guten Abend',
     'hero.intro': 'Ich bin',
-    'hero.description': 'Ein leidenschaftlicher Softwareentwickler aus Österreich, spezialisiert auf moderne Webtechnologien und Systemprogrammierung.',
+    'hero.description': 'Ein Softwareentwickler aus Österreich, spezialisiert auf moderne Webtechnologien und Systemprogrammierung.',
     'hero.viewProjects': 'Projekte Ansehen',
     'hero.reviewsFromClients': 'Kommentare von Besuchern',
 
