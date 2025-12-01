@@ -58,13 +58,13 @@ export function CodeWindow() {
             transition={{ delay: index * 0.1 }}
           >
             <span className="text-white/30 text-xs w-6 text-right">{index + 1}</span>
-            <span className={
+            <span className={`whitespace-pre ${
               line.includes('class') || line.includes('constructor') || line.includes('async') ? 'text-purple-400' :
               line.includes("'") || line.includes('"') ? 'text-green-400' :
               line.includes('this.') ? 'text-cyan-400' :
               line.includes('{') || line.includes('}') || line.includes('[') || line.includes(']') ? 'text-yellow-400' :
               'text-white'
-            }>
+            }`}>
               {line}
             </span>
             {index === currentLine && (
