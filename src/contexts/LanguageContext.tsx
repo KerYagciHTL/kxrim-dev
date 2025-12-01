@@ -25,6 +25,8 @@ const translations: Translations = {
     'nav.experience': 'Experience',
     'nav.contact': 'Contact',
     'nav.reviews': 'Comments',
+    'nav.toggleLanguage': 'Toggle language',
+    'nav.toggleTheme': 'Toggle theme',
     
     // Hero section
     'hero.greeting.morning': 'Good morning',
@@ -90,6 +92,8 @@ const translations: Translations = {
     // Footer
     'footer.builtWith': 'Built with React, Tailwind, and Framer Motion.',
     'footer.developedWith': 'Developed with ❤️ and lots of ☕',
+    'footer.githubProfile': 'GitHub Profile',
+    'footer.emailContact': 'Email Contact',
     
     // Common
     'common.loading': 'Loading...',
@@ -101,6 +105,8 @@ const translations: Translations = {
     'nav.experience': 'Erfahrung',
     'nav.contact': 'Kontakt',
     'nav.reviews': 'Kommentare',
+    'nav.toggleLanguage': 'Sprache wechseln',
+    'nav.toggleTheme': 'Design wechseln',
     
     // Hero section
     'hero.greeting.morning': 'Guten Morgen',
@@ -166,6 +172,8 @@ const translations: Translations = {
     // Footer
     'footer.builtWith': 'Erstellt mit React, Tailwind und Framer Motion.',
     'footer.developedWith': 'Entwickelt mit ❤️ und viel ☕',
+    'footer.githubProfile': 'GitHub Profil',
+    'footer.emailContact': 'E-Mail Kontakt',
     
     // Common
     'common.loading': 'Laden...',

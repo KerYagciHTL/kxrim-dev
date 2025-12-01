@@ -38,6 +38,7 @@ export function Footer() {
               rel="noreferrer"
               className="p-3 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
               whileHover={{ scale: 1.1, y: -2 }}
+              aria-label={t('footer.githubProfile')}
             >
               <Github size={20} className="text-white/70 hover:text-white" />
             </motion.a>
@@ -47,6 +48,7 @@ export function Footer() {
                 href={`mailto:${PROFILE.email}`}
                 className="p-3 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
                 whileHover={{ scale: 1.1, y: -2 }}
+                aria-label={t('footer.emailContact')}
               >
                 <Mail size={20} className="text-white/70 hover:text-white" />
               </motion.a>

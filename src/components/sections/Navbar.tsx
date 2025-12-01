@@ -88,6 +88,7 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9 }}
             title={t('nav.reviews')}
+            aria-label={t('nav.reviews')}
           >
             <Star size={16} className="text-yellow-400 fill-yellow-400" />
             <span className="hidden lg:block text-xs font-semibold text-yellow-400">
@@ -101,6 +102,7 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             title={language === 'en' ? 'Switch to German' : 'Switch to English'}
+            aria-label={t('nav.toggleLanguage')}
           >
             <Languages size={16} className="md:hidden" />
             <span className="hidden md:block text-xs font-semibold">
@@ -115,6 +117,7 @@ export function Navbar({ dark, setDark }: NavbarProps) {
             className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
             whileHover={{ scale: 1.1, rotate: 180 }}
             whileTap={{ scale: 0.9 }}
+            aria-label={t('nav.toggleTheme')}
           >
             <AnimatePresence mode="wait">
               {dark ? (
