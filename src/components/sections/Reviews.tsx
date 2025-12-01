@@ -92,7 +92,7 @@ export function Reviews() {
           </h1>
           
           <p className="text-xl text-white/70 max-w-3xl">
-            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment.
+            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment. 
           </p>
 
           {error && (
@@ -132,7 +132,7 @@ export function Reviews() {
                 Leave a Comment via GitHub Issues
               </h3>
               <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-                Want to leave a comment? Simply create a GitHub issue with the <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code> label. 
+                Want to leave a comment? Simply create a GitHub issue. It will be automatically labeled as a <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code> and appear here.
                 Your GitHub profile information will be automatically pulled, and the issue content will be displayed as your comment.
               </p>
             </div>
@@ -146,15 +146,15 @@ export function Reviews() {
                 <ol className="space-y-3 text-white/70">
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">1</span>
-                    <span>Go to <a href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">GitHub Issues</a></span>
+                    <span>Go to <a href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?labels=portfolio-comment&title=New+Portfolio+Comment&body=Type+your+comment+here...`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">GitHub Issues</a></span>
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">2</span>
-                    <span>Add the label <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code></span>
+                    <span>Write your comment in the issue description</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">3</span>
-                    <span>Write your comment in the issue description - that's it!</span>
+                    <span>Submit the issue - it will be automatically labeled and displayed!</span>
                   </li>
                 </ol>
               </div>
@@ -185,7 +185,7 @@ Looking forward to seeing more of your projects.`}
 
               <div className="text-center">
                 <motion.a
-                  href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new`}
+                  href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?labels=portfolio-comment&title=New+Portfolio+Comment&body=Type+your+comment+here...`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-2xl hover:from-gray-700 hover:to-gray-900 transition-all duration-300"

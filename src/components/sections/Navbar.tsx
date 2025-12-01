@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Languages, Star } from "lucide-react";
+import { Sun, Moon, Languages, Star, Menu, X } from "lucide-react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ interface NavbarProps {
 
 export function Navbar({ dark, setDark }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
 
@@ -59,26 +60,14 @@ export function Navbar({ dark, setDark }: NavbarProps) {
           ))}
           
           <div className="sm:hidden flex items-center gap-2">
-            <motion.select
-              value=""
-              onChange={(e) => {
-                if (e.target.value) {
-                  if (e.target.value === "/reviews") {
-                    navigate('/reviews');
-                  } else {
-                    document.querySelector(e.target.value)?.scrollIntoView({ behavior: 'smooth' });
-                  }
-                }
-              }}
-              className="bg-transparent border border-white/20 rounded-lg px-2 py-1 text-xs text-white/70"
-              whileHover={{ scale: 1.05 }}
+            <motion.button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-xl border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              <option value="" className="bg-slate-800">Menu</option>
-              <option value="#projects" className="bg-slate-800">{t('nav.projects')}</option>
-              <option value="#experience" className="bg-slate-800">{t('nav.experience')}</option>
-              <option value="#contact" className="bg-slate-800">{t('nav.contact')}</option>
-              <option value="/reviews" className="bg-slate-800">⭐ {t('nav.reviews')}</option>
-            </motion.select>
+              {isOpen ? <X size={18} /> : <Menu size={18} />}
+            </motion.button>
           </div>
           
           <motion.a
@@ -145,6 +134,85 @@ export function Navbar({ dark, setDark }: NavbarProps) {
           </motion.button>
         </nav>
       </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={{
+              closed: { 
+                opacity: 0, 
+                height: 0,
+                transition: { staggerChildren: 0.05, staggerDirection: -1 }
+              },
+              open: { 
+                opacity: 1, 
+                height: "100vh",
+                transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+              }
+            }}
+            className="sm:hidden absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-b border-white/10 overflow-hidden h-screen"
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-8 pb-32">
+              {['projects', 'experience', 'contact'].map((section) => (
+                <motion.a
+                  key={section}
+                  href={`#${section}`}
+                  onClick={() => setIsOpen(false)}
+                  className="text-3xl font-bold text-white/80 hover:text-white capitalize"
+                  variants={{
+                    closed: { opacity: 0, y: 20 },
+                    open: { opacity: 1, y: 0 }
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {t(`nav.${section}`)}
+                </motion.a>
+              ))}
+              <motion.a
+                href="/reviews"
+                onClick={(e) => { e.preventDefault(); setIsOpen(false); navigate('/reviews'); }}
+                className="text-3xl font-bold text-white/80 hover:text-white capitalize flex items-center gap-2"
+                variants={{
+                  closed: { opacity: 0, y: 20 },
+                  open: { opacity: 1, y: 0 }
+                }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {t('nav.reviews')} <Star size={24} className="text-yellow-400 fill-yellow-400" />
+              </motion.a>
+
+              {/* Mobile Menu Footer Actions */}
+              <motion.div 
+                className="flex gap-6 mt-8"
+                variants={{
+                  closed: { opacity: 0, y: 20 },
+                  open: { opacity: 1, y: 0 }
+                }}
+              >
+                <button
+                  onClick={() => setLanguage(language === 'en' ? 'de' : 'en')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10"
+                >
+                  <Languages size={18} />
+                  <span>{language === 'en' ? 'Deutsch' : 'English'}</span>
+                </button>
+                <button
+                  onClick={() => setDark(!dark)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10"
+                >
+                  {dark ? <Sun size={18} /> : <Moon size={18} />}
+                  <span>{dark ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
