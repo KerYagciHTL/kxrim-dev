@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Github, MessageSquare, Calendar, MapPin, Building } from "lucide-react";
 import { useState, useEffect } from "react";
 import { fetchPortfolioComments } from "../../utils/github-api";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface Comment {
   id: string;
@@ -21,6 +22,7 @@ interface Comment {
 }
 
 export function Reviews() {
+  const { t } = useLanguage();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadingComments, setLoadingComments] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,15 +44,15 @@ export function Reviews() {
     } catch (error) {
       console.error('Error loading comments:', error);
       
-      let errorMessage = 'Failed to load comments. Please refresh the page.';
+      let errorMessage = t('reviews.error.generic');
       
       if (error instanceof Error) {
         if (error.name === 'RateLimitError') {
-          errorMessage = error.message;
+          errorMessage = t('reviews.error.rateLimit');
         } else if (error.message.includes('403')) {
-          errorMessage = 'GitHub API rate limit exceeded. This happens when many people visit the site. Please try again in a few minutes.';
+          errorMessage = t('reviews.error.rateLimit');
         } else if (error.message.includes('404')) {
-          errorMessage = 'Comments repository not found. Please check the configuration.';
+          errorMessage = t('reviews.error.notFound');
         }
       }
       
@@ -83,16 +85,16 @@ export function Reviews() {
               whileHover={{ x: -5 }}
             >
               <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              <span>Back to Portfolio</span>
+              <span>{t('reviews.backToPortfolio')}</span>
             </motion.a>
           </div>
           
           <h1 className="text-6xl font-black bg-gradient-to-r from-white via-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6">
-            Visitor Comments
+            {t('reviews.title')}
           </h1>
           
           <p className="text-xl text-white/70 max-w-3xl">
-            Share your thoughts, feedback, or just say hello! Connect with GitHub to leave a comment. 
+            {t('reviews.subtitle')}
           </p>
 
           {error && (
@@ -108,13 +110,13 @@ export function Reviews() {
           <div className="grid md:grid-cols-2 gap-6 mt-8">
             <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
               <div className="text-3xl font-bold text-cyan-400 mb-2">{comments.length}</div>
-              <div className="text-white/70">Total Comments</div>
+              <div className="text-white/70">{t('reviews.totalComments')}</div>
             </div>
             <div className="p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl text-center">
               <div className="text-3xl font-bold text-purple-400 mb-2">
                 {new Set(comments.map(c => c.author.username)).size}
               </div>
-              <div className="text-white/70">Unique Visitors</div>
+              <div className="text-white/70">{t('reviews.uniqueVisitors')}</div>
             </div>
           </div>
         </motion.div>
@@ -129,11 +131,10 @@ export function Reviews() {
             <div className="text-center mb-8">
               <MessageSquare size={48} className="mx-auto text-cyan-400 mb-4" />
               <h3 className="text-2xl font-bold text-white mb-4">
-                Leave a Comment via GitHub Issues
+                {t('reviews.instructions.title')}
               </h3>
               <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-                Want to leave a comment? Simply create a GitHub issue. It will be automatically labeled as a <code className="px-2 py-1 bg-white/10 rounded text-cyan-300">portfolio-comment</code> and appear here.
-                Your GitHub profile information will be automatically pulled, and the issue content will be displayed as your comment.
+                {t('reviews.instructions.description')}
               </p>
             </div>
 
@@ -141,26 +142,26 @@ export function Reviews() {
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h4 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                   <Github size={20} className="text-cyan-400" />
-                  How to Comment
+                  {t('reviews.instructions.howTo.title')}
                 </h4>
                 <ol className="space-y-3 text-white/70">
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">1</span>
-                    <span>Go to <a href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?labels=portfolio-comment&title=New+Portfolio+Comment&body=Type+your+comment+here...`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">GitHub Issues</a></span>
+                    <span>{t('reviews.instructions.howTo.step1').replace('GitHub Issues', '')}<a href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?labels=portfolio-comment&title=New+Portfolio+Comment&body=Type+your+comment+here...`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 underline">GitHub Issues</a></span>
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">2</span>
-                    <span>Write your comment in the issue description</span>
+                    <span>{t('reviews.instructions.howTo.step2')}</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="flex-shrink-0 w-6 h-6 bg-cyan-500 text-white text-sm rounded-full flex items-center justify-center font-semibold">3</span>
-                    <span>Submit the issue - it will be automatically labeled and displayed!</span>
+                    <span>{t('reviews.instructions.howTo.step3')}</span>
                   </li>
                 </ol>
               </div>
 
               <div className="p-6 rounded-xl bg-black/20 border border-white/10">
-                <h4 className="text-lg font-semibold text-white mb-3">Example Comment</h4>
+                <h4 className="text-lg font-semibold text-white mb-3">{t('reviews.instructions.example.title')}</h4>
                 <div className="bg-gray-900 rounded-lg p-4 overflow-x-auto">
                   <pre className="text-green-400 text-sm font-mono whitespace-pre">
 {`Title: Great work on the portfolio!
@@ -173,12 +174,12 @@ Looking forward to seeing more of your projects.`}
                   </pre>
                 </div>
                 <div className="mt-4 text-white/60 text-sm">
-                  <p><strong>Automatic Features:</strong></p>
+                  <p><strong>{t('reviews.instructions.features.title')}</strong></p>
                   <ul className="list-disc list-inside space-y-1 mt-2">
-                    <li>Your GitHub profile information (name, avatar, bio, location, company) is automatically fetched</li>
-                    <li>The issue content becomes your comment text</li>
-                    <li>Comments are sorted by creation date (newest first)</li>
-                    <li>Only issues with the <code className="px-1 bg-white/10 rounded">portfolio-comment</code> label are displayed</li>
+                    <li>{t('reviews.instructions.features.1')}</li>
+                    <li>{t('reviews.instructions.features.2')}</li>
+                    <li>{t('reviews.instructions.features.3')}</li>
+                    <li>{t('reviews.instructions.features.4')}</li>
                   </ul>
                 </div>
               </div>
@@ -193,7 +194,7 @@ Looking forward to seeing more of your projects.`}
                   whileTap={{ scale: 0.98 }}
                 >
                   <Github size={24} />
-                  <span>Create GitHub Issue</span>
+                  <span>{t('reviews.createIssue')}</span>
                 </motion.a>
               </div>
             </div>
@@ -208,7 +209,7 @@ Looking forward to seeing more of your projects.`}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
               <MessageSquare size={24} />
-              <span>Loading comments...</span>
+              <span>{t('reviews.loading')}</span>
             </motion.div>
           </div>
         )}
@@ -217,7 +218,7 @@ Looking forward to seeing more of your projects.`}
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <MessageSquare size={24} className="text-cyan-400" />
-              Recent Comments ({comments.length})
+              {t('reviews.recentComments')} ({comments.length})
             </h2>
             
             <div className="space-y-6">
@@ -315,8 +316,8 @@ Looking forward to seeing more of your projects.`}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <MessageSquare size={48} className="mx-auto text-white/40 mb-4" />
-            <h3 className="text-xl font-semibold text-white/70 mb-2">No comments yet</h3>
-            <p className="text-white/50">Be the first to leave a comment via GitHub Issues!</p>
+            <h3 className="text-xl font-semibold text-white/70 mb-2">{t('reviews.noComments.title')}</h3>
+            <p className="text-white/50">{t('reviews.noComments.description')}</p>
           </motion.div>
         )}
 
@@ -328,13 +329,13 @@ Looking forward to seeing more of your projects.`}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <MessageSquare size={48} className="mx-auto text-red-400/60 mb-4" />
-            <h3 className="text-xl font-semibold text-red-400 mb-2">Unable to Load Comments</h3>
+            <h3 className="text-xl font-semibold text-red-400 mb-2">{t('reviews.error.title')}</h3>
             <p className="text-red-400/80 mb-4 max-w-2xl mx-auto leading-relaxed">{error}</p>
             <button
               onClick={loadComments}
               className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 font-medium"
             >
-              Try Again
+              {t('reviews.error.retry')}
             </button>
           </motion.div>
         )}

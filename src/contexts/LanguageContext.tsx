@@ -173,19 +173,40 @@ const translations: Translations = {
     'footer.builtWith': 'Erstellt mit React, Tailwind und Framer Motion.',
     'footer.developedWith': 'Entwickelt mit ❤️ und viel ☕',
     'footer.githubProfile': 'GitHub Profil',
-    'footer.emailContact': 'E-Mail Kontakt',
-    
-    // Common
-    'common.loading': 'Laden...',
-    'common.error': 'Etwas ist schief gelaufen',
+        'footer.emailContact': 'E-Mail Kontakt',
 
-    // Project descriptions
-    'projects.description.Kerlib': 'Eine umfassende C# Grafik-Bibliothek für vereinfachte 2D-Renderings.',
-    'projects.description.KCY-Accounting': 'Moderne Buchhaltungssoftware entwickelt mit C# und AvaloniaUI.',
-    'projects.description.kxrim-dev': 'Meine persönliche Portfolio-Website, erstellt mit React und TailwindCSS.',
-    'projects.description.K-Chat': 'Eine Echtzeit-Chat-Anwendung für nahtlose Kommunikation.',
+    // Reviews section
+    'reviews.backToPortfolio': 'Zurück zum Portfolio',
+    'reviews.title': 'Besucherkommentare',
+    'reviews.subtitle': 'Teile deine Gedanken, Feedback oder sag einfach Hallo! Verbinde dich mit GitHub, um einen Kommentar zu hinterlassen.',
+    'reviews.totalComments': 'Kommentare gesamt',
+    'reviews.uniqueVisitors': 'Einzigartige Besucher',
+    'reviews.loading': 'Lade Kommentare...',
+    'reviews.recentComments': 'Neueste Kommentare',
+    'reviews.noComments.title': 'Noch keine Kommentare',
+    'reviews.noComments.description': 'Sei der Erste, der einen Kommentar über GitHub Issues hinterlässt!',
+    'reviews.error.title': 'Kommentare konnten nicht geladen werden',
+    'reviews.error.retry': 'Erneut versuchen',
+    'reviews.error.generic': 'Kommentare konnten nicht geladen werden. Bitte aktualisiere die Seite.',
+    'reviews.error.rateLimit': 'GitHub API-Ratenbegrenzung überschritten. Dies passiert, wenn viele Leute die Seite besuchen. Bitte versuche es in ein paar Minuten erneut.',
+    'reviews.error.notFound': 'Kommentar-Repository nicht gefunden. Bitte überprüfe die Konfiguration.',
+    
+    'reviews.instructions.title': 'Hinterlasse einen Kommentar via GitHub Issues',
+    'reviews.instructions.description': 'Möchtest du einen Kommentar hinterlassen? Erstelle einfach ein GitHub Issue. Es wird automatisch als portfolio-comment markiert und hier angezeigt. Deine GitHub-Profilinformationen werden automatisch abgerufen und der Inhalt des Issues wird als dein Kommentar angezeigt.',
+    'reviews.instructions.howTo.title': 'Wie man kommentiert',
+    'reviews.instructions.howTo.step1': 'Gehe zu GitHub Issues',
+    'reviews.instructions.howTo.step2': 'Schreibe deinen Kommentar in die Issue-Beschreibung',
+    'reviews.instructions.howTo.step3': 'Sende das Issue ab - es wird automatisch markiert und angezeigt!',
+    'reviews.instructions.example.title': 'Beispielkommentar',
+    'reviews.instructions.features.title': 'Automatische Funktionen:',
+    'reviews.instructions.features.1': 'Deine GitHub-Profilinformationen (Name, Avatar, Bio, Ort, Firma) werden automatisch abgerufen',
+    'reviews.instructions.features.2': 'Der Inhalt des Issues wird dein Kommentartext',
+    'reviews.instructions.features.3': 'Kommentare werden nach Erstellungsdatum sortiert (neueste zuerst)',
+    'reviews.instructions.features.4': 'Nur Issues mit dem Label portfolio-comment werden angezeigt',
+    'reviews.createIssue': 'GitHub Issue erstellen',
   }
 };
+
 
 interface LanguageProviderProps {
   children: ReactNode;
