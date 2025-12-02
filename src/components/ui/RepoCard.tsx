@@ -13,6 +13,10 @@ export function RepoCard({ repo, index }: RepoCardProps) {
   const { t } = useLanguage();
   const isFeatured = PROFILE.featured.includes(repo.name);
   
+  const descriptionKey = `projects.description.${repo.name}`;
+  const translatedDescription = t(descriptionKey);
+  const description = translatedDescription !== descriptionKey ? translatedDescription : repo.description;
+  
   return (
     <motion.div
       className="group relative"
@@ -55,9 +59,9 @@ export function RepoCard({ repo, index }: RepoCardProps) {
           )}
         </div>
 
-        {repo.description && (
+        {description && (
           <p className="text-white/70 text-sm mb-4 line-clamp-3 leading-relaxed">
-            {repo.description}
+            {description}
           </p>
         )}
 

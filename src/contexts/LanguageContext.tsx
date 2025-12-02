@@ -178,6 +178,12 @@ const translations: Translations = {
     // Common
     'common.loading': 'Laden...',
     'common.error': 'Etwas ist schief gelaufen',
+
+    // Project descriptions
+    'projects.description.Kerlib': 'Eine umfassende C# Grafik-Bibliothek für vereinfachte 2D-Renderings.',
+    'projects.description.KCY-Accounting': 'Moderne Buchhaltungssoftware entwickelt mit C# und AvaloniaUI.',
+    'projects.description.kxrim-dev': 'Meine persönliche Portfolio-Website, erstellt mit React und TailwindCSS.',
+    'projects.description.K-Chat': 'Eine Echtzeit-Chat-Anwendung für nahtlose Kommunikation.',
   }
 };
 
