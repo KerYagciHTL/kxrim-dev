@@ -175,6 +175,12 @@ const translations: Translations = {
     'footer.githubProfile': 'GitHub Profil',
         'footer.emailContact': 'E-Mail Kontakt',
 
+    // Project descriptions
+    'projects.description.Kerlib': 'Eine umfassende C# Grafik-Bibliothek für vereinfachte 2D-Renderings.',
+    'projects.description.KCY-Accounting': 'Moderne Buchhaltungssoftware entwickelt mit C# und AvaloniaUI.',
+    'projects.description.kxrim-dev': 'Meine persönliche Portfolio-Website, erstellt mit React und TailwindCSS.',
+    'projects.description.K-Chat': 'Eine Echtzeit-Chat-Anwendung für nahtlose Kommunikation.',
+
     // Reviews section
     'reviews.backToPortfolio': 'Zurück zum Portfolio',
     'reviews.title': 'Besucherkommentare',
