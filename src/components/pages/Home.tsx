@@ -36,7 +36,7 @@ export function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-black dark:via-slate-900 dark:to-black text-white selection:bg-cyan-400 selection:text-black overflow-x-hidden relative">
+    <div className="relative">
       <MouseFollower mousePosition={mousePosition} />
       <BackgroundGrid />
       <ProgressBar />

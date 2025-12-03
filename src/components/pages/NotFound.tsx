@@ -1,6 +1,6 @@
 export function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
+    <div className="overflow-hidden">
       {/* Local styles to match public/404.html without modifying global CSS */}
       <style>{`
         @keyframes glitch {
