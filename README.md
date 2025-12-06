@@ -76,7 +76,7 @@ The portfolio uses GitHub's public API to fetch repository information and comme
 kerim-portfolio/
 ├── public/
 │   ├── 404.html
-│   └── favicon.svg            # Favicon
+│   └── favicon.png            # Favicon
 ├── src/
 │   ├── App.tsx                # Main app component
 │   ├── main.tsx               # App entry point
