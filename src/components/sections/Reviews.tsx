@@ -19,6 +19,17 @@ interface Comment {
   timestamp: Date;
   issueUrl: string;
   issueNumber: number;
+  subcomments?: {
+    id: string;
+    author: {
+      name: string;
+      username: string;
+      avatar: string;
+      profileUrl: string;
+    };
+    content: string;
+    timestamp: Date;
+  }[];
 }
 
 export function Reviews() {
@@ -301,6 +312,45 @@ Looking forward to seeing more of your projects.`}
                     <div className="text-white/80 leading-relaxed whitespace-pre-wrap">
                       {comment.content}
                     </div>
+
+                    {/* Subcomments */}
+                    {comment.subcomments && comment.subcomments.length > 0 && (
+                      <div className="mt-6 pl-6 border-l-2 border-white/10 space-y-4">
+                        {comment.subcomments.map((subcomment) => (
+                          <div key={subcomment.id} className="bg-white/5 rounded-xl p-4">
+                            <div className="flex items-center gap-3 mb-2">
+                              <a 
+                                href={subcomment.author.profileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <img
+                                  src={subcomment.author.avatar}
+                                  alt={subcomment.author.name}
+                                  className="w-8 h-8 rounded-full border border-cyan-400/30"
+                                />
+                              </a>
+                              <div>
+                                <a
+                                  href={subcomment.author.profileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-sm font-semibold text-white hover:text-cyan-400 transition-colors"
+                                >
+                                  {subcomment.author.name}
+                                </a>
+                                <div className="text-xs text-white/40">
+                                  {subcomment.timestamp.toLocaleDateString()}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-sm text-white/70 whitespace-pre-wrap">
+                              {subcomment.content}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

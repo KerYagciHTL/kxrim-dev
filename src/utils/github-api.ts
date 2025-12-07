@@ -106,17 +106,47 @@ export async function fetchRepoNamesAndDescriptions(username: string = PROFILE.g
   }
 }
 
+async function fetchRepoComments(owner: string, repo: string): Promise<any[]> {
+  const cacheKey = `repo-comments-${owner}-${repo}`;
+  try {
+    return await cachedFetch(
+      `https://api.github.com/repos/${owner}/${repo}/issues/comments?sort=created&direction=asc&per_page=100`,
+      cacheKey
+    );
+  } catch (error) {
+    console.warn('Failed to fetch repo comments:', error);
+    return [];
+  }
+}
+
 export async function fetchPortfolioComments(owner: string, repo: string): Promise<any[]> {
   try {
     const cacheKey = `comments-${owner}-${repo}`;
-    const issues: any[] = await cachedFetch(
-      `https://api.github.com/repos/${owner}/${repo}/issues?labels=portfolio-comment&state=open&sort=created&direction=desc`,
-      cacheKey
-    );
+    
+    const [issues, allSubComments] = await Promise.all([
+      cachedFetch<any[]>(
+        `https://api.github.com/repos/${owner}/${repo}/issues?labels=portfolio-comment&state=open&sort=created&direction=desc`,
+        cacheKey
+      ),
+      fetchRepoComments(owner, repo)
+    ]);
     
     const comments = [];
     
     for (const issue of issues) {
+      const subComments = allSubComments.filter((sc: any) => sc.issue_url === issue.url);
+      const mappedSubComments = subComments.map((sc: any) => ({
+        id: sc.id.toString(),
+        author: {
+          name: sc.user.login,
+          username: sc.user.login,
+          avatar: sc.user.avatar_url,
+          profileUrl: sc.user.html_url,
+        },
+        content: sc.body || '',
+        timestamp: new Date(sc.created_at)
+      }));
+
       try {
         comments.push({
           id: issue.id.toString(),
@@ -132,7 +162,8 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
           content: issue.body || 'No content provided',
           timestamp: new Date(issue.created_at),
           issueUrl: issue.html_url,
-          issueNumber: issue.number
+          issueNumber: issue.number,
+          subcomments: mappedSubComments
         });
       } catch (error) {
         console.warn('Error processing issue:', issue.number, error);
@@ -150,7 +181,8 @@ export async function fetchPortfolioComments(owner: string, repo: string): Promi
           content: issue.body || 'No content provided',
           timestamp: new Date(issue.created_at),
           issueUrl: issue.html_url,
-          issueNumber: issue.number
+          issueNumber: issue.number,
+          subcomments: mappedSubComments
         });
       }
     }
