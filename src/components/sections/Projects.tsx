@@ -33,7 +33,7 @@ export function Projects() {
   const displayRepos = repos ? repos.filter(r => PROFILE.featured.includes(r.name)) : [];
 
   return (
-    <section id="projects" className="relative py-20">
+    <section id="projects" className="relative py-20 overflow-hidden">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           className="text-center mb-16"
