@@ -35,7 +35,7 @@ export function Experience() {
   ];
 
   return (
-    <section id="experience" className="relative py-20">
+    <section id="experience" className="relative py-20 overflow-hidden">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           className="text-center mb-16"
