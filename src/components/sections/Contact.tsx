@@ -7,7 +7,7 @@ export function Contact() {
   const { t } = useLanguage();
   
   return (
-    <section id="contact" className="relative py-20">
+    <section id="contact" className="relative py-20 overflow-hidden">
       <div className="mx-auto max-w-2xl px-6 flex flex-col items-center">
         <motion.div
           className="text-center mb-16"
