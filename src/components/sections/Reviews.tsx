@@ -82,7 +82,7 @@ export function Reviews() {
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-purple-500/5"></div>
       </div>
       
-      <div className="relative z-10 px-6 py-12">
+      <div className="relative z-10 px-6 py-12 overflow-hidden">
         <motion.div
           className="max-w-4xl mx-auto mb-12"
           initial={{ opacity: 0, y: 30 }}
