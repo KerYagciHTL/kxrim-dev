@@ -3,12 +3,73 @@
     "name": "kxrim-dev",
     "description": "personal website showcasing my projects, highlighting my React and TypeScript expertise along with my broader skill set.",
     "stargazers_count": 3,
-    "forks_count": 0,
+    "forks_count": 2,
     "language": "TypeScript",
     "html_url": "https://github.com/KerYagciHTL/kxrim-dev",
+    "topics": [
+      "dev",
+      "portfolio",
+      "react",
+      "website"
+    ],
+    "archived": false,
+    "pushed_at": "2025-12-19T16:20:02Z"
+  },
+  {
+    "name": "Snake",
+    "description": "This is a small educational task with python. I tried to create the game snake in python and tried to keep improving myself.",
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "language": "Python",
+    "html_url": "https://github.com/KerYagciHTL/Snake",
     "topics": [],
     "archived": false,
-    "pushed_at": "2025-10-01T14:06:01Z"
+    "pushed_at": "2025-12-14T12:20:55Z"
+  },
+  {
+    "name": "KCY-Accounting",
+    "description": "Cross-platform order and customer management, etc app with TCP-based license validation. Built in .NET 8 using Avalonia UI. Solo project by me",
+    "stargazers_count": 2,
+    "forks_count": 2,
+    "language": "C#",
+    "html_url": "https://github.com/KerYagciHTL/KCY-Accounting",
+    "topics": [
+      "accounting",
+      "booking",
+      "csharp",
+      "license",
+      "patterns",
+      "view"
+    ],
+    "archived": false,
+    "pushed_at": "2025-12-12T20:01:26Z"
+  },
+  {
+    "name": "Incremental",
+    "description": "A modern incremental/idle game built with Avalonia UI and .NET 8, featuring a custom big number system, passive income mechanics, and a beautiful GitHub Dark-themed interface.",
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "language": "C#",
+    "html_url": "https://github.com/KerYagciHTL/Incremental",
+    "topics": [],
+    "archived": false,
+    "pushed_at": "2025-12-12T18:48:02Z"
+  },
+  {
+    "name": "Kerlib",
+    "description": "Kerlib is a lightweight modern Win32 windowing library for C#. It offers high performance, low memory overhead, and is easy to extend with custom drawing components and event handling.",
+    "stargazers_count": 2,
+    "forks_count": 1,
+    "language": "C#",
+    "html_url": "https://github.com/KerYagciHTL/Kerlib",
+    "topics": [
+      "csharp",
+      "graphics",
+      "library",
+      "windows"
+    ],
+    "archived": false,
+    "pushed_at": "2025-12-10T11:22:24Z"
   },
   {
     "name": "K-Chat",
@@ -17,9 +78,13 @@
     "forks_count": 0,
     "language": "Java",
     "html_url": "https://github.com/KerYagciHTL/K-Chat",
-    "topics": [],
+    "topics": [
+      "chat",
+      "client",
+      "java"
+    ],
     "archived": false,
-    "pushed_at": "2025-10-01T07:19:16Z"
+    "pushed_at": "2025-10-04T11:33:50Z"
   },
   {
     "name": "KerYagciHTL",
@@ -30,28 +95,23 @@
     "html_url": "https://github.com/KerYagciHTL/KerYagciHTL",
     "topics": [],
     "archived": false,
-    "pushed_at": "2025-09-30T20:06:14Z"
+    "pushed_at": "2025-12-04T07:46:26Z"
   },
   {
-    "name": "Kerlib",
-    "description": "Kerlib — A lightweight, modern Win32 windowing library in C# inspired by Avalonia. High-performance, low GC overhead, and easy to extend with custom drawable components and event handling.",
-    "stargazers_count": 2,
-    "forks_count": 1,
-    "language": "C#",
-    "html_url": "https://github.com/KerYagciHTL/Kerlib",
-    "topics": [],
-    "archived": false,
-    "pushed_at": "2025-09-30T19:25:42Z"
-  },
-  {
-    "name": "KCY-Accounting",
-    "description": "Cross-platform order and customer management, etc app with TCP-based license validation. Built in .NET 8 using Avalonia UI. Solo project by me",
-    "stargazers_count": 2,
+    "name": "HtmlForge",
+    "description": "Open Source java library to generate html sites with style in Java with classes",
+    "stargazers_count": 3,
     "forks_count": 2,
-    "language": "C#",
-    "html_url": "https://github.com/KerYagciHTL/KCY-Accounting",
-    "topics": [],
+    "language": "Java",
+    "html_url": "https://github.com/htmlforge-team/HtmlForge",
+    "topics": [
+      "frontend",
+      "generate",
+      "html",
+      "java",
+      "library"
+    ],
     "archived": false,
-    "pushed_at": "2025-09-30T08:44:28Z"
+    "pushed_at": "2025-12-17T13:55:36Z"
   }
 ]
