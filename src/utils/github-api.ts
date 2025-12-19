@@ -79,16 +79,13 @@ export async function fetchOrganizedRepositories(
 
     const repoMap = new Map(allRepos.map(repo => [repo.name, repo]));
 
-    // Fetch featured repos including those from other organizations
     const featured: (Repo | null)[] = await Promise.all(
       featuredProjects.map(async (project: any) => {
-        // If it's already in our user repos, use that
         const existingRepo = repoMap.get(project.name);
         if (existingRepo) {
           return existingRepo;
         }
 
-        // If it has a URL and we don't have it, try to fetch from the URL
         if (project.url) {
           try {
             const parts = project.url.replace('https://github.com/', '').split('/');
@@ -111,7 +108,6 @@ export async function fetchOrganizedRepositories(
 
     const filteredFeatured = featured.filter((repo): repo is Repo => repo !== null);
 
-    // Get all featured repo names (both from filteredFeatured and original featured list)
     const featuredNames = new Set(
       filteredFeatured.map(repo => repo.name)
     );

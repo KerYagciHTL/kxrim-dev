@@ -6,6 +6,15 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROFILE_GITHUB = 'KerYagciHTL';
 const FALLBACK_PATH = path.join(__dirname, 'public', 'repos-fallback.json');
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+const FEATURED_PROJECTS = [
+  { name: "Kerlib", isTeam: false, url: "https://github.com/KerYagciHTL/Kerlib" },
+  { name: "KCY-Accounting", isTeam: false, url: "https://github.com/KerYagciHTL/KCY-Accounting" },
+  { name: "kxrim-dev", isTeam: false, url: "https://github.com/KerYagciHTL/kxrim-dev" },
+  { name: "K-Chat", isTeam: false, url: "https://github.com/KerYagciHTL/K-Chat" },
+  { name: "HtmlForge", isTeam: true, url: "https://github.com/htmlforge-team/HtmlForge" }
+];
 
 function httpsGet(url) {
   return new Promise((resolve, reject) => {
@@ -71,7 +80,41 @@ async function fetchRepositories() {
       pushed_at: repo.pushed_at
     }));
 
-    console.log(`Successfully fetched ${cleanedRepos.length} repositories`);
+    console.log(`Successfully fetched ${cleanedRepos.length} repositories from user account`);
+    
+    const repoMap = new Map(cleanedRepos.map(repo => [repo.name, repo]));
+    
+    for (const project of FEATURED_PROJECTS) {
+      if (!repoMap.has(project.name) && project.url) {
+        try {
+          const parts = project.url.replace('https://github.com/', '').split('/');
+          const owner = parts[0];
+          const repo = parts[1];
+          
+          console.log(`Fetching external repo: ${owner}/${repo}...`);
+          const repoData = await httpsGet(`https://api.github.com/repos/${owner}/${repo}`);
+          
+          const cleanedRepo = {
+            name: repoData.name,
+            description: repoData.description,
+            stargazers_count: repoData.stargazers_count,
+            forks_count: repoData.forks_count,
+            language: repoData.language,
+            html_url: repoData.html_url,
+            topics: repoData.topics || [],
+            archived: repoData.archived,
+            pushed_at: repoData.pushed_at
+          };
+          
+          cleanedRepos.push(cleanedRepo);
+          console.log(`Added external repo: ${cleanedRepo.name}`);
+        } catch (error) {
+          console.warn(`Failed to fetch ${project.name}:`, error.message);
+        }
+      }
+    }
+
+    console.log(`Total repositories: ${cleanedRepos.length}`);
     return cleanedRepos;
 
   } catch (error) {
