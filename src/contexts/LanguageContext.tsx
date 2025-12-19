@@ -92,6 +92,7 @@ const translations: Translations = {
     'projects.description.KCY-Accounting': 'Modern accounting software developed with C# and AvaloniaUI.',
     'projects.description.kxrim-dev': 'My personal portfolio website, built with React and TailwindCSS.',
     'projects.description.K-Chat': 'A real-time chat application for seamless communication.',
+    'projects.description.HtmlForge': 'A Java library which programmatically for HTML pages. Styling is handled like Bootstrap. Scripting via a runtime is also soon possible.',
 
     'reviews.backToPortfolio': 'Back to Portfolio',
     'reviews.title': 'Visitor Comments',
@@ -198,6 +199,7 @@ const translations: Translations = {
     'projects.description.KCY-Accounting': 'Moderne Buchhaltungssoftware entwickelt mit C# und AvaloniaUI.',
     'projects.description.kxrim-dev': 'Meine persönliche Portfolio-Website, erstellt mit React und TailwindCSS.',
     'projects.description.K-Chat': 'Eine Echtzeit-Chat-Anwendung für nahtlose Kommunikation.',
+    'projects.description.HtmlForge': 'Eine Java library bei der HTML-Seiten programmgesteuert erstellt werden können. Styling wird wie Bootstrap gehandhabt. Scripting durch eine RunTime ist ebenfalls bald möglich.',
 
     'reviews.backToPortfolio': 'Zurück zum Portfolio',
     'reviews.title': 'Besucherkommentare',
