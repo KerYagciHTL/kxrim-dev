@@ -30,7 +30,7 @@ export function Projects() {
     return () => controller.abort();
   }, []);
 
-  const displayRepos = repos ? repos.filter(r => PROFILE.featured.includes(r.name)) : [];
+  const displayRepos = repos ? repos.filter(r => PROFILE.featured.some(f => f.name === r.name)) : [];
 
   return (
     <section id="projects" className="relative py-20 overflow-hidden">

@@ -72,22 +72,55 @@ export async function fetchRepositories(username: string = PROFILE.github): Prom
 
 export async function fetchOrganizedRepositories(
   username: string = PROFILE.github,
-  featuredRepos: string[] = PROFILE.featured
+  featuredProjects = PROFILE.featured
 ): Promise<Repo[]> {
   try {
     const allRepos = await fetchRepositories(username);
 
     const repoMap = new Map(allRepos.map(repo => [repo.name, repo]));
 
-    const featured = featuredRepos
-      .map(name => repoMap.get(name))
-      .filter((repo): repo is Repo => repo !== undefined);
+    // Fetch featured repos including those from other organizations
+    const featured: (Repo | null)[] = await Promise.all(
+      featuredProjects.map(async (project: any) => {
+        // If it's already in our user repos, use that
+        const existingRepo = repoMap.get(project.name);
+        if (existingRepo) {
+          return existingRepo;
+        }
+
+        // If it has a URL and we don't have it, try to fetch from the URL
+        if (project.url) {
+          try {
+            const parts = project.url.replace('https://github.com/', '').split('/');
+            const owner = parts[0];
+            const repo = parts[1];
+            const repoData = await cachedFetch<Repo>(
+              `https://api.github.com/repos/${owner}/${repo}`,
+              `repos-${owner}-${repo}`
+            );
+            return repoData;
+          } catch (error) {
+            console.warn(`Failed to fetch ${project.name}:`, error);
+            return null;
+          }
+        }
+
+        return null;
+      })
+    );
+
+    const filteredFeatured = featured.filter((repo): repo is Repo => repo !== null);
+
+    // Get all featured repo names (both from filteredFeatured and original featured list)
+    const featuredNames = new Set(
+      filteredFeatured.map(repo => repo.name)
+    );
 
     const remaining = allRepos
-      .filter(repo => !featuredRepos.includes(repo.name) && !repo.archived)
+      .filter(repo => !featuredNames.has(repo.name) && !repo.archived)
       .sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime());
 
-    return [...featured, ...remaining];
+    return [...filteredFeatured, ...remaining];
 
   } catch (error) {
     throw error;
