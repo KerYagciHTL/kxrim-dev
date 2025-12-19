@@ -11,7 +11,7 @@ interface RepoCardProps {
 
 export function RepoCard({ repo, index }: RepoCardProps) {
   const { t } = useLanguage();
-  const isFeatured = PROFILE.featured.includes(repo.name);
+  const isFeatured = PROFILE.featured.some(featured => featured.name === repo.name);
   
   const descriptionKey = `projects.description.${repo.name}`;
   const translatedDescription = t(descriptionKey);
