@@ -5,7 +5,7 @@
 - Published releases/tags: supported for critical security fixes when feasible
 
 ## Reporting a vulnerability
-- Email: security@kxrim.dev (replace with a monitored address if different)
+- Email: k.yagci@students.htl-leonding.ac.at
 - Preferred language: English (German welcome)
 - Please include: steps to reproduce, impact, affected version/commit, and any PoC. Avoid sensitive data in reports.
 - We aim to acknowledge within 3 business days and provide an initial assessment within 7 business days.

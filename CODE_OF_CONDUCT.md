@@ -31,3 +31,4 @@ This Code applies within all project spaces and when an individual is officially
 
 ## Attribution
 This Code of Conduct is adapted from the Contributor Covenant, version 2.1, available at https://www.contributor-covenant.org/version/2/1/code_of_conduct.
+
