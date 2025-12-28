@@ -108,5 +108,3 @@ This project is licensed under the MIT License.
 - **Try 404 error**: [kxrim.is-a.dev/uhhh](https://kxrim.is-a.dev/uhhh)
 
 ---
-
-**Made with ❤️ and lots of ☕ by Kerimcan Yagci**
