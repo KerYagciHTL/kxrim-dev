@@ -13,18 +13,29 @@
       "website"
     ],
     "archived": false,
-    "pushed_at": "2025-12-28T17:56:15Z"
+    "pushed_at": "2026-02-13T18:42:05Z"
   },
   {
-    "name": "Snake",
-    "description": "This is a small educational task with python. I tried to create the game snake in python and tried to keep improving myself.",
+    "name": "2526-3bhif-syp-lecture-notes",
+    "description": null,
     "stargazers_count": 0,
     "forks_count": 0,
-    "language": "Python",
-    "html_url": "https://github.com/KerYagciHTL/Snake",
+    "language": "Shell",
+    "html_url": "https://github.com/KerYagciHTL/2526-3bhif-syp-lecture-notes",
     "topics": [],
     "archived": false,
-    "pushed_at": "2025-12-14T12:20:55Z"
+    "pushed_at": "2026-02-04T17:11:03Z"
+  },
+  {
+    "name": "KerYagciHTL",
+    "description": null,
+    "stargazers_count": 0,
+    "forks_count": 0,
+    "language": null,
+    "html_url": "https://github.com/KerYagciHTL/KerYagciHTL",
+    "topics": [],
+    "archived": false,
+    "pushed_at": "2025-12-28T17:57:45Z"
   },
   {
     "name": "KCY-Accounting",
@@ -72,46 +83,18 @@
     "pushed_at": "2025-12-10T11:22:24Z"
   },
   {
-    "name": "K-Chat",
-    "description": "Real-time chat application built with JavaFX and WebSockets, featuring multi-client messaging, JSON-based communication, and a simple desktop UI.",
-    "stargazers_count": 1,
-    "forks_count": 0,
-    "language": "Java",
-    "html_url": "https://github.com/KerYagciHTL/K-Chat",
-    "topics": [
-      "chat",
-      "client",
-      "java"
-    ],
-    "archived": false,
-    "pushed_at": "2025-10-04T11:33:50Z"
-  },
-  {
-    "name": "KerYagciHTL",
-    "description": null,
-    "stargazers_count": 0,
-    "forks_count": 0,
-    "language": null,
-    "html_url": "https://github.com/KerYagciHTL/KerYagciHTL",
-    "topics": [],
-    "archived": false,
-    "pushed_at": "2025-12-04T07:46:26Z"
-  },
-  {
     "name": "HtmlForge",
-    "description": "Open Source java library to generate html sites with style in Java with classes",
+    "description": "Open Source kotlin library to generate html sites with style in kotlin with classes",
     "stargazers_count": 3,
     "forks_count": 2,
-    "language": "Java",
+    "language": "HTML",
     "html_url": "https://github.com/htmlforge-team/HtmlForge",
     "topics": [
-      "frontend",
       "generate",
-      "html",
-      "java",
-      "library"
+      "gradle",
+      "kotlin"
     ],
     "archived": false,
-    "pushed_at": "2025-12-27T16:19:27Z"
+    "pushed_at": "2026-01-06T21:10:49Z"
   }
 ]
