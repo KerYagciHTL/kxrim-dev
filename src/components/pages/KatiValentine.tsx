@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Particle {
@@ -21,12 +21,12 @@ interface BurstParticle {
 
 // Generate particles immediately to avoid loading delay
 const generateAmbientParticles = (): Particle[] => 
-  Array.from({ length: 30 }, (_, i) => ({
+  Array.from({ length: 40 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,
-    size: Math.random() * 4 + 2,
-    duration: Math.random() * 3 + 2,
+    size: Math.random() * 5 + 2,
+    duration: Math.random() * 4 + 3,
     delay: Math.random() * 2,
   }));
 
@@ -35,15 +35,30 @@ export function KatiValentine() {
   const [burstParticles, setBurstParticles] = useState<BurstParticle[]>([]);
   const [showBurst, setShowBurst] = useState(false);
 
+  // Remove any loading screens
+  useEffect(() => {
+    // Hide any existing progress bars or loading screens
+    const progressBars = document.querySelectorAll('[class*="progress"]');
+    progressBars.forEach(bar => {
+      (bar as HTMLElement).style.display = 'none';
+    });
+    
+    return () => {
+      progressBars.forEach(bar => {
+        (bar as HTMLElement).style.display = '';
+      });
+    };
+  }, []);
+
   // Handle flower click - create burst effect
   const handleFlowerClick = () => {
-    const burst: BurstParticle[] = Array.from({ length: 24 }, (_, i) => ({
+    const burst: BurstParticle[] = Array.from({ length: 30 }, (_, i) => ({
       id: Date.now() + i,
       x: 50,
       y: 50,
-      angle: (360 / 24) * i,
-      distance: Math.random() * 150 + 100,
-      size: Math.random() * 6 + 3,
+      angle: (360 / 30) * i,
+      distance: Math.random() * 200 + 150,
+      size: Math.random() * 8 + 4,
     }));
     
     setBurstParticles(burst);
@@ -52,13 +67,13 @@ export function KatiValentine() {
     setTimeout(() => {
       setShowBurst(false);
       setBurstParticles([]);
-    }, 1000);
+    }, 1200);
   };
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#050505] flex items-center justify-center">
       {/* Ambient Particles */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         {ambientParticles.map((particle) => (
           <motion.div
             key={particle.id}
@@ -72,7 +87,7 @@ export function KatiValentine() {
             animate={{
               opacity: [0.2, 0.8, 0.2],
               scale: [1, 1.5, 1],
-              y: [0, -20, 0],
+              y: [0, -30, 0],
             }}
             transition={{
               duration: particle.duration,
@@ -82,6 +97,177 @@ export function KatiValentine() {
             }}
           />
         ))}
+      </div>
+
+      {/* Background Decorative Flowers */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Top Left Flower */}
+        <motion.div
+          className="absolute top-[10%] left-[8%]"
+          initial={{ opacity: 0, scale: 0, rotate: -45 }}
+          animate={{ opacity: 0.3, scale: 1, rotate: 0 }}
+          transition={{ delay: 1.5, duration: 1.5, ease: "easeOut" }}
+        >
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <defs>
+              <radialGradient id="bgFlower1">
+                <stop offset="0%" stopColor="#ff6b8a" />
+                <stop offset="100%" stopColor="#ff1744" />
+              </radialGradient>
+            </defs>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <ellipse
+                key={i}
+                cx="60"
+                cy="30"
+                rx="12"
+                ry="22"
+                fill="url(#bgFlower1)"
+                opacity="0.6"
+                transform={`rotate(${i * 60} 60 60)`}
+              />
+            ))}
+            <circle cx="60" cy="60" r="12" fill="#ffd700" opacity="0.8" />
+          </svg>
+        </motion.div>
+
+        {/* Top Right Flower */}
+        <motion.div
+          className="absolute top-[15%] right-[12%]"
+          initial={{ opacity: 0, scale: 0, rotate: 45 }}
+          animate={{ opacity: 0.25, scale: 1, rotate: 0 }}
+          transition={{ delay: 1.8, duration: 1.5, ease: "easeOut" }}
+        >
+          <svg width="100" height="100" viewBox="0 0 100 100">
+            <defs>
+              <radialGradient id="bgFlower2">
+                <stop offset="0%" stopColor="#ff4d6d" />
+                <stop offset="100%" stopColor="#c9184a" />
+              </radialGradient>
+            </defs>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <ellipse
+                key={i}
+                cx="50"
+                cy="25"
+                rx="10"
+                ry="18"
+                fill="url(#bgFlower2)"
+                opacity="0.7"
+                transform={`rotate(${i * 60} 50 50)`}
+              />
+            ))}
+            <circle cx="50" cy="50" r="10" fill="#ffaa00" opacity="0.8" />
+          </svg>
+        </motion.div>
+
+        {/* Bottom Left Flower */}
+        <motion.div
+          className="absolute bottom-[12%] left-[15%]"
+          initial={{ opacity: 0, scale: 0, rotate: -30 }}
+          animate={{ opacity: 0.28, scale: 1, rotate: 0 }}
+          transition={{ delay: 2, duration: 1.5, ease: "easeOut" }}
+        >
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <defs>
+              <radialGradient id="bgFlower3">
+                <stop offset="0%" stopColor="#ff758c" />
+                <stop offset="100%" stopColor="#ff4d6d" />
+              </radialGradient>
+            </defs>
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <ellipse
+                key={i}
+                cx="65"
+                cy="35"
+                rx="13"
+                ry="24"
+                fill="url(#bgFlower3)"
+                opacity="0.6"
+                transform={`rotate(${i * 45} 65 65)`}
+              />
+            ))}
+            <circle cx="65" cy="65" r="14" fill="#ffc107" opacity="0.8" />
+          </svg>
+        </motion.div>
+
+        {/* Bottom Right Flower */}
+        <motion.div
+          className="absolute bottom-[18%] right-[10%]"
+          initial={{ opacity: 0, scale: 0, rotate: 60 }}
+          animate={{ opacity: 0.32, scale: 1, rotate: 0 }}
+          transition={{ delay: 2.2, duration: 1.5, ease: "easeOut" }}
+        >
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <defs>
+              <radialGradient id="bgFlower4">
+                <stop offset="0%" stopColor="#ff6b9d" />
+                <stop offset="100%" stopColor="#e63946" />
+              </radialGradient>
+            </defs>
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <ellipse
+                key={i}
+                cx="55"
+                cy="28"
+                rx="11"
+                ry="20"
+                fill="url(#bgFlower4)"
+                opacity="0.65"
+                transform={`rotate(${i * 60} 55 55)`}
+              />
+            ))}
+            <circle cx="55" cy="55" r="11" fill="#ffb700" opacity="0.85" />
+          </svg>
+        </motion.div>
+
+        {/* Middle Right Small Flower */}
+        <motion.div
+          className="absolute top-[45%] right-[5%]"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 0.2, scale: 1 }}
+          transition={{ delay: 2.5, duration: 1.2 }}
+        >
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <ellipse
+                key={i}
+                cx="40"
+                cy="22"
+                rx="8"
+                ry="14"
+                fill="#ff4d6d"
+                opacity="0.5"
+                transform={`rotate(${i * 72} 40 40)`}
+              />
+            ))}
+            <circle cx="40" cy="40" r="8" fill="#ffd700" opacity="0.7" />
+          </svg>
+        </motion.div>
+
+        {/* Middle Left Small Flower */}
+        <motion.div
+          className="absolute top-[40%] left-[6%]"
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 0.22, scale: 1 }}
+          transition={{ delay: 2.7, duration: 1.2 }}
+        >
+          <svg width="90" height="90" viewBox="0 0 90 90">
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <ellipse
+                key={i}
+                cx="45"
+                cy="24"
+                rx="9"
+                ry="16"
+                fill="#ff6b8a"
+                opacity="0.55"
+                transform={`rotate(${i * 60} 45 45)`}
+              />
+            ))}
+            <circle cx="45" cy="45" r="9" fill="#ffcc00" opacity="0.75" />
+          </svg>
+        </motion.div>
       </div>
 
       {/* Burst Particles */}
@@ -114,7 +300,7 @@ export function KatiValentine() {
                   opacity: 0,
                 }}
                 transition={{
-                  duration: 0.8,
+                  duration: 1,
                   ease: "easeOut",
                 }}
               />
@@ -123,21 +309,22 @@ export function KatiValentine() {
         )}
       </AnimatePresence>
 
-      {/* Main Content */}
+      {/* Main Content - Centered */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-12">
-        {/* Flower Container */}
+        {/* Main Flower Container */}
         <motion.div
           className="relative cursor-pointer select-none"
           onClick={handleFlowerClick}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
         >
           {/* Glow Effect Background */}
           <motion.div
-            className="absolute inset-0 blur-3xl bg-gradient-to-r from-red-500/30 via-pink-500/30 to-rose-500/30 rounded-full"
+            className="absolute inset-0 blur-[80px] bg-gradient-to-r from-red-500/40 via-pink-500/40 to-rose-500/40 rounded-full"
+            style={{ transform: 'translate(-20%, -20%)', width: '140%', height: '140%' }}
             animate={{
-              opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.2, 1],
+              opacity: [0.4, 0.7, 0.4],
+              scale: [1, 1.15, 1],
             }}
             transition={{
               duration: 3,
@@ -146,420 +333,259 @@ export function KatiValentine() {
             }}
           />
 
-          {/* SVG Flower - Improved and Aligned */}
+          {/* Main Rose Flower - Centered and Clear */}
           <svg
-            width="500"
-            height="600"
-            viewBox="0 0 500 600"
+            width="400"
+            height="400"
+            viewBox="0 0 200 200"
             className="relative drop-shadow-2xl"
           >
             <defs>
-              {/* Enhanced Gradient Definitions */}
-              <linearGradient id="petalGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ff6b6b" stopOpacity="1" />
-                <stop offset="40%" stopColor="#ff3366" stopOpacity="1" />
-                <stop offset="100%" stopColor="#cc0044" stopOpacity="0.95" />
-              </linearGradient>
-              
-              <linearGradient id="petalGradient2" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#ff1a75" stopOpacity="1" />
-                <stop offset="50%" stopColor="#e60055" stopOpacity="1" />
-                <stop offset="100%" stopColor="#b3003d" stopOpacity="0.95" />
-              </linearGradient>
+              {/* Petal Gradients */}
+              <radialGradient id="mainPetalGrad">
+                <stop offset="0%" stopColor="#ff6b9d" />
+                <stop offset="50%" stopColor="#ff1744" />
+                <stop offset="100%" stopColor="#c41e3a" />
+              </radialGradient>
 
-              <linearGradient id="petalInner" x1="50%" y1="0%" x2="50%" y2="100%">
-                <stop offset="0%" stopColor="#ff9999" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#ff0066" stopOpacity="0.1" />
-              </linearGradient>
+              <radialGradient id="innerPetalGrad">
+                <stop offset="0%" stopColor="#ff8fab" />
+                <stop offset="100%" stopColor="#ff4d6d" />
+              </radialGradient>
 
-              <linearGradient id="stemGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#2d5016" />
-                <stop offset="50%" stopColor="#4a7c2c" />
+              <radialGradient id="centerGrad">
+                <stop offset="0%" stopColor="#fff9c4" />
+                <stop offset="40%" stopColor="#ffd700" />
+                <stop offset="100%" stopColor="#ffa000" />
+              </radialGradient>
+
+              <linearGradient id="stemGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#4a7c2c" />
+                <stop offset="50%" stopColor="#3d6624" />
                 <stop offset="100%" stopColor="#2d5016" />
               </linearGradient>
 
-              <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#5a9e3a" />
-                <stop offset="50%" stopColor="#4a7c2c" />
+              <radialGradient id="leafGrad">
+                <stop offset="0%" stopColor="#6ba83a" />
                 <stop offset="100%" stopColor="#3a6620" />
-              </linearGradient>
-              
-              <radialGradient id="centerGradient">
-                <stop offset="0%" stopColor="#fffacd" stopOpacity="1" />
-                <stop offset="30%" stopColor="#ffd700" stopOpacity="1" />
-                <stop offset="70%" stopColor="#ffaa00" stopOpacity="1" />
-                <stop offset="100%" stopColor="#ff8800" stopOpacity="1" />
               </radialGradient>
-
-              <radialGradient id="centerInner">
-                <stop offset="0%" stopColor="#ffee99" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#ff9900" stopOpacity="0.3" />
-              </radialGradient>
-              
-              {/* Enhanced Filter for glow effect */}
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
 
               <filter id="softGlow">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
                 <feMerge>
-                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
             </defs>
 
-            {/* Stem with leaves */}
+            {/* Stem */}
+            <motion.path
+              d="M 100 105 Q 98 130, 96 155 L 95 180"
+              fill="none"
+              stroke="url(#stemGrad)"
+              strokeWidth="4"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            />
+
+            {/* Leaves */}
             <motion.g
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
             >
-              {/* Main Stem */}
-              <path
-                d="M 250 280 Q 245 350, 240 420 Q 238 480, 235 550"
-                fill="none"
-                stroke="url(#stemGradient)"
-                strokeWidth="8"
-                strokeLinecap="round"
-                filter="url(#glow)"
+              <ellipse
+                cx="88"
+                cy="145"
+                rx="12"
+                ry="20"
+                fill="url(#leafGrad)"
+                transform="rotate(-45 88 145)"
+                filter="url(#softGlow)"
               />
-
-              {/* Left Leaf */}
-              <motion.path
-                d="M 240 380 Q 200 390, 180 410 Q 175 415, 180 420 Q 190 420, 240 400"
-                fill="url(#leafGradient)"
-                stroke="#3a6620"
-                strokeWidth="2"
-                filter="url(#glow)"
-                initial={{ rotate: 0, scale: 0 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                style={{ transformOrigin: '240px 390px' }}
-              />
-
-              {/* Leaf vein */}
-              <motion.path
-                d="M 240 385 Q 210 395, 185 413"
-                fill="none"
-                stroke="#2d5016"
-                strokeWidth="1.5"
-                strokeOpacity="0.6"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 1.4, duration: 0.4 }}
-              />
-
-              {/* Right Leaf */}
-              <motion.path
-                d="M 238 450 Q 278 460, 298 480 Q 303 485, 298 490 Q 288 490, 238 470"
-                fill="url(#leafGradient)"
-                stroke="#3a6620"
-                strokeWidth="2"
-                filter="url(#glow)"
-                initial={{ rotate: 0, scale: 0 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ delay: 1.3, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                style={{ transformOrigin: '238px 460px' }}
-              />
-
-              {/* Leaf vein */}
-              <motion.path
-                d="M 238 455 Q 268 465, 293 483"
-                fill="none"
-                stroke="#2d5016"
-                strokeWidth="1.5"
-                strokeOpacity="0.6"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 1.5, duration: 0.4 }}
+              <ellipse
+                cx="104"
+                cy="165"
+                rx="10"
+                ry="18"
+                fill="url(#leafGrad)"
+                transform="rotate(35 104 165)"
+                filter="url(#softGlow)"
               />
             </motion.g>
 
-            {/* Outer Layer - Larger Petals */}
+            {/* Outer Layer - 8 Large Petals */}
             <motion.g
               initial="hidden"
               animate="visible"
               variants={{
-                hidden: { opacity: 0 },
+                hidden: {},
                 visible: {
-                  opacity: 1,
                   transition: {
-                    staggerChildren: 0.12,
-                    delayChildren: 0.3,
+                    staggerChildren: 0.08,
+                    delayChildren: 0.2,
                   },
                 },
               }}
             >
-              {Array.from({ length: 8 }).map((_, i) => {
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
                 const angle = (360 / 8) * i;
-                const gradient = i % 2 === 0 ? 'url(#petalGradient1)' : 'url(#petalGradient2)';
-                const rotateTransform = `rotate(${angle}, 250, 250)`;
-                
                 return (
                   <motion.g
                     key={`outer-${i}`}
                     variants={{
-                      hidden: {
-                        scale: 0,
-                        opacity: 0,
-                      },
+                      hidden: { scale: 0, opacity: 0 },
                       visible: {
                         scale: 1,
                         opacity: 1,
-                        transition: {
-                          duration: 0.8,
-                          ease: [0.34, 1.56, 0.64, 1],
-                        },
+                        transition: { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] },
                       },
                     }}
                   >
-                    <g transform={rotateTransform}>
-                      {/* Main Petal - Perfectly centered and symmetric */}
-                      <ellipse
-                        cx="250"
-                        cy="160"
-                        rx="35"
-                        ry="55"
-                        fill={gradient}
-                        stroke={gradient}
-                        strokeWidth="1"
-                        filter="url(#glow)"
-                        opacity="0.98"
-                      />
-                      
-                      {/* Inner highlight */}
-                      <ellipse
-                        cx="250"
-                        cy="155"
-                        rx="20"
-                        ry="35"
-                        fill="url(#petalInner)"
-                        opacity="0.6"
-                      />
-
-                      {/* Petal veins for detail */}
-                      <motion.line
-                        x1="250"
-                        y1="205"
-                        x2="250"
-                        y2="120"
-                        stroke="#ff0066"
-                        strokeWidth="1.5"
-                        strokeOpacity="0.3"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ delay: 0.8 + i * 0.12, duration: 0.5 }}
-                      />
-                      <motion.path
-                        d="M 250 170 Q 240 150, 235 130"
-                        fill="none"
-                        stroke="#ff0066"
-                        strokeWidth="1"
-                        strokeOpacity="0.2"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ delay: 0.9 + i * 0.12, duration: 0.4 }}
-                      />
-                      <motion.path
-                        d="M 250 170 Q 260 150, 265 130"
-                        fill="none"
-                        stroke="#ff0066"
-                        strokeWidth="1"
-                        strokeOpacity="0.2"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ delay: 0.9 + i * 0.12, duration: 0.4 }}
-                      />
-                    </g>
+                    <ellipse
+                      cx="100"
+                      cy="60"
+                      rx="18"
+                      ry="28"
+                      fill="url(#mainPetalGrad)"
+                      transform={`rotate(${angle} 100 100)`}
+                      filter="url(#softGlow)"
+                      opacity="0.95"
+                    />
                   </motion.g>
                 );
               })}
             </motion.g>
 
-            {/* Inner Layer - Smaller Petals between the outer ones */}
+            {/* Middle Layer - 8 Medium Petals (offset) */}
             <motion.g
               initial="hidden"
               animate="visible"
               variants={{
-                hidden: { opacity: 0 },
+                hidden: {},
                 visible: {
-                  opacity: 1,
                   transition: {
-                    staggerChildren: 0.1,
-                    delayChildren: 1.2,
+                    staggerChildren: 0.07,
+                    delayChildren: 0.8,
                   },
                 },
               }}
             >
-              {Array.from({ length: 8 }).map((_, i) => {
-                const angle = (360 / 8) * i + 22.5; // Offset by half
-                const rotateTransform = `rotate(${angle}, 250, 250)`;
-                
+              {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+                const angle = (360 / 8) * i + 22.5;
                 return (
                   <motion.g
-                    key={`inner-${i}`}
+                    key={`mid-${i}`}
                     variants={{
-                      hidden: {
-                        scale: 0,
-                        opacity: 0,
-                      },
+                      hidden: { scale: 0, opacity: 0 },
                       visible: {
                         scale: 1,
                         opacity: 1,
-                        transition: {
-                          duration: 0.6,
-                          ease: [0.34, 1.56, 0.64, 1],
-                        },
+                        transition: { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] },
                       },
                     }}
                   >
-                    <g transform={rotateTransform}>
-                      <ellipse
-                        cx="250"
-                        cy="185"
-                        rx="25"
-                        ry="40"
-                        fill="url(#petalGradient2)"
-                        stroke="url(#petalGradient1)"
-                        strokeWidth="1"
-                        filter="url(#softGlow)"
-                        opacity="0.95"
-                      />
-                      
-                      <ellipse
-                        cx="250"
-                        cy="182"
-                        rx="15"
-                        ry="25"
-                        fill="url(#petalInner)"
-                        opacity="0.5"
-                      />
-                    </g>
+                    <ellipse
+                      cx="100"
+                      cy="72"
+                      rx="14"
+                      ry="22"
+                      fill="url(#innerPetalGrad)"
+                      transform={`rotate(${angle} 100 100)`}
+                      filter="url(#softGlow)"
+                      opacity="0.92"
+                    />
                   </motion.g>
                 );
               })}
             </motion.g>
 
-            {/* Center of flower - Multi-layered */}
+            {/* Inner Layer - 6 Small Petals */}
+            <motion.g
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.06,
+                    delayChildren: 1.3,
+                  },
+                },
+              }}
+            >
+              {[0, 1, 2, 3, 4, 5].map((i) => {
+                const angle = (360 / 6) * i;
+                return (
+                  <motion.g
+                    key={`inner-${i}`}
+                    variants={{
+                      hidden: { scale: 0, opacity: 0 },
+                      visible: {
+                        scale: 1,
+                        opacity: 1,
+                        transition: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] },
+                      },
+                    }}
+                  >
+                    <ellipse
+                      cx="100"
+                      cy="82"
+                      rx="10"
+                      ry="16"
+                      fill="#ff6b8a"
+                      transform={`rotate(${angle} 100 100)`}
+                      opacity="0.9"
+                    />
+                  </motion.g>
+                );
+              })}
+            </motion.g>
+
+            {/* Center */}
             <motion.g
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 1.8, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+              transition={{ delay: 1.6, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
             >
-              {/* Outer center ring */}
               <circle
-                cx="250"
-                cy="250"
-                r="45"
-                fill="url(#centerGradient)"
-                stroke="#ffaa00"
-                strokeWidth="3"
-                filter="url(#glow)"
+                cx="100"
+                cy="100"
+                r="16"
+                fill="url(#centerGrad)"
+                filter="url(#softGlow)"
               />
 
-              {/* Middle ring with texture */}
-              <circle
-                cx="250"
-                cy="250"
-                r="35"
-                fill="url(#centerInner)"
-                opacity="0.8"
-              />
-
-              {/* Inner details - rings of small dots */}
-              {Array.from({ length: 16 }).map((_, i) => {
-                const angle = (360 / 16) * i;
-                const radius = 28;
-                const x = 250 + Math.cos((angle * Math.PI) / 180) * radius;
-                const y = 250 + Math.sin((angle * Math.PI) / 180) * radius;
-                
-                return (
-                  <motion.circle
-                    key={`outer-center-${i}`}
-                    cx={x}
-                    cy={y}
-                    r="2.5"
-                    fill="#cc6600"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      delay: 2.0 + i * 0.03,
-                      duration: 0.3,
-                    }}
-                  />
-                );
-              })}
-
+              {/* Center details */}
               {Array.from({ length: 12 }).map((_, i) => {
-                const angle = (360 / 12) * i + 15;
-                const radius = 18;
-                const x = 250 + Math.cos((angle * Math.PI) / 180) * radius;
-                const y = 250 + Math.sin((angle * Math.PI) / 180) * radius;
-                
+                const angle = (360 / 12) * i;
+                const x = 100 + Math.cos((angle * Math.PI) / 180) * 10;
+                const y = 100 + Math.sin((angle * Math.PI) / 180) * 10;
                 return (
                   <motion.circle
-                    key={`mid-center-${i}`}
+                    key={i}
                     cx={x}
                     cy={y}
-                    r="2"
-                    fill="#ff8800"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      delay: 2.2 + i * 0.04,
-                      duration: 0.3,
-                    }}
+                    r="1.5"
+                    fill="#d97706"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 1.8 + i * 0.04, duration: 0.2 }}
                   />
                 );
               })}
 
-              {/* Central dots */}
-              {Array.from({ length: 8 }).map((_, i) => {
-                const angle = (360 / 8) * i;
-                const radius = 8;
-                const x = 250 + Math.cos((angle * Math.PI) / 180) * radius;
-                const y = 250 + Math.sin((angle * Math.PI) / 180) * radius;
-                
-                return (
-                  <motion.circle
-                    key={`inner-center-${i}`}
-                    cx={x}
-                    cy={y}
-                    r="1.8"
-                    fill="#ffaa00"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      delay: 2.4 + i * 0.05,
-                      duration: 0.3,
-                    }}
-                  />
-                );
-              })}
-
-              {/* Very center point */}
-              <motion.circle
-                cx="250"
-                cy="250"
-                r="4"
-                fill="#ffdd66"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 2.7, duration: 0.3 }}
-              />
+              <circle cx="100" cy="100" r="4" fill="#fbbf24" />
             </motion.g>
           </svg>
         </motion.div>
 
         {/* Text with Blur-to-Focus Effect */}
         <motion.div
-          className="text-center"
+          className="text-center px-4"
           initial={{
             opacity: 0,
             filter: 'blur(20px)',
@@ -569,20 +595,20 @@ export function KatiValentine() {
             filter: 'blur(0px)',
           }}
           transition={{
-            delay: 2.8,
+            delay: 2.2,
             duration: 1.2,
             ease: "easeOut",
           }}
         >
           <h1
-            className="text-5xl md:text-6xl font-serif tracking-wide"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif tracking-wide"
             style={{
               fontFamily: "'Playfair Display', serif",
-              background: 'linear-gradient(135deg, #ff4d4d 0%, #ff1a75 50%, #ff0066 100%)',
+              background: 'linear-gradient(135deg, #ff6b8a 0%, #ff1744 50%, #c41e3a 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              textShadow: '0 0 30px rgba(255, 77, 77, 0.3)',
+              filter: 'drop-shadow(0 0 30px rgba(255, 77, 77, 0.4))',
             }}
           >
             Frohes Valentinstag, Kati
@@ -590,29 +616,60 @@ export function KatiValentine() {
           
           {/* Subtle tagline */}
           <motion.p
-            className="mt-4 text-rose-300/70 text-lg tracking-widest"
+            className="mt-6 text-rose-200/60 text-base sm:text-lg tracking-[0.3em] uppercase"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{
-              delay: 3.5,
+              delay: 3.2,
               duration: 1,
             }}
           >
+            Mit Liebe gemacht
           </motion.p>
+
+          {/* Heart emoji animation */}
+          <motion.div
+            className="mt-4 text-3xl"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 3.8,
+              duration: 0.5,
+              ease: [0.34, 1.56, 0.64, 1],
+            }}
+          >
+            <motion.span
+              animate={{
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              💕
+            </motion.span>
+          </motion.div>
         </motion.div>
       </div>
 
       {/* Bottom hint text */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-rose-300/40 text-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-rose-300/50 text-sm text-center px-4"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{
           delay: 4,
           duration: 1,
         }}
       >
-        Klicke auf die Blume ✨
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          Klicke auf die Blume ✨
+        </motion.div>
       </motion.div>
     </div>
   );
