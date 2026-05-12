@@ -12,7 +12,6 @@ export const PROFILE = {
     { name: "Kerlib", isTeam: false, url: "https://github.com/KerYagciHTL/Kerlib" },
     { name: "KCY-Accounting", isTeam: false, url: "https://github.com/KerYagciHTL/KCY-Accounting" },
     { name: "kxrim-dev", isTeam: false, url: "https://github.com/KerYagciHTL/kxrim-dev" },
-    { name: "K-Chat", isTeam: false, url: "https://github.com/KerYagciHTL/K-Chat" },
     { name: "HtmlForge", isTeam: true, url: "https://github.com/htmlforge-team/HtmlForge" }
   ],
   skills: [

@@ -18,6 +18,20 @@ export default defineConfig({
       }
     }
   },
-  server: { port: 3000, open: true },
-  preview:{ port: 4173, open: true }
+  server: { 
+    port: 3001, 
+    strictPort: true,
+    open: true,
+    host: '0.0.0.0',
+    allowedHosts: true,
+    cors: true
+  },
+  preview:{ 
+    port: 3001, 
+    strictPort: true,
+    open: true,
+    host: '0.0.0.0',
+    allowedHosts: true,
+    cors: true
+  }
 })

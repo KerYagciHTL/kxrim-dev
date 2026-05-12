@@ -103,8 +103,8 @@ This project is licensed under the MIT License.
 
 ## Links
 
-- **Live Demo**: [kxrim.is-a.dev](https://kxrim.is-a.dev)  
+- **Live Demo**: [yagci.cc](https://yagci.cc)  
 - **GitHub**: [github.com/KerYagciHTL](https://github.com/KerYagciHTL)
-- **Try 404 error**: [kxrim.is-a.dev/uhhh](https://kxrim.is-a.dev/uhhh)
+- **Try 404 error**: [yagci.cc/uhhh](https://yagci.cc/uhhh)
 
 ---

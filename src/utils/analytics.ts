@@ -58,26 +58,8 @@ export function trackPageView(pageName: string = window.location.pathname): void
     data.lastVisit = new Date().toISOString();
     
     saveAnalyticsData(data);
-    
-    trackWithGoatCounter(pageName);
-    
-    console.log(`Page view tracked: ${pageName}`);
   } catch (error) {
     console.warn('Failed to track page view:', error);
-  }
-}
-
-function trackWithGoatCounter(path: string): void {
-  try {
-    if (window.goatcounter && window.goatcounter.count) {
-      window.goatcounter.count({
-        path: path,
-        title: document.title || 'kxrim.dev',
-        event: true
-      });
-    }
-  } catch (error) {
-    console.warn('GoatCounter tracking failed:', error);
   }
 }
 
@@ -109,22 +91,6 @@ export function getAnalyticsSummary(): {
 
 export function initializeAnalytics(): void {
   trackPageView();
-  
-  if (!window.goatcounter && !document.querySelector('script[data-goatcounter]')) {
-    const script = document.createElement('script');
-    script.setAttribute('data-goatcounter', 'https://kxrim.goatcounter.com/count');
-    script.src = '//gc.zgo.at/count.js';
-    script.async = true;
-    document.head.appendChild(script);
-  }
-}
-
-declare global {
-  interface Window {
-    goatcounter?: {
-      count: (vars?: { path?: string; title?: string; event?: boolean }) => void;
-    };
-  }
 }
 
 export { getVisitorId, getAnalyticsData };

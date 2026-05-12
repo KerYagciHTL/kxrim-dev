@@ -13,7 +13,7 @@
     "deploy": "gh-pages -d dist",
     "fetchRepos": "node fetchRepos.js"
   },
-  "homepage": "https://kxrim.is-a.dev/",
+  "homepage": "https://yagci.cc/",
   "dependencies": {
     "framer-motion": "^11.11.17",
     "lucide-react": "^0.544.0",
@@ -25,6 +25,7 @@
     "@eslint/js": "^9.15.0",
     "@types/react": "^18.3.24",
     "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.15.0",
