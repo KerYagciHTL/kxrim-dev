@@ -5,15 +5,15 @@ Personal site of Kerimcan Yagci (KerYagciHTL), live at https://yagci.cc.
 step. It is served by the systemd unit `kxrim-web` (npx serve on 127.0.0.1:3300) behind
 a cloudflared tunnel (`/etc/cloudflared/config.yml`, hostname yagci.cc).
 
-## History / what lives where
+## What lives where
 
-- `site/` — **the real site** (V4 "Apple glass" design). index.html + style.css +
-  main.js + scene.js + self-hosted fonts. Also archives the approved style demos as
-  `v4.html` and `v2.html`.
-- `demo/` — the style-demo iterations that led to V4. Kept for reference, not served.
-- `src/`, `index.html` (root), `package.json`, Vite config — the **rejected first
-  build** (dark industrial R3F concept). Not served anywhere. Safe to delete once
-  Kerimcan confirms; see CONTINUOUS/HANDOFF.md.
+- `site/` — **the site, the only codebase** (V4 "Apple glass" design): index.html,
+  style.css, main.js, scene.js, self-hosted fonts (`fonts/`), language icons
+  (`icons/`, devicon), `icon.png` (his GitHub avatar, used as favicon).
+- `package.json` — only `serve` (the systemd unit runs `npx serve … site`).
+- Everything else is documentation: CLAUDE.md, ASSETS.md, LICENSE,
+  CONTINUOUS/HANDOFF.md. There is deliberately **no README** (his request). The old
+  R3F build and the style demos were deleted 2026-07-23 (git history keeps them).
 
 ## The design (V4 — approved through 4 iterations)
 
@@ -46,9 +46,12 @@ a cloudflared tunnel (`/etc/cloudflared/config.yml`, hostname yagci.cc).
 ## Content rules (binding)
 
 All statements about Kerimcan are verified facts — never invent projects, metrics,
-quotes, or dates. SlideLizard is always "one-month Ferialpraktikum, summer 2026".
+quotes, or dates. SlideLizard: "summer internship, summer 2026, 1 month" (the German
+word Ferialpraktikum stays off the English site). Education: HTL Leonding **until
+2028** (his correction; start year unconfirmed, so the site says "until 2028").
 Afterfall is a subway-building school team project. No testimonial quotes (decided);
-"references available on request" is the ceiling.
+"references available on request" is the ceiling. The word "Servus" must not appear
+on the site (his request).
 
 ## Git rules (binding)
 
