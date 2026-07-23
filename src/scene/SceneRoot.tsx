@@ -60,7 +60,7 @@ export default function SceneRoot({ onReady, started }: SceneRootProps) {
     >
       <Canvas
         dpr={config.dpr}
-        camera={{ fov: 42, near: 0.1, far: 60, position: [0.2, 0.2, 9.6] }}
+        camera={{ fov: 42, near: 0.1, far: 40, position: [0.2, 0.2, 9.6] }}
         gl={{ antialias: false, powerPreference: 'high-performance', stencil: false }}
         onCreated={({ gl }) => {
           gl.setClearColor('#0e0f0c')
