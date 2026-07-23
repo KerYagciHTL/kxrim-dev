@@ -1,4 +1,5 @@
-/* Kerimcan Yagci — yagci.cc · interaction layer */
+/* Kerimcan Yagci — yagci.cc · interaction layer
+   © 2026 Kerimcan Yagci. All rights reserved. */
 
 const fine = matchMedia('(pointer:fine)').matches
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
