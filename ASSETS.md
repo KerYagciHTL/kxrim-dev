@@ -1,7 +1,4 @@
-# Assets — yagci.cc (live site: `site/`)
-
-Everything visual is procedural, hand-drawn SVG, or typeset — no downloaded models,
-textures, or stock imagery.
+# Assets — yagci.cc (`site/`)
 
 ## Fonts (self-hosted in `site/fonts/`, via Fontshare)
 
@@ -10,6 +7,14 @@ textures, or stock imagery.
 | Clash Display 500/600/700 | Display | ITF Free Font License (Fontshare) |
 | Switzer 400/500/600 | Text | ITF Free Font License (Fontshare) |
 
+## Icons & images
+
+| Asset | Source | License |
+| --- | --- | --- |
+| `site/icon.png` (favicon / touch icon) | Kerimcan's own GitHub avatar | his own |
+| `site/icons/*.svg` (C, C++, C#, Java, TS, Python) | [devicon](https://github.com/devicons/devicon) plain variants, recolored to `#14161f` | MIT |
+| Cursor arrows, badge, UI icons | Hand-drawn inline SVG | — |
+
 ## Code libraries (CDN, jsdelivr)
 
 | Library | Version | License |
@@ -17,15 +22,9 @@ textures, or stock imagery.
 | Lenis | 1.3.11 | MIT |
 | three.js | 0.185.1 | MIT |
 
-## Procedural / hand-made
+## Procedural
 
 | Asset | Source |
 | --- | --- |
 | Milk-glass blobs | `site/scene.js` — IcosahedronGeometry + hand-written wobble/fresnel shaders |
-| Aurora blobs, grain | CSS gradients + inline SVG `feTurbulence` data URI |
-| Cursor arrows, favicon, badge, icons | Hand-drawn inline SVG |
-
-## Legacy (rejected V1 build, not served)
-
-`src/` still references @fontsource Archivo / IBM Plex Mono (OFL 1.1) and the Ashima
-simplex-noise GLSL (MIT). Remove together with the V1 cleanup (see HANDOFF).
+| Aurora blobs, film grain | CSS gradients + inline SVG `feTurbulence` data URI |
