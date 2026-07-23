@@ -45,11 +45,12 @@
   h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.02em}
 
   /* ---------- Aurora-Hintergrund (pastell, wandert mit) ---------- */
-  .aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-  .blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+  .aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.2;will-change:transform}
   .b1{width:52vw;height:52vw;background:var(--peri);top:-18%;left:4%}
   .b2{width:44vw;height:44vw;background:var(--sky);bottom:-22%;left:34%}
   .b3{width:40vw;height:40vw;background:#c9cdfd;top:8%;right:-10%}
+  #bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none}
   .grain{position:fixed;inset:-60%;z-index:0;pointer-events:none;opacity:.04;
     background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
@@ -84,15 +85,9 @@
   .dock button:hover{transform:translateY(-3px)}
   .dock button.on{background:var(--night);color:#fff}
 
-  /* ---------- Custom Cursor ---------- */
-  .cursor{position:fixed;top:0;left:0;z-index:200;pointer-events:none;
-    width:14px;height:14px;border-radius:50%;background:#fff;mix-blend-mode:difference;
-    display:grid;place-items:center;
-    transition:width .35s var(--ease-out),height .35s var(--ease-out),background .3s,mix-blend-mode .3s}
-  .cursor span{opacity:0;font-size:.72rem;font-weight:600;color:#fff;transition:opacity .2s;white-space:nowrap}
-  .cursor.grown{width:88px;height:88px;background:var(--electric);mix-blend-mode:normal}
-  .cursor.grown span{opacity:1}
-  @media(pointer:coarse){.cursor{display:none}}
+  /* ---------- Cursor: eigenes, cleanes SVG-Asset statt Dot ---------- */
+  body{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%23fff' stroke='%2314161f' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto}
+  a,button,[role=button],label{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%234553e8' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer}
 
   /* ---------- Horizontale Schiene ---------- */
   .rail{display:flex;width:max-content;min-height:100svh;position:relative;z-index:1}
@@ -277,9 +272,9 @@
 <div class="aurora" aria-hidden="true">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 </div>
+<canvas id="bg3d" aria-hidden="true"></canvas>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
-<div class="cursor" id="cursor" aria-hidden="true"><span>Ansehen</span></div>
 
 <nav class="topbar">
   <a class="brand" href="#">Kerimcan Yagci</a>
@@ -455,19 +450,6 @@
   }), { threshold: .2 });
   document.querySelectorAll('.fade').forEach((el) => io.observe(el));
 
-  // Custom Cursor
-  const cursor = document.getElementById('cursor');
-  if (fine && !reduced) {
-    let cx = innerWidth/2, cy = innerHeight/2, tx = cx, ty = cy;
-    addEventListener('pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
-    (function move(){ cx += (tx-cx)*.2; cy += (ty-cy)*.2;
-      cursor.style.transform = `translate(${cx-7}px,${cy-7}px)`; requestAnimationFrame(move); })();
-    document.querySelectorAll('.g-card').forEach((c) => {
-      c.addEventListener('mouseenter', () => cursor.classList.add('grown'));
-      c.addEventListener('mouseleave', () => cursor.classList.remove('grown'));
-    });
-  } else cursor?.remove();
-
   // Tilt + Specular auf Glaskarten
   if (fine && !reduced) {
     document.querySelectorAll('[data-tilt]').forEach((card) => {
@@ -518,6 +500,88 @@
         magnet.style.transform = '';
       }
     }, { passive: true });
+  }
+</script>
+
+<!-- Three.js: ein stiller Milchglas-Blob im Hintergrund — schön und simpel -->
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js"}}</script>
+<script type="module">
+  import * as THREE from 'three';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const horizontal = matchMedia('(min-width: 768px)').matches;
+  const canvas = document.getElementById('bg3d');
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 30);
+  camera.position.set(0, 0, 7);
+
+  // organisch wobbelnde Kugel, matt-pastell mit weichem Fresnel-Rand
+  const geo = new THREE.IcosahedronGeometry(1.65, 48);
+  const mat = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms: { uT: { value: 0 } },
+    vertexShader: `
+      uniform float uT;
+      varying vec3 vN; varying vec3 vP;
+      void main(){
+        vec3 p = position;
+        float w = sin(p.x*1.9 + uT*.6)*sin(p.y*2.2 + uT*.5)*sin(p.z*1.6 + uT*.7);
+        p += normal * w * .22;
+        vN = normalMatrix * normal;
+        vec4 mv = modelViewMatrix * vec4(p,1.);
+        vP = mv.xyz;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      varying vec3 vN; varying vec3 vP;
+      void main(){
+        vec3 N = normalize(vN);
+        vec3 V = normalize(-vP);
+        float lit = clamp(dot(N, normalize(vec3(-.4,.8,.6))), 0., 1.);
+        vec3 base = mix(vec3(.90,.91,1.0), vec3(.72,.74,.96), 1.-lit); // fast weiß → sanftes peri
+        float fres = pow(1.-clamp(dot(N,V),0.,1.), 2.6);
+        base = mix(base, vec3(1.), fres*.85);
+        gl_FragColor = vec4(base, .5);
+      }`,
+  });
+  const blob = new THREE.Mesh(geo, mat);
+  scene.add(blob);
+
+  const place = () => {
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    // Desktop: still unten rechts, klar unterm Badge; Mobil: klein oben rechts
+    blob.position.set(horizontal ? 3.1 : 1.5, horizontal ? -0.7 : 2.0, 0);
+    blob.scale.setScalar(horizontal ? 0.62 : 0.45);
+  };
+  place();
+  addEventListener('resize', place);
+
+  let mx = 0, my = 0;
+  addEventListener('pointermove', (e) => {
+    mx = (e.clientX / innerWidth - 0.5);
+    my = (e.clientY / innerHeight - 0.5);
+  }, { passive: true });
+
+  if (reduced) {
+    renderer.render(scene, camera); // ein stilles Standbild
+  } else {
+    const loop = (t) => {
+      mat.uniforms.uT.value = t / 1000;
+      const s = horizontal ? scrollX : scrollY;
+      blob.rotation.y += (s * 0.0009 + mx * 0.55 - blob.rotation.y) * 0.04;
+      blob.rotation.x += (my * 0.4 - blob.rotation.x) * 0.04;
+      // beim Scrollen parkt der Blob langsam aus dem Bild
+      const drift = Math.min(s / innerWidth, 1.2);
+      blob.position.x = (horizontal ? 3.1 : 1.5) + drift * 1.1;
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
   }
 </script>
 </body>
