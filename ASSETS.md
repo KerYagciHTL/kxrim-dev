@@ -1,29 +1,31 @@
-# Assets
+# Assets — yagci.cc (live site: `site/`)
 
-Every visual asset on this site is generated procedurally or typeset — there are no
-downloaded models, textures, or images. This is deliberate: it keeps the bundle small
-and the composition fully parametric.
+Everything visual is procedural, hand-drawn SVG, or typeset — no downloaded models,
+textures, or stock imagery.
 
-## 3D
+## Fonts (self-hosted in `site/fonts/`, via Fontshare)
 
-| Asset | Source | License |
+| Face | Use | License |
 | --- | --- | --- |
-| Monolith (displaced box) | Procedural (`src/scene/Monolith.tsx`) | — |
-| Fragment slabs (instanced boxes) | Procedural (`src/scene/Fragments.tsx`) | — |
-| Simplex noise GLSL (`snoise`) | Ashima Arts / Stefan Gustavson, [webgl-noise](https://github.com/ashima/webgl-noise) | MIT |
+| Clash Display 500/600/700 | Display | ITF Free Font License (Fontshare) |
+| Switzer 400/500/600 | Text | ITF Free Font License (Fontshare) |
 
-## Diagrams
+## Code libraries (CDN, jsdelivr)
 
-| Asset | Source | License |
+| Library | Version | License |
 | --- | --- | --- |
-| YSL route diagram | Hand-built SVG (`src/components/ClientWork/RouteDiagram.tsx`); city list from yagcisons.at | — |
-| MOE site-plan schematic | Hand-built SVG (`src/components/ClientWork/MoeSchematic.tsx`) | — |
-| Monolith elevation drawing | Hand-built SVG (`src/components/Hero/StaticComposition.tsx`) | — |
-| Film grain | Inline SVG `feTurbulence` data URI (`src/styles/global.css`) | — |
+| Lenis | 1.3.11 | MIT |
+| three.js | 0.185.1 | MIT |
 
-## Fonts (self-hosted via Fontsource)
+## Procedural / hand-made
 
-| Face | Package | License |
-| --- | --- | --- |
-| Archivo Variable (wght + wdth) | `@fontsource-variable/archivo` 5.3.0 | OFL 1.1 |
-| IBM Plex Mono 400/500/600 | `@fontsource/ibm-plex-mono` 5.3.0 | OFL 1.1 |
+| Asset | Source |
+| --- | --- |
+| Milk-glass blobs | `site/scene.js` — IcosahedronGeometry + hand-written wobble/fresnel shaders |
+| Aurora blobs, grain | CSS gradients + inline SVG `feTurbulence` data URI |
+| Cursor arrows, favicon, badge, icons | Hand-drawn inline SVG |
+
+## Legacy (rejected V1 build, not served)
+
+`src/` still references @fontsource Archivo / IBM Plex Mono (OFL 1.1) and the Ashima
+simplex-noise GLSL (MIT). Remove together with the V1 cleanup (see HANDOFF).

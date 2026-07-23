@@ -1,81 +1,63 @@
-# Handoff — kxrim-dev rebuild
+# Handoff — yagci.cc
 
-Session date: 2026-07-23. State: **feature-complete first pass, visually verified in
-headless Chromium, not yet profiled on real hardware, not deployed.**
+Last update: 2026-07-23, after the real site shipped. **Live at https://yagci.cc.**
 
-## Design direction (approved by Kerimcan — do not silently redesign)
+## Where things stand
 
-The one idea: **"order from raw material"** — his own line, "small ideas, made into
-stable building blocks," made literal. One continuous scroll-driven camera path; a field
-of scattered instanced slabs assembles into an ordered lattice wall as you scroll; the
-hero monolith (custom GLSL: radial simplex displacement, flat facet shading) settles from
-turbulence to stillness. Visual language is technical-document, not sci-fi: hairline
-rules, measurement ticks, index numerals, manifest rows. Typography: Archivo Variable
-condensed/heavy + IBM Plex Mono, two faces total. Palette: ink `#0e0f0c`, bone
-`#e8e4da`, signal orange `#ff4d00` — nothing else. Language: **English only** (decided).
-Approved failure-mode list (no purple gradients, no gradient text, no Inter, no centered
-hero, no card grids, no fake copy) is in the original brief and still binding.
+The site went through 4 design iterations with Kerimcan reacting to *pixels* (style
+demos on yagci.cc), not descriptions — that workflow is mandatory, see memory note
+`artifact-first-design-workflow`. Timeline: V1 dark industrial R3F (rejected hard),
+V2 navy glass SaaS (rejected, "like my old site"), V3 award-genre typography (approved
+direction), V4 horizontal + Apple glass (approved: "nicht schlecht… mehr details… dann
+ist perfekt"), then max-detail pass, second blob, and the real content build. The live
+site = `site/` (static HTML/CSS/JS, V4 language, English copy, real facts only).
 
-## What works
+## Verified
 
-- Preloader (real-readiness counter → panel mask reveal), hero with per-line mask intro,
-  ClientWork (YSL route diagram drawn by scroll scrub, bleeds off-grid; MOE schematic
-  with crawling lane line, cropped "02" numeral), Projects manifest rows, Record,
-  Contact (email plate-drop + signal fill wipe)
-- Scene: camera dolly path, monolith settle + velocity agitation, scatter→lattice
-  assembly, bloom/CA/vignette, DOM grain overlay
-- Reduced-motion: no canvas, static elevation drawing, native scroll, everything visible
-  without animation. No-WebGL gets the same treatment. Noscript has a text fallback.
-- Mobile 375px verified via screenshots: type scales, nav collapses to numerals,
-  diagrams stack, scene runs reduced counts
-- `npm run build`, `lint`, `format:check`, `typecheck` all pass clean
+- Headless-Chromium screenshots of all 5 sections, desktop 1440 and mobile 375, after
+  every change. Console clean (only a headless-only ReadPixels perf note from the
+  screenshot capture itself).
+- Mobile: vertical stack, glass topbar, single-line brand, go-pills always visible on
+  touch, blobs repositioned/scaled. Kerimcan explicitly flagged mobile as critical.
+- Copyright: LICENSE (all rights reserved), meta tag, footer line. Old rejected site's
+  footer also carries it, but that site is not served.
 
-## Verified via headless screenshots (SwiftShader)
+## Not done / next steps (priority order)
 
-Desktop 1440×900, mobile 375×800, reduced-motion — all sections. Console: clean except
-one upstream `THREE.Clock` deprecation warning from R3F 9.6.1 (documented in CLAUDE.md).
-FPS numbers from headless SwiftShader (1–7 fps) are **software-rendering artifacts, not
-real measurements**.
+1. **Real-device check** — iPhone Safari specifically (backdrop-filter cost, svh,
+   horizontal Lenis is desktop-only so mobile is plain vertical scroll). All checks so
+   far are SwiftShader headless.
+2. **Perf audit** — Lighthouse on live: fonts are self-hosted woff2, but lenis+three
+   come from jsdelivr; consider self-hosting to `site/vendor/` and adding
+   `<link rel="modulepreload">`. Blur-heavy glass on old Androids may need a
+   `@supports`/quality fallback.
+3. **Repo cleanup** — the rejected V1 React/Vite codebase (src/, root index.html,
+   package.json, node_modules, dist/) is dead weight and confuses the repo story. Ask
+   Kerimcan, then delete (git history preserves it) and slim package.json (only `serve`
+   is used operationally).
+4. kxrim.is-a.dev still serves the OLD portfolio (GitHub Pages). Decide: redirect to
+   yagci.cc, or update. GitHub repo homepage field still says yagci.cc (now correct).
+5. Possible content upgrades (all optional, all must stay honest): screenshots of the
+   two client sites inside their cards; an Impressum/privacy note if he wants one;
+   og-image (currently none, just meta text).
 
-## Not done yet (prioritized)
+## Content inventory (verified facts — do not exceed)
 
-1. **Profile on real hardware** — 60fps desktop / 30fps mid-phone is a brief
-   non-negotiable and is UNVERIFIED. Knobs if needed: fragment count, monolith segments,
-   dpr cap, drop bloom on mobile.
-2. **Measure LCP** on throttled 4G (target < 2.5s). The three chunk is already lazy;
-   check whether the Archivo latin woff2 (90 kB) should be `<link rel="preload">`-ed.
-3. **Real screenshots of client sites** — the diagram frames in ClientWork were designed
-   to accept a live capture (see TODO comments in RouteDiagram/MoeSchematic). Playwright
-   + system Chromium deps are installed on this machine now; capture yagcisons.at and
-   moe-v.de and drop them in, or keep diagrams-only (they hold up on their own).
-4. Contrast audit pass (body copy tokens were chosen for ≥4.5:1 over ink, but verify
-   over the brightest scene states), keyboard walk-through, screen-reader pass.
-5. Deploy. Old site auto-deploys from this repo — **check `.github/workflows` was
-   deleted with the old tree (it was) and set up Pages/CF deployment fresh.**
+Kerimcan Yagci, kxrim / KerYagciHTL, Ansfelden AT. HTL Leonding, higher department of
+computer science, 2022–2027 (focus: software dev, databases, OS). Ferialpraktikum
+SlideLizard, summer 2026, one month. Projects: KCY-Accounting (C#/.NET 10/Avalonia,
+TCP licensing, solo), Kerlib (C# Win32 windowing lib), Afterfall (Java subway-building
+game, school team project). Clients (sole developer, both satisfied, no quotes):
+yagcisons.at (freight forwarding AT/EU), moe-v.de (traffic & safety, Berlin). Languages
+C/C++/C#/Java/TS/Python. Email k.yagci@students.htl-leonding.ac.at. HtmlForge + chat
+app: excluded (repos not public). No testimonial quotes, ever, per his decision.
 
-## Every TODO(content) — needs Kerimcan
+## Infrastructure
 
-- `src/content/content.ts`: Afterfall one-line description (repo has none)
-- `src/content/content.ts`: what he actually built at SlideLizard + which summer (year)
-- ClientWork.tsx (both entries): request real testimonial quotes from YSL and MOE —
-  **do not write placeholder quotes**
-- Old site listed "HtmlForge" (Java HTML-generation library) and a "real-time chat
-  application" — repos not public; ask whether to include, else leave out
-- `yagci.cc` is registered but 404s, and it's the GitHub repo's homepage field — is it
-  the intended canonical domain, or does kxrim.is-a.dev stay?
-
-## Open decisions
-
-- Client-site visuals: hand-built diagrams (current) vs live screenshots vs both.
-  Diagrams chosen initially because no browser was available; that constraint is gone.
-- Whether the contact-section monolith should sit slightly further right at the final
-  camera waypoint (it crowds ~40% of frame at 1440×900; reads as intentional, but
-  taste-check it on a real display).
-
-## Facts inventory (verified sources, for future copy edits)
-
-All copy in `src/content/content.ts` traces to: kxrim.is-a.dev (bundle strings),
-api.github.com/users/KerYagciHTL, yagcisons.at, moe-v.de, slidelizard.com. HTL period
-2022–2027; "Higher Department of Computer Science"; email
-k.yagci@students.htl-leonding.ac.at; Ansfelden AT. Nothing else may be asserted about
-him without asking.
+- systemd `kxrim-web`: `npx serve -l tcp://127.0.0.1:3300 site` in /opt/kxrim-dev.
+- cloudflared ingress (/etc/cloudflared/config.yml): yagci.cc → :3300. Other hostnames
+  on the same tunnel serve his client/school projects — **do not touch them**
+  (yagcisons.at :3200 is a live client site).
+- api.yagci.cc DNS points at an external IP (185.128.246.66), unrelated to this tunnel;
+  it was unreachable before we ever touched anything — pre-existing, not ours.
+- Style demos archived: yagci.cc/v4 and yagci.cc/v2 (not linked from the real site).
