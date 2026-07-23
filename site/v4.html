@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>yagci.cc — Stil-Vorschau V4</title>
+<meta name="description" content="Konzept V4 — horizontales Scrollen, Glas wie bei Apple, richtig clean." />
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#f2f0eb" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234553e8'/%3E%3Cpath d='M10 8v16M22 8l-8.5 8L22 24' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
+<link rel="preload" href="/fonts/f4.woff2" as="font" type="font/woff2" crossorigin />
+<link href="/fonts.css" rel="stylesheet" />
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --paper:#f2f0eb;
+    --night:#14161f;
+    --soft:#5d6272;
+    --electric:#4553e8;
+    --peri:#8b94ff;
+    --sky:#9fd4ff;
+    --glass:linear-gradient(135deg,rgba(255,255,255,.68),rgba(255,255,255,.34));
+    --glass-border:rgba(255,255,255,.8);
+    --glass-shadow:0 24px 60px -24px rgba(18,20,31,.22), inset 0 1px 0 rgba(255,255,255,.95);
+    --display:'Clash Display',sans-serif;
+    --text:'Switzer',system-ui,sans-serif;
+    --ease:cubic-bezier(.76,0,.24,1);
+    --ease-out:cubic-bezier(.16,1,.3,1);
+    --pad:clamp(1.5rem,4.5vw,4rem);
+  }
+
+  html.lenis,html.lenis body{height:auto}
+  .lenis.lenis-smooth{scroll-behavior:auto!important}
+
+  body{
+    background:var(--paper);
+    color:var(--night);
+    font-family:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* native Scrollbar weg — Fortschrittsleiste und Dock übernehmen */
+  html{scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
+
+  ::selection{background:var(--electric);color:#fff}
+  :focus-visible{outline:2px solid var(--electric);outline-offset:4px;border-radius:6px}
+
+  h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.02em}
+
+  /* ---------- Aurora-Hintergrund (pastell, wandert mit) ---------- */
+  .aurora{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.2;will-change:transform}
+  .b1{width:52vw;height:52vw;background:var(--peri);top:-18%;left:4%}
+  .b2{width:44vw;height:44vw;background:var(--sky);bottom:-22%;left:34%}
+  .b3{width:40vw;height:40vw;background:#c9cdfd;top:8%;right:-10%}
+  #bg3d{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  .grain{position:fixed;inset:-60%;z-index:0;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Fortschritt + UI-Chrome (fixed) ---------- */
+  .progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:90;background:rgba(20,22,31,.08)}
+  .progress i{display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--electric),var(--peri))}
+
+  .topbar{position:fixed;top:0;left:0;right:0;z-index:80;display:flex;justify-content:space-between;
+    align-items:center;padding:1.15rem var(--pad);gap:1rem;pointer-events:none}
+  .topbar>*{pointer-events:auto}
+  .brand{font-family:var(--display);font-weight:600;font-size:1.05rem;text-decoration:none;color:var(--night)}
+  .clock{font-size:.8rem;color:var(--soft);font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:.5rem;
+    background:var(--glass);backdrop-filter:blur(20px) saturate(1.6);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);
+    border-radius:999px;padding:.5rem 1.05rem;font-size:.78rem;font-weight:600;white-space:nowrap}
+  .chip .dot{width:7px;height:7px;border-radius:50%;background:var(--electric);
+    animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(69,83,232,.5)}55%{box-shadow:0 0 0 7px rgba(69,83,232,0)}}
+
+  /* Glass-Dock unten — klickbare Panel-Punkte */
+  .dock{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%);z-index:80;
+    display:flex;align-items:center;gap:.4rem;
+    background:var(--glass);backdrop-filter:blur(22px) saturate(1.7);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);
+    border-radius:999px;padding:.5rem .6rem}
+  .dock button{position:relative;width:34px;height:34px;border-radius:50%;border:0;background:none;
+    display:grid;place-items:center;font-family:var(--text);font-size:.66rem;font-weight:600;
+    color:var(--soft);transition:background .3s,color .3s,transform .3s var(--ease-out)}
+  .dock button:hover{transform:translateY(-6px) scale(1.12)}
+  .dock button:active{transform:translateY(-2px) scale(.96)}
+  .dock button.on{background:var(--night);color:#fff}
+  /* Tooltip überm Dock-Punkt */
+  .dock button::after{content:attr(data-label);position:absolute;bottom:calc(100% + 12px);left:50%;
+    transform:translateX(-50%) translateY(5px);white-space:nowrap;padding:.35rem .75rem;border-radius:9px;
+    background:var(--night);color:#fff;font-size:.68rem;font-weight:600;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .3s var(--ease-out)}
+  .dock button:hover::after{opacity:1;transform:translateX(-50%)}
+
+  /* Tastatur-Hinweis unten links */
+  .keyhint{position:fixed;left:1.4rem;bottom:1.5rem;z-index:80;display:flex;gap:.5rem;align-items:center;
+    font-size:.72rem;font-weight:600;color:var(--soft);opacity:0;transform:translateY(8px);
+    transition:opacity .6s var(--ease-out),transform .6s var(--ease-out);pointer-events:none}
+  .keyhint.show{opacity:1;transform:none}
+  .keyhint kbd{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 .45rem;
+    border-radius:8px;background:var(--glass);border:1px solid var(--glass-border);
+    box-shadow:var(--glass-shadow);font-family:var(--text);font-size:.72rem}
+
+  /* ---------- Cursor: eigenes, cleanes SVG-Asset statt Dot ---------- */
+  body{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%23fff' stroke='%2314161f' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto}
+  a,button,[role=button],label{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%234553e8' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer}
+
+  /* ---------- Horizontale Schiene ---------- */
+  .rail{display:flex;width:max-content;min-height:100svh;position:relative;z-index:1}
+  .panel{width:100vw;min-height:100svh;flex:none;display:flex;flex-direction:column;
+    justify-content:center;padding:5.5rem var(--pad) 6rem;position:relative}
+  .panel .k{display:flex;align-items:center;gap:.8rem;font-size:.78rem;font-weight:600;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:2rem}
+  .panel .k::after{content:"";width:120px;height:1px;background:rgba(20,22,31,.18)}
+
+  /* Panel 1 — Hero */
+  .giant{font-size:clamp(3rem,11.5vw,10.5rem);letter-spacing:-.03em}
+  .giant .row{display:block;overflow:hidden}
+  .giant .row>span{display:inline-block;transform:translateY(115%);
+    transition:transform 1.1s var(--ease);transition-delay:var(--d,0s)}
+  body.ready .giant .row>span{transform:none}
+  .giant .thin{font-weight:500;color:transparent;-webkit-text-stroke:1.5px var(--night);
+    background:linear-gradient(110deg,transparent 42%,rgba(69,83,232,.5) 50%,transparent 58%);
+    background-size:260% 100%;background-position:120% 0;
+    -webkit-background-clip:text;background-clip:text}
+  body.ready .giant .thin{animation:sheen 1.9s var(--ease) 1s 1 both}
+  @keyframes sheen{from{background-position:120% 0}to{background-position:-45% 0}}
+  .giant .c{display:inline-block;animation:spin 9s linear infinite;transform-origin:50% 54%}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hello{font-size:clamp(.95rem,1.5vw,1.1rem);font-weight:500;color:var(--soft);
+    display:flex;align-items:center;gap:.7rem;margin-bottom:1.1rem}
+  .hello::before{content:"";width:44px;height:1px;background:var(--night);opacity:.3}
+  .hero-note{margin-top:2.2rem;max-width:38ch;color:#3c404e;font-size:clamp(.95rem,1.3vw,1.08rem)}
+  .go{position:absolute;right:var(--pad);bottom:6rem;display:flex;align-items:center;gap:.8rem;
+    font-size:.8rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--soft)}
+  .go .lane{width:64px;height:1px;background:rgba(20,22,31,.25);position:relative;overflow:visible}
+  .go .lane i{position:absolute;top:-2.5px;left:0;width:6px;height:6px;border-radius:50%;
+    background:var(--electric);animation:lane 2s var(--ease) infinite}
+  @keyframes lane{0%{left:0;opacity:0}25%{opacity:1}90%,100%{left:calc(100% - 6px);opacity:0}}
+
+  .badge{position:absolute;right:clamp(1rem,6vw,5rem);top:clamp(5.5rem,15vh,8rem);
+    width:clamp(110px,13vw,150px);aspect-ratio:1;pointer-events:none}
+  .badge svg{width:100%;height:100%;animation:spin 14s linear infinite}
+  .badge text{font-weight:600;font-size:8.4px;letter-spacing:.22em;text-transform:uppercase;fill:var(--night)}
+  .badge .core{position:absolute;inset:0;display:grid;place-items:center}
+  .badge .core svg{width:26%;height:26%;animation:none}
+
+  /* Panel 2 — Projekte als Glaskarten */
+  .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;max-width:1180px}
+  .g-card{position:relative;border-radius:26px;padding:1.7rem 1.7rem 1.5rem;min-height:290px;
+    display:flex;flex-direction:column;justify-content:flex-end;gap:.4rem;
+    background:var(--glass);backdrop-filter:blur(26px) saturate(1.7);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);
+    text-decoration:none;color:var(--night);overflow:hidden;
+    transition:box-shadow .45s var(--ease-out);
+    transform-style:preserve-3d;will-change:transform}
+  .g-card:hover{box-shadow:0 40px 90px -30px rgba(18,20,31,.35), inset 0 1px 0 #fff}
+  /* Specular-Glanz folgt der Maus */
+  .g-card::before{content:"";position:absolute;inset:0;border-radius:inherit;opacity:0;
+    background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.9),transparent 45%);
+    transition:opacity .35s;pointer-events:none}
+  .g-card:hover::before{opacity:1}
+  .g-card .num{position:absolute;top:1.4rem;left:1.6rem;font-size:.78rem;font-weight:600;color:var(--soft)}
+  .g-card .art{position:absolute;top:2.8rem;right:-8%;width:60%;aspect-ratio:1;border-radius:32px;
+    background:linear-gradient(135deg,var(--electric),var(--peri));opacity:.16;
+    transition:transform .6s var(--ease-out),opacity .4s;
+    animation:float 7s ease-in-out infinite}
+  .g-card:hover .art{transform:rotate(-8deg) scale(1.08);opacity:.28}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+  /* "Ansehen"-Pille gleitet beim Hover herein */
+  .g-card .go-pill{position:absolute;right:1.2rem;bottom:1.2rem;display:inline-flex;align-items:center;
+    gap:.4rem;padding:.5rem .9rem;border-radius:999px;background:var(--night);color:#fff;
+    font-size:.72rem;font-weight:600;transform:translateY(180%);transition:transform .45s var(--ease)}
+  .g-card:hover .go-pill{transform:none}
+  .g-card .tag{transition:transform .35s var(--ease-out)}
+  .g-card:hover .tag{transform:translateY(-3px)}
+  .g-card:hover .tag:nth-child(2){transition-delay:.06s}
+  .g-card h3{font-size:clamp(1.4rem,2.2vw,1.9rem)}
+  .g-card p{font-size:.86rem;color:var(--soft)}
+  .g-card .tagrow{display:flex;gap:.45rem;margin-top:.7rem;flex-wrap:wrap}
+  .g-card .tag{font-size:.68rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;
+    background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8);
+    box-shadow:inset 0 1px 0 #fff}
+
+  /* Panel 3 — Kleinigkeiten */
+  .toys{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;max-width:1000px}
+  .t-btn{position:relative;overflow:hidden;border:1px solid rgba(20,22,31,.2);border-radius:999px;
+    background:rgba(255,255,255,.5);backdrop-filter:blur(14px);
+    color:var(--night);font-family:var(--text);font-weight:600;font-size:.92rem;
+    padding:.95rem 1.7rem;cursor:pointer;transition:color .4s,border-color .4s;
+    box-shadow:inset 0 1px 0 #fff}
+  .t-btn i{position:absolute;inset:0;background:#fff;border-radius:inherit;
+    transform:translateY(101%);transition:transform .45s var(--ease);font-style:normal}
+  .t-btn span{position:relative;z-index:1}
+  .t-btn:hover{border-color:#fff}
+  .t-btn:hover i{transform:none}
+  .t-btn.blue i{background:var(--electric)}
+  .t-btn.blue:hover{color:#fff;border-color:var(--electric)}
+
+  .t-arrow{display:inline-flex;align-items:center;gap:.6rem;color:var(--night);text-decoration:none;
+    font-weight:600;font-size:.92rem;padding:.95rem .4rem}
+  .t-arrow .ic{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;
+    background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);
+    box-shadow:inset 0 1px 0 #fff;overflow:hidden;position:relative}
+  .t-arrow svg{transition:transform .4s var(--ease)}
+  .t-arrow svg.ghost{position:absolute;transform:translate(-160%,160%)}
+  .t-arrow:hover svg.main{transform:translate(160%,-160%)}
+  .t-arrow:hover svg.ghost{transform:none}
+
+  .t-link{position:relative;color:var(--night);text-decoration:none;font-weight:600;font-size:.92rem;padding:.95rem .2rem}
+  .t-link::after{content:"";position:absolute;left:0;right:0;bottom:.6rem;height:2px;background:var(--electric);
+    transform:scaleX(0);transform-origin:right;transition:transform .45s var(--ease)}
+  .t-link:hover::after{transform:scaleX(1);transform-origin:left}
+
+  .t-copy{display:inline-flex;align-items:center;gap:.6rem;border:1px dashed rgba(20,22,31,.3);
+    border-radius:999px;padding:.95rem 1.5rem;background:rgba(255,255,255,.4);
+    backdrop-filter:blur(12px);color:var(--night);font-weight:500;font-size:.88rem;cursor:pointer;
+    transition:border-color .3s,background .3s}
+  .t-copy:hover{border-color:var(--electric)}
+  .t-copy.done{border-style:solid;border-color:var(--electric);background:rgba(69,83,232,.1)}
+
+  /* iOS-Schalter */
+  .t-switch{position:relative;width:54px;height:33px;border-radius:999px;border:0;
+    background:rgba(20,22,31,.16);transition:background .35s;
+    box-shadow:inset 0 1px 3px rgba(18,20,31,.18)}
+  .t-switch::after{content:"";position:absolute;top:3px;left:3px;width:27px;height:27px;border-radius:50%;
+    background:#fff;box-shadow:0 2px 7px rgba(18,20,31,.35);transition:transform .35s var(--ease)}
+  .t-switch.on{background:var(--electric)}
+  .t-switch.on::after{transform:translateX(21px)}
+
+  .t-btn:active,.seg button:active,.t-switch:active,.t-copy:active{scale:.96}
+
+  /* großes Glas-Panel mit Segment-Toggle */
+  .pane-demo{margin-top:2.4rem;max-width:560px;border-radius:26px;padding:1.6rem;
+    background:var(--glass);backdrop-filter:blur(26px) saturate(1.7);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+  .seg{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;
+    background:rgba(20,22,31,.07);border-radius:14px;padding:4px}
+  .seg .slide{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);
+    background:#fff;border-radius:11px;box-shadow:0 4px 14px -4px rgba(18,20,31,.25);
+    transition:transform .45s var(--ease)}
+  .seg button{position:relative;z-index:1;border:0;background:none;padding:.65rem 0;
+    font-family:var(--text);font-weight:600;font-size:.85rem;color:var(--soft);cursor:pointer;
+    transition:color .3s}
+  .seg button.on{color:var(--night)}
+  .pane-demo .hint{margin-top:1rem;font-size:.82rem;color:var(--soft)}
+
+  /* Panel 4 — Zutaten */
+  .ingredients{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.1rem;max-width:1100px}
+  .ing{border-radius:22px;padding:1.5rem 1.6rem;
+    background:var(--glass);backdrop-filter:blur(24px) saturate(1.6);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);
+    transition:transform .45s var(--ease-out)}
+  .ing:hover{transform:translateY(-5px)}
+  .ing .lk{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin-bottom:.7rem}
+  .ing .v{font-family:var(--display);font-weight:600;font-size:1.3rem}
+  .ing .pal{display:flex;gap:.5rem;margin-top:.3rem}
+  .ing .pal i{width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,.9);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 8px -3px rgba(18,20,31,.3);
+    transition:transform .3s var(--ease-out)}
+  .ing .pal i.copied{outline:2px solid var(--electric);outline-offset:2px}
+  .ing:hover .pal i{transform:translateY(-4px)}
+  .ing .pal i:nth-child(2){transition-delay:.05s}
+  .ing .pal i:nth-child(3){transition-delay:.1s}
+  .ing .pal i:nth-child(4){transition-delay:.15s}
+
+  /* Panel 5 — CTA */
+  .cta-card{max-width:900px;border-radius:32px;padding:clamp(2.5rem,6vw,4.5rem);text-align:center;
+    background:var(--glass);backdrop-filter:blur(28px) saturate(1.7);
+    border:1px solid var(--glass-border);box-shadow:var(--glass-shadow)}
+  .cta-card h2{font-size:clamp(2.2rem,5.5vw,4.5rem);letter-spacing:-.025em}
+  .cta-card h2 .w{display:inline-block;transition:transform .4s var(--ease-out)}
+  .cta-card h2 .w:hover{transform:translateY(-6px) rotate(-2deg)}
+  .cta-card h2 em{font-style:normal;color:transparent;-webkit-text-stroke:1.5px var(--night)}
+  .cta-card p{color:var(--soft);margin-top:1rem;font-size:.95rem}
+  .magnet{position:relative;display:inline-grid;place-items:center;margin-top:2.4rem;
+    width:clamp(110px,14vw,150px);aspect-ratio:1;border-radius:50%;
+    background:var(--electric);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;
+    will-change:transform;box-shadow:0 18px 44px -14px rgba(69,83,232,.6)}
+  .magnet::before{content:"";position:absolute;inset:-8px;border-radius:50%;
+    border:1.5px solid rgba(69,83,232,.45);animation:ring 2.8s var(--ease-out) infinite}
+  @keyframes ring{0%{transform:scale(.92);opacity:0}30%{opacity:1}100%{transform:scale(1.22);opacity:0}}
+  .magnet .rip{position:absolute;inset:0;background:#fff;border-radius:50%;
+    transform:scale(0);transition:transform .5s var(--ease)}
+  .magnet:hover .rip{transform:scale(1.05)}
+  .magnet span{position:relative;z-index:1;transition:color .3s}
+  .magnet:hover span{color:var(--electric)}
+  .cta-foot{margin-top:2rem;font-size:.78rem;color:var(--soft)}
+  .cta-foot a{color:inherit}
+  .cta-foot a:hover{color:var(--night)}
+
+  .fade{opacity:0;transform:translateY(26px);
+    transition:opacity .9s var(--ease-out),transform .9s var(--ease-out);transition-delay:var(--d,0s)}
+  .fade.in{opacity:1;transform:none}
+
+  /* ---------- Mobil: vertikal gestapelt ---------- */
+  @media(max-width:767px){
+    .topbar{background:rgba(242,240,235,.72);backdrop-filter:blur(18px) saturate(1.5);
+      border-bottom:1px solid rgba(255,255,255,.7)}
+    .rail{display:block;width:100%}
+    .panel{width:100%;min-height:auto;padding:5.5rem 1.4rem 3.5rem}
+    .panel.first{min-height:100svh}
+    .cards{grid-template-columns:1fr}
+    .badge,.go,.clock{display:none}
+    .dock{display:none}
+    .giant{font-size:clamp(3rem,15vw,10.5rem)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    .giant .row>span{transform:none}
+    .fade{opacity:1;transform:none}
+    .cursor,.grain{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+</div>
+<canvas id="bg3d" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<nav class="topbar">
+  <a class="brand" href="#">Kerimcan Yagci</a>
+  <span class="clock" id="clock">Ansfelden — 00:00:00</span>
+  <span class="chip"><span class="dot"></span>Vorschau&nbsp;V4</span>
+</nav>
+
+<div class="dock" id="dock" aria-label="Panels">
+  <button class="on" data-i="0" data-label="Start" aria-label="Start">01</button>
+  <button data-i="1" data-label="Projekte" aria-label="Projekte">02</button>
+  <button data-i="2" data-label="Details" aria-label="Details">03</button>
+  <button data-i="3" data-label="Zutaten" aria-label="Zutaten">04</button>
+  <button data-i="4" data-label="Kontakt" aria-label="Kontakt">05</button>
+</div>
+
+<div class="keyhint" id="keyhint" aria-hidden="true">
+  <kbd>←</kbd><kbd>→</kbd><span>zum Blättern</span>
+</div>
+
+<main class="rail" id="rail">
+
+  <!-- 01 · HERO -->
+  <section class="panel first">
+    <div class="badge" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <defs><path id="circ" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/></defs>
+        <text><textPath href="#circ">NACH RECHTS · V4 · YAGCI.CC · GLAS ·&#160;</textPath></text>
+      </svg>
+      <span class="core">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#14161f" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </div>
+    <p class="hello">Servus — diesmal geht&rsquo;s nach rechts</p>
+    <h1 class="giant" aria-label="Kerimcan Yagci">
+      <span class="row"><span style="--d:.05s">Kerimcan</span></span>
+      <span class="row"><span class="thin" style="--d:.15s">Yagci&nbsp;<span class="c">&copy;</span></span></span>
+    </h1>
+    <p class="hero-note fade" style="--d:.4s">Scroll einfach wie immer — die Seite fährt seitwärts. Alles liegt auf Glas: unscharfe Panels, weiche Pastell-Auren dahinter, Apple-clean.</p>
+    <div class="go" aria-hidden="true">Scrollen<span class="lane"><i></i></span></div>
+  </section>
+
+  <!-- 02 · PROJEKTE -->
+  <section class="panel">
+    <p class="k">02 — So würden Projekte aussehen</p>
+    <div class="cards">
+      <a class="g-card" href="#" data-tilt>
+        <span class="num">01</span><span class="art" aria-hidden="true"></span>
+        <h3>Projekt Eins</h3><p>Eine Zeile Beschreibung, ruhig gesetzt.</p>
+        <span class="tagrow"><span class="tag">Web</span><span class="tag">2026</span></span>
+        <span class="go-pill" aria-hidden="true">Ansehen ↗</span>
+      </a>
+      <a class="g-card" href="#" data-tilt>
+        <span class="num">02</span><span class="art" style="background:linear-gradient(135deg,var(--peri),var(--sky))" aria-hidden="true"></span>
+        <h3>Client-Referenz</h3><p>Echte Kundenseite, groß präsentiert.</p>
+        <span class="tagrow"><span class="tag">Live</span><span class="tag">Referenz</span></span>
+        <span class="go-pill" aria-hidden="true">Besuchen ↗</span>
+      </a>
+      <a class="g-card" href="#" data-tilt>
+        <span class="num">03</span><span class="art" style="background:linear-gradient(135deg,#c9cdfd,var(--peri))" aria-hidden="true"></span>
+        <h3>Projekt Drei</h3><p>App, Spiel oder Library — gleiches Glas.</p>
+        <span class="tagrow"><span class="tag">App</span><span class="tag">2026</span></span>
+        <span class="go-pill" aria-hidden="true">Ansehen ↗</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 03 · KLEINIGKEITEN -->
+  <section class="panel">
+    <p class="k">03 — Kleinigkeiten zum Anfassen</p>
+    <div class="toys">
+      <button class="t-btn" type="button"><i aria-hidden="true"></i><span>Füll-Hover, weiß</span></button>
+      <button class="t-btn blue" type="button"><i aria-hidden="true"></i><span>In Blau</span></button>
+      <a class="t-arrow" href="#"><span class="ic">
+        <svg class="main" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        <svg class="ghost" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </span>Pfeil-Wechsel</a>
+      <a class="t-link" href="#">Unterstrich links–rechts</a>
+      <button class="t-copy" id="copy" type="button"><span id="copyTxt">E-Mail kopieren</span></button>
+      <button class="t-switch" id="tswitch" type="button" role="switch" aria-checked="false" aria-label="Demo-Schalter"></button>
+    </div>
+    <div class="pane-demo">
+      <div class="seg" id="seg">
+        <span class="slide" aria-hidden="true"></span>
+        <button class="on">Alle</button><button>Web</button><button>Apps</button>
+      </div>
+      <p class="hint">Segment-Steuerung wie in iOS — der weiße Puck gleitet zwischen den Optionen.</p>
+    </div>
+  </section>
+
+  <!-- 04 · ZUTATEN -->
+  <section class="panel">
+    <p class="k">04 — Die Zutaten</p>
+    <div class="ingredients">
+      <div class="ing fade"><div class="lk">Display-Schrift</div><div class="v">Clash Display</div></div>
+      <div class="ing fade" style="--d:.06s"><div class="lk">Text-Schrift</div><div class="v" style="font-family:var(--text);font-weight:500">Switzer</div></div>
+      <div class="ing fade" style="--d:.12s"><div class="lk">Eine Farbfamilie — klick zum Kopieren</div><div class="pal" id="pal">
+        <i style="background:#f2f0eb" data-hex="#f2f0eb" title="#f2f0eb"></i><i style="background:#14161f" data-hex="#14161f" title="#14161f"></i><i style="background:#4553e8" data-hex="#4553e8" title="#4553e8"></i><i style="background:#8b94ff" data-hex="#8b94ff" title="#8b94ff"></i>
+      </div></div>
+      <div class="ing fade" style="--d:.18s"><div class="lk">Oberfläche</div><div class="v">Glas, überall</div></div>
+    </div>
+  </section>
+
+  <!-- 05 · CTA -->
+  <section class="panel" style="align-items:center">
+    <div class="cta-card">
+      <h2><span class="w">Gefällt</span> <span class="w">dir</span> <span class="w"><em>diese</em></span> <span class="w">Richtung?</span></h2>
+      <p>Magnetischer Button, Glas-Karte, Pastell-Auren. Kein Vorhang mehr am Anfang.</p>
+      <a class="magnet" id="magnet" href="mailto:k.yagci@students.htl-leonding.ac.at"><span class="rip" aria-hidden="true"></span><span>Sag&rsquo;s mir</span></a>
+      <p class="cta-foot">© 2026 Kerimcan Yagci — Konzept V4 · <a href="/v2.html">V2</a> · <a href="https://github.com/KerYagciHTL">GitHub</a></p>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.11/dist/lenis.min.js"></script>
+<script>
+  const fine = matchMedia('(pointer:fine)').matches;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const horizontal = matchMedia('(min-width: 768px)').matches;
+
+  // Name-Reveal direkt nach Load — kein Vorhang mehr
+  addEventListener('load', () => requestAnimationFrame(() => document.body.classList.add('ready')));
+  if (reduced) document.body.classList.add('ready');
+
+  // Lenis: Desktop horizontal (Mausrad scrollt nach rechts), mobil normal vertikal
+  let lenis = null;
+  if (!reduced && window.Lenis) {
+    lenis = new Lenis(horizontal
+      ? { orientation: 'horizontal', gestureOrientation: 'both', duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 2.5) }
+      : { duration: 1.1, easing: (t) => 1 - Math.pow(1 - t, 2.5) });
+    const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+
+  // Uhr (Wien)
+  const clock = document.getElementById('clock');
+  const tick = () => clock.textContent =
+    'Ansfelden — ' + new Date().toLocaleTimeString('de-AT', { timeZone: 'Europe/Vienna' });
+  tick(); setInterval(tick, 1000);
+
+  // Fortschritt + Dock + Aurora-Parallax
+  const bar = document.getElementById('bar');
+  const dockBtns = [...document.querySelectorAll('.dock button')];
+  const blobs = [...document.querySelectorAll('.blob')];
+  const PANEL_NAMES = ['Start', 'Projekte', 'Details', 'Zutaten', 'Kontakt'];
+  const update = () => {
+    const max = horizontal
+      ? document.documentElement.scrollWidth - innerWidth
+      : document.documentElement.scrollHeight - innerHeight;
+    const pos = horizontal ? scrollX : scrollY;
+    const p = max > 0 ? pos / max : 0;
+    bar.style.width = (p * 100) + '%';
+    const idx = Math.round(p * 4);
+    dockBtns.forEach((b, i) => b.classList.toggle('on', i === idx));
+    document.title = `yagci.cc — 0${idx + 1} · ${PANEL_NAMES[idx]}`;
+    if (horizontal && !reduced) {
+      blobs[0].style.transform = `translateX(${pos * -0.06}px)`;
+      blobs[1].style.transform = `translateX(${pos * -0.12}px)`;
+      blobs[2].style.transform = `translateX(${pos * -0.03}px)`;
+    }
+  };
+  addEventListener('scroll', update, { passive: true }); update();
+
+  // Dock-Klicks + Pfeiltasten springen zu Panels
+  const goTo = (i) => {
+    const target = i * innerWidth;
+    if (horizontal) { lenis ? lenis.scrollTo(target) : scrollTo({ left: target, behavior: 'smooth' }); }
+    else {
+      const el = document.querySelectorAll('.panel')[i];
+      el && (lenis ? lenis.scrollTo(el) : el.scrollIntoView({ behavior: 'smooth' }));
+    }
+  };
+  dockBtns.forEach((b) => b.addEventListener('click', () => goTo(+b.dataset.i)));
+
+  // Tastatur-Hinweis: kurz zeigen, beim ersten Blättern verabschieden
+  const keyhint = document.getElementById('keyhint');
+  let hintDone = false;
+  if (horizontal && fine) {
+    setTimeout(() => !hintDone && keyhint.classList.add('show'), 1800);
+    setTimeout(() => keyhint.classList.remove('show'), 9000);
+  }
+  addEventListener('keydown', (e) => {
+    if (!horizontal) return;
+    const cur = Math.round(scrollX / innerWidth);
+    if (e.key === 'ArrowRight') { goTo(Math.min(4, cur + 1)); hintDone = true; keyhint.classList.remove('show'); }
+    if (e.key === 'ArrowLeft') { goTo(Math.max(0, cur - 1)); hintDone = true; keyhint.classList.remove('show'); }
+  });
+
+  // Hero: Maus-Parallax — Name und Badge driften gegenläufig
+  if (fine && !reduced) {
+    const giant = document.querySelector('.giant');
+    const badge = document.querySelector('.badge');
+    addEventListener('pointermove', (e) => {
+      const nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
+      giant.style.translate = `${nx * -10}px ${ny * -6}px`;
+      badge.style.translate = `${nx * 16}px ${ny * 12}px`;
+    }, { passive: true });
+  }
+
+  // iOS-Schalter
+  const tswitch = document.getElementById('tswitch');
+  tswitch.addEventListener('click', () => {
+    const on = tswitch.classList.toggle('on');
+    tswitch.setAttribute('aria-checked', on);
+  });
+
+  // Farb-Chips kopieren
+  document.querySelectorAll('#pal i').forEach((chip) => {
+    chip.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(chip.dataset.hex); } catch {}
+      chip.classList.add('copied');
+      setTimeout(() => chip.classList.remove('copied'), 900);
+    });
+  });
+
+  // Fades (funktionieren horizontal wie vertikal)
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: .2 });
+  document.querySelectorAll('.fade').forEach((el) => io.observe(el));
+
+  // Tilt + Specular auf Glaskarten
+  if (fine && !reduced) {
+    document.querySelectorAll('[data-tilt]').forEach((card) => {
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        card.style.setProperty('--mx', (x*100)+'%');
+        card.style.setProperty('--my', (y*100)+'%');
+        card.style.transform = `perspective(800px) rotateY(${(x-.5)*7}deg) rotateX(${(0.5-y)*7}deg)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transition = 'transform .6s cubic-bezier(.16,1,.3,1)';
+        card.style.transform = '';
+        setTimeout(() => card.style.transition = '', 600);
+      });
+    });
+  }
+
+  // Segment-Toggle
+  const seg = document.getElementById('seg');
+  const segBtns = [...seg.querySelectorAll('button')];
+  const slide = seg.querySelector('.slide');
+  segBtns.forEach((b, i) => b.addEventListener('click', () => {
+    segBtns.forEach((x) => x.classList.remove('on'));
+    b.classList.add('on');
+    slide.style.transform = `translateX(${i * 100}%)`;
+  }));
+
+  // E-Mail kopieren
+  const copyBtn = document.getElementById('copy'), copyTxt = document.getElementById('copyTxt');
+  copyBtn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText('k.yagci@students.htl-leonding.ac.at'); } catch {}
+    copyBtn.classList.add('done'); copyTxt.textContent = 'Kopiert ✓';
+    setTimeout(() => { copyBtn.classList.remove('done'); copyTxt.textContent = 'E-Mail kopieren'; }, 1800);
+  });
+
+  // Magnet
+  const magnet = document.getElementById('magnet');
+  if (fine && !reduced) {
+    addEventListener('pointermove', (e) => {
+      const r = magnet.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height/2);
+      if (Math.hypot(dx, dy) < 170) {
+        magnet.style.transition = 'transform .2s ease-out';
+        magnet.style.transform = `translate(${dx*.35}px,${dy*.35}px)`;
+      } else {
+        magnet.style.transition = 'transform .6s cubic-bezier(.2,.9,.3,1.4)';
+        magnet.style.transform = '';
+      }
+    }, { passive: true });
+  }
+</script>
+
+<!-- Three.js: ein stiller Milchglas-Blob im Hintergrund — schön und simpel -->
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js"}}</script>
+<script type="module">
+  import * as THREE from 'three';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const horizontal = matchMedia('(min-width: 768px)').matches;
+  const canvas = document.getElementById('bg3d');
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 30);
+  camera.position.set(0, 0, 7);
+
+  // organisch wobbelnde Kugel, matt-pastell mit weichem Fresnel-Rand
+  const geo = new THREE.IcosahedronGeometry(1.65, 48);
+  const mat = new THREE.ShaderMaterial({
+    transparent: true,
+    uniforms: { uT: { value: 0 } },
+    vertexShader: `
+      uniform float uT;
+      varying vec3 vN; varying vec3 vP;
+      void main(){
+        vec3 p = position;
+        float w = sin(p.x*1.9 + uT*.6)*sin(p.y*2.2 + uT*.5)*sin(p.z*1.6 + uT*.7);
+        p += normal * w * .22;
+        vN = normalMatrix * normal;
+        vec4 mv = modelViewMatrix * vec4(p,1.);
+        vP = mv.xyz;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      varying vec3 vN; varying vec3 vP;
+      void main(){
+        vec3 N = normalize(vN);
+        vec3 V = normalize(-vP);
+        float lit = clamp(dot(N, normalize(vec3(-.4,.8,.6))), 0., 1.);
+        vec3 base = mix(vec3(.90,.91,1.0), vec3(.72,.74,.96), 1.-lit); // fast weiß → sanftes peri
+        float fres = pow(1.-clamp(dot(N,V),0.,1.), 2.6);
+        base = mix(base, vec3(1.), fres*.85);
+        gl_FragColor = vec4(base, .5);
+      }`,
+  });
+  const blob = new THREE.Mesh(geo, mat);
+  scene.add(blob);
+
+  // zweiter, kleinerer Zwilling oben links — mit Phasenversatz, damit die
+  // beiden nie synchron atmen und es natürlich wirkt
+  const mat2 = mat.clone();
+  const blob2 = new THREE.Mesh(geo, mat2);
+  scene.add(blob2);
+
+  const place = () => {
+    const w = innerWidth, h = innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    // Desktop: still unten rechts, klar unterm Badge; Mobil: klein oben rechts
+    blob.position.set(horizontal ? 3.1 : 1.5, horizontal ? -0.7 : 2.0, 0);
+    blob.scale.setScalar(horizontal ? 0.62 : 0.45);
+    // Zwilling oben links, etwas kleiner und weiter hinten
+    blob2.position.set(horizontal ? -3.4 : -1.4, horizontal ? 1.7 : -2.4, -0.6);
+    blob2.scale.setScalar(horizontal ? 0.42 : 0.32);
+  };
+  place();
+  addEventListener('resize', place);
+
+  let mx = 0, my = 0;
+  addEventListener('pointermove', (e) => {
+    mx = (e.clientX / innerWidth - 0.5);
+    my = (e.clientY / innerHeight - 0.5);
+  }, { passive: true });
+
+  if (reduced) {
+    renderer.render(scene, camera); // ein stilles Standbild
+  } else {
+    const loop = (t) => {
+      mat.uniforms.uT.value = t / 1000;
+      mat2.uniforms.uT.value = t / 1000 + 9.4; // Phasenversatz
+      const s = horizontal ? scrollX : scrollY;
+      blob.rotation.y += (s * 0.0009 + mx * 0.55 - blob.rotation.y) * 0.04;
+      blob.rotation.x += (my * 0.4 - blob.rotation.x) * 0.04;
+      blob2.rotation.y += (s * -0.0006 + mx * -0.4 - blob2.rotation.y) * 0.03;
+      blob2.rotation.x += (my * -0.3 - blob2.rotation.x) * 0.03;
+      // beim Scrollen parken die Blobs gegenläufig aus dem Bild
+      const drift = Math.min(s / innerWidth, 1.2);
+      blob.position.x = (horizontal ? 3.1 : 1.5) + drift * 1.1;
+      blob2.position.x = (horizontal ? -3.4 : -1.4) - drift * 0.9;
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop);
+    };
+    requestAnimationFrame(loop);
+  }
+</script>
+</body>
+</html>
