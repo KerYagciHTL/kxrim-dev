@@ -38,16 +38,17 @@ export function Monolith({ segments }: MonolithProps) {
     mat.uniforms.uTime!.value = state.clock.elapsedTime
     mat.uniforms.uCameraPos!.value.copy(state.camera.position)
 
-    // settle: 1 at page top → 0.08 by 40% scroll, agitated by velocity
+    // settle: 1 at page top → 0.14 by 40% scroll, agitated by velocity.
+    // The floor stays above zero so the facets never fully smooth out.
     const settled = THREE.MathUtils.clamp(1 - scrollState.progress / 0.4, 0, 1)
     const agitation = Math.min(Math.abs(scrollState.velocity) * 0.012, 0.35)
-    const target = 0.08 + settled * 0.92 + agitation
+    const target = 0.14 + settled * 0.86 + agitation
     const current = mat.uniforms.uChaos!.value as number
     mat.uniforms.uChaos!.value = THREE.MathUtils.damp(current, target, 3.2, delta)
   })
 
   return (
-    <mesh position={[2.3, 0.1, 0]} rotation={[0, -0.35, 0]}>
+    <mesh position={[2.9, -0.35, -0.3]} rotation={[0, -0.35, 0]}>
       <boxGeometry args={[1.55, 3.6, 1.55, segments, segments, segments]} />
       <shaderMaterial
         ref={matRef}

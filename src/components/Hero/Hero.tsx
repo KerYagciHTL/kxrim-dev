@@ -1,14 +1,18 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { identity } from '../../content/content.ts'
+import { StaticComposition } from './StaticComposition.tsx'
 import styles from './Hero.module.css'
 
 interface HeroProps {
   introDone: boolean
   reducedMotion: boolean
+  /** true when the live scene is off (reduced motion or no WebGL) —
+   *  the hero shows the measured drawing instead */
+  staticScene: boolean
 }
 
-export function Hero({ introDone, reducedMotion }: HeroProps) {
+export function Hero({ introDone, reducedMotion, staticScene }: HeroProps) {
   const rootRef = useRef<HTMLElement>(null)
   const tlRef = useRef<gsap.core.Timeline | null>(null)
 
@@ -50,6 +54,7 @@ export function Hero({ introDone, reducedMotion }: HeroProps) {
   return (
     <section className={styles.hero} id="top" ref={rootRef} aria-label="Introduction">
       <div className={styles.ruler} aria-hidden="true" />
+      {staticScene && <StaticComposition />}
 
       <h1 className={styles.title}>
         <span className={styles.lineWrap}>

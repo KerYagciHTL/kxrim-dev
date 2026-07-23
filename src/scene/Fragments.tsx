@@ -33,35 +33,36 @@ export function Fragments({ count }: FragmentsProps) {
   const data = useMemo<FragmentData[]>(() => {
     const rng = mulberry32(41) // deterministic: same cloud every visit
     const items: FragmentData[] = []
-    const cols = 14
+    const cols = 20
     const rows = Math.ceil(count / cols)
-    const latticeOrigin = new THREE.Vector3(-4.6, -2.6, -5.5)
+    // compact wall, kept well behind the camera path (z ≈ -8)
+    const latticeOrigin = new THREE.Vector3(-6.4, -3.2, -8.2)
     const e = new THREE.Euler()
 
     for (let i = 0; i < count; i++) {
-      // scattered: a loose torus of debris around the corridor
+      // scattered: loose debris field, always behind the z = 0 plane
       const theta = rng() * Math.PI * 2
-      const radius = 5 + rng() * 7
+      const radius = 4.5 + rng() * 7
       const scatterPos = new THREE.Vector3(
         Math.cos(theta) * radius,
-        (rng() - 0.5) * 11,
-        -3 + Math.sin(theta) * radius - rng() * 9,
+        (rng() - 0.5) * 9,
+        -5 + Math.sin(theta) * radius * 0.4 - rng() * 7,
       )
 
-      // ordered: a lattice wall, column by column, with hand-placed jitter
+      // ordered: a slat wall, column by column, with hand-placed jitter
       const col = i % cols
       const row = Math.floor(i / cols)
       const orderPos = new THREE.Vector3(
-        latticeOrigin.x + col * 0.62 + (rng() - 0.5) * 0.05,
-        latticeOrigin.y + row * 0.34 + (rng() - 0.5) * 0.04,
-        latticeOrigin.z + Math.sin(col * 0.8) * 0.5,
+        latticeOrigin.x + col * 0.42 + (rng() - 0.5) * 0.04,
+        latticeOrigin.y + row * 0.24 + (rng() - 0.5) * 0.03,
+        latticeOrigin.z + Math.sin(col * 0.55) * 0.35,
       )
 
       const scatterQuat = new THREE.Quaternion().setFromEuler(
         e.set(rng() * Math.PI * 2, rng() * Math.PI * 2, rng() * Math.PI * 2),
       )
       const orderQuat = new THREE.Quaternion().setFromEuler(
-        e.set(0, Math.sin(col * 0.8) * 0.16, 0),
+        e.set(0, Math.sin(col * 0.55) * 0.12, 0),
       )
 
       const s = 0.7 + rng() * 0.9
@@ -70,7 +71,7 @@ export function Fragments({ count }: FragmentsProps) {
         orderPos,
         scatterQuat,
         orderQuat,
-        scale: new THREE.Vector3(0.5 * s, 0.09 * s, 0.28 * s),
+        scale: new THREE.Vector3(0.4 * s, 0.075 * s, 0.22 * s),
         stagger: (row / rows) * 0.55 + rng() * 0.25,
         drift: rng() * Math.PI * 2,
       })
@@ -83,9 +84,9 @@ export function Fragments({ count }: FragmentsProps) {
     const arr = new Float32Array(count * 3)
     const c = new THREE.Color()
     for (let i = 0; i < count; i++) {
-      // most slabs are bone knocked toward ink; ~7% carry the signal
-      if (rng() < 0.07) c.copy(SIGNAL)
-      else c.copy(BONE).multiplyScalar(0.32 + rng() * 0.45)
+      // most slabs are bone knocked well toward ink; ~6% carry the signal
+      if (rng() < 0.06) c.copy(SIGNAL)
+      else c.copy(BONE).multiplyScalar(0.16 + rng() * 0.26)
       c.toArray(arr, i * 3)
     }
     return arr

@@ -14,7 +14,7 @@ interface EffectsProps {
 export function Effects({ isMobile }: EffectsProps) {
   return (
     <EffectComposer multisampling={isMobile ? 0 : 4}>
-      <Bloom intensity={0.42} luminanceThreshold={0.62} luminanceSmoothing={0.3} mipmapBlur />
+      <Bloom intensity={0.35} luminanceThreshold={0.7} luminanceSmoothing={0.3} mipmapBlur />
       {isMobile ? (
         <></>
       ) : (

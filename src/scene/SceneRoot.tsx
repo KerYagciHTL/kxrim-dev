@@ -66,10 +66,10 @@ export default function SceneRoot({ onReady, started }: SceneRootProps) {
           gl.setClearColor('#0e0f0c')
         }}
       >
-        <fog attach="fog" args={['#0e0f0c', 6, 22]} />
-        <ambientLight intensity={0.35} color="#e8e4da" />
-        <directionalLight position={[-4, 6, 4]} intensity={1.1} color="#e8e4da" />
-        <pointLight position={[-4, -1, -4]} intensity={6} color="#ff4d00" distance={14} />
+        <fog attach="fog" args={['#0e0f0c', 5, 17]} />
+        <ambientLight intensity={0.28} color="#e8e4da" />
+        <directionalLight position={[-4, 6, 4]} intensity={0.75} color="#e8e4da" />
+        <pointLight position={[-3, -1, -3]} intensity={2} color="#ff4d00" distance={9} decay={2} />
 
         <CameraRig started={started} />
         <Monolith segments={config.monolithSegments} />

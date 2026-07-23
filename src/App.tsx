@@ -13,13 +13,23 @@ import { initNativeScrollTracking, initSmoothScroll } from './lib/smoothScroll.t
 // first paint never waits on it.
 const SceneRoot = lazy(() => import('./scene/SceneRoot.tsx'))
 
+function supportsWebGL(): boolean {
+  try {
+    const canvas = document.createElement('canvas')
+    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
+  } catch {
+    return false
+  }
+}
+
 export default function App() {
   const reducedMotion = useReducedMotion()
   const [fontsReady, setFontsReady] = useState(false)
   const [sceneReady, setSceneReady] = useState(false)
   const [introDone, setIntroDone] = useState(false)
+  const [webgl] = useState(supportsWebGL)
 
-  const sceneEnabled = !reducedMotion
+  const sceneEnabled = !reducedMotion && webgl
 
   useEffect(() => {
     let alive = true
@@ -71,7 +81,7 @@ export default function App() {
       <Nav />
 
       <main id="content">
-        <Hero introDone={introDone} reducedMotion={reducedMotion} />
+        <Hero introDone={introDone} reducedMotion={reducedMotion} staticScene={!sceneEnabled} />
         <ClientWork reducedMotion={reducedMotion} />
         <Projects reducedMotion={reducedMotion} />
         <Record reducedMotion={reducedMotion} />

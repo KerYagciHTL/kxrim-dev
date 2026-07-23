@@ -75,7 +75,7 @@ export const monolithVertex = /* glsl */ `
 
     // radial displacement: continuous across box edges, so no seams
     vec3 dir = normalize(vec3(pos.x, pos.y * 0.25, pos.z));
-    float amp = uChaos * 0.42;
+    float amp = uChaos * 0.34;
     vec3 displaced = pos + dir * n * amp;
 
     vDisp = n * uChaos;
@@ -106,11 +106,11 @@ export const monolithFragment = /* glsl */ `
     float d1 = max(dot(N, L1), 0.0);
     float d2 = max(dot(N, L2), 0.0);
 
-    vec3 base = mix(uInk * 1.9, uBone, d1 * 0.62 + d2 * 0.10);
+    vec3 base = mix(uInk * 1.55, uBone, d1 * 0.44 + d2 * 0.08);
 
     // fresnel rim keeps the silhouette legible against the ink
     float fres = pow(1.0 - max(dot(N, V), 0.0), 3.0);
-    base += uBone * fres * 0.30;
+    base += uBone * fres * 0.22;
 
     // displacement peaks catch the accent — sparks of signal on turbulence
     float peak = smoothstep(0.45, 0.95, abs(vDisp));
