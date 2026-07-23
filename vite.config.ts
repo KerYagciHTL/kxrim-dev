@@ -10,8 +10,14 @@ export default defineConfig({
     // separate chunk that is only fetched when the scene lazy-loads.
     rollupOptions: {
       output: {
-        manualChunks: {
-          three: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
+        manualChunks(id) {
+          if (
+            id.includes('node_modules/three/') ||
+            id.includes('node_modules/@react-three/') ||
+            id.includes('node_modules/postprocessing/')
+          ) {
+            return 'three'
+          }
         },
       },
     },

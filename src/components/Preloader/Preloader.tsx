@@ -21,20 +21,24 @@ export function Preloader({ progress, reducedMotion, onComplete }: PreloaderProp
   const counterRef = useRef<HTMLSpanElement>(null)
   const ruleRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef(progress)
-  progressRef.current = progress
-
   const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
 
   useEffect(() => {
-    if (reducedMotion) {
-      // No choreography: wait for readiness, then hand over.
-      if (progress >= 1) {
-        const t = setTimeout(() => onCompleteRef.current(), 120)
-        return () => clearTimeout(t)
-      }
-      return
+    progressRef.current = progress
+    onCompleteRef.current = onComplete
+  }, [progress, onComplete])
+
+  // Reduced motion: no choreography — wait for readiness, then hand over.
+  useEffect(() => {
+    if (!reducedMotion) return
+    if (progress >= 1) {
+      const t = setTimeout(() => onCompleteRef.current(), 120)
+      return () => clearTimeout(t)
     }
+  }, [reducedMotion, progress])
+
+  useEffect(() => {
+    if (reducedMotion) return
 
     const start = performance.now()
     let shown = 0
@@ -69,7 +73,7 @@ export function Preloader({ progress, reducedMotion, onComplete }: PreloaderProp
       cancelAnimationFrame(raf)
       clearTimeout(exitTimer)
     }
-  }, [reducedMotion, progress])
+  }, [reducedMotion])
 
   return (
     <div

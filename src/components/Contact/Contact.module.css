@@ -1,0 +1,123 @@
+.root {
+  position: relative;
+  min-height: 88svh;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(6rem, 14vh, 11rem) 0 0;
+}
+
+.inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: 0 var(--gutter) 2rem;
+}
+
+.headerBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4rem;
+}
+
+.sectionIndex {
+  font-family: var(--font-mono);
+  font-size: var(--meta-size);
+  font-weight: 600;
+  letter-spacing: var(--meta-tracking);
+  color: var(--signal);
+}
+
+.sectionTitle {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+.avail {
+  margin-top: 2.2rem;
+  max-width: 40ch;
+  color: var(--bone-70);
+}
+
+.email {
+  display: block;
+  margin-top: 1.6rem;
+}
+
+.emailMask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.06em;
+}
+
+.emailInner {
+  display: block;
+  font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
+  font-weight: var(--display-weight);
+  font-size: clamp(1.3rem, 4.4vw, 4rem);
+  line-height: 1.05;
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+  word-break: break-all;
+  background-image: linear-gradient(var(--signal), var(--signal));
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  transition: background-size 0.55s var(--ease-mask);
+  -webkit-box-decoration-break: clone;
+}
+
+.email:hover .emailInner,
+.email:focus-visible .emailInner {
+  background-size: 100% 100%;
+  color: var(--ink);
+}
+
+.at {
+  color: var(--signal);
+  transition: color 0.55s var(--ease-mask);
+}
+
+.email:hover .at,
+.email:focus-visible .at {
+  color: var(--ink);
+}
+
+.links {
+  display: flex;
+  gap: 2.4rem;
+  margin-top: 2.6rem;
+}
+
+.links a {
+  font-family: var(--font-mono);
+  font-size: var(--meta-size);
+  font-weight: 600;
+  letter-spacing: var(--meta-tracking);
+  text-transform: uppercase;
+  color: var(--bone-70);
+  border-bottom: 1px solid var(--hairline-strong);
+  padding-bottom: 0.25rem;
+  transition:
+    color 0.25s var(--ease-drift),
+    border-color 0.25s var(--ease-drift);
+}
+
+.links a:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+
+.colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bone-45);
+}
