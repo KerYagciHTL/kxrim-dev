@@ -18,7 +18,13 @@ export function MoeSchematic() {
         aria-label="Road plan schematic with a hatched restricted parking zone and a no-stopping sign"
       >
         <defs>
-          <pattern id="moe-hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <pattern
+            id="moe-hatch"
+            width="8"
+            height="8"
+            patternTransform="rotate(45)"
+            patternUnits="userSpaceOnUse"
+          >
             <line x1="0" y1="0" x2="0" y2="8" stroke="var(--signal)" strokeWidth="1.4" />
           </pattern>
         </defs>
