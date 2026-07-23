@@ -1,37 +1,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// https://vite.dev/config/
 export default defineConfig({
-  base: '/',
   plugins: [react()],
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: false,
+    target: 'es2022',
+    // three.js is large; keep it (and everything that depends on it) in a
+    // separate chunk that is only fetched when the scene lazy-loads.
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          motion: ['framer-motion'],
-          icons: ['lucide-react']
-        }
-      }
-    }
+          three: ['three', '@react-three/fiber', '@react-three/drei', '@react-three/postprocessing'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1100,
   },
-  server: { 
-    port: 3001, 
-    strictPort: true,
-    open: true,
-    host: '0.0.0.0',
-    allowedHosts: true,
-    cors: true
-  },
-  preview:{ 
-    port: 3001, 
-    strictPort: true,
-    open: true,
-    host: '0.0.0.0',
-    allowedHosts: true,
-    cors: true
-  }
 })
