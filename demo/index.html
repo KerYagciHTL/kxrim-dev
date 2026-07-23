@@ -646,6 +646,12 @@
   const blob = new THREE.Mesh(geo, mat);
   scene.add(blob);
 
+  // zweiter, kleinerer Zwilling oben links — mit Phasenversatz, damit die
+  // beiden nie synchron atmen und es natürlich wirkt
+  const mat2 = mat.clone();
+  const blob2 = new THREE.Mesh(geo, mat2);
+  scene.add(blob2);
+
   const place = () => {
     const w = innerWidth, h = innerHeight;
     renderer.setSize(w, h);
@@ -654,6 +660,9 @@
     // Desktop: still unten rechts, klar unterm Badge; Mobil: klein oben rechts
     blob.position.set(horizontal ? 3.1 : 1.5, horizontal ? -0.7 : 2.0, 0);
     blob.scale.setScalar(horizontal ? 0.62 : 0.45);
+    // Zwilling oben links, etwas kleiner und weiter hinten
+    blob2.position.set(horizontal ? -3.4 : -1.4, horizontal ? 1.7 : -2.4, -0.6);
+    blob2.scale.setScalar(horizontal ? 0.42 : 0.32);
   };
   place();
   addEventListener('resize', place);
@@ -669,12 +678,16 @@
   } else {
     const loop = (t) => {
       mat.uniforms.uT.value = t / 1000;
+      mat2.uniforms.uT.value = t / 1000 + 9.4; // Phasenversatz
       const s = horizontal ? scrollX : scrollY;
       blob.rotation.y += (s * 0.0009 + mx * 0.55 - blob.rotation.y) * 0.04;
       blob.rotation.x += (my * 0.4 - blob.rotation.x) * 0.04;
-      // beim Scrollen parkt der Blob langsam aus dem Bild
+      blob2.rotation.y += (s * -0.0006 + mx * -0.4 - blob2.rotation.y) * 0.03;
+      blob2.rotation.x += (my * -0.3 - blob2.rotation.x) * 0.03;
+      // beim Scrollen parken die Blobs gegenläufig aus dem Bild
       const drift = Math.min(s / innerWidth, 1.2);
       blob.position.x = (horizontal ? 3.1 : 1.5) + drift * 1.1;
+      blob2.position.x = (horizontal ? -3.4 : -1.4) - drift * 0.9;
       renderer.render(scene, camera);
       requestAnimationFrame(loop);
     };
