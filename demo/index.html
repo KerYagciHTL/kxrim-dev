@@ -6,6 +6,8 @@
 <title>yagci.cc — Stil-Vorschau V4</title>
 <meta name="description" content="Konzept V4 — horizontales Scrollen, Glas wie bei Apple, richtig clean." />
 <meta name="robots" content="noindex" />
+<meta name="theme-color" content="#f2f0eb" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%234553e8'/%3E%3Cpath d='M10 8v16M22 8l-8.5 8L22 24' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E" />
 <link rel="preload" href="/fonts/f4.woff2" as="font" type="font/woff2" crossorigin />
 <link href="/fonts.css" rel="stylesheet" />
 <style>
@@ -38,6 +40,10 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
   }
+
+  /* native Scrollbar weg — Fortschrittsleiste und Dock übernehmen */
+  html{scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
 
   ::selection{background:var(--electric);color:#fff}
   :focus-visible{outline:2px solid var(--electric);outline-offset:4px;border-radius:6px}
@@ -79,11 +85,27 @@
     background:var(--glass);backdrop-filter:blur(22px) saturate(1.7);
     border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);
     border-radius:999px;padding:.5rem .6rem}
-  .dock button{width:34px;height:34px;border-radius:50%;border:0;background:none;cursor:pointer;
+  .dock button{position:relative;width:34px;height:34px;border-radius:50%;border:0;background:none;
     display:grid;place-items:center;font-family:var(--text);font-size:.66rem;font-weight:600;
     color:var(--soft);transition:background .3s,color .3s,transform .3s var(--ease-out)}
-  .dock button:hover{transform:translateY(-3px)}
+  .dock button:hover{transform:translateY(-6px) scale(1.12)}
+  .dock button:active{transform:translateY(-2px) scale(.96)}
   .dock button.on{background:var(--night);color:#fff}
+  /* Tooltip überm Dock-Punkt */
+  .dock button::after{content:attr(data-label);position:absolute;bottom:calc(100% + 12px);left:50%;
+    transform:translateX(-50%) translateY(5px);white-space:nowrap;padding:.35rem .75rem;border-radius:9px;
+    background:var(--night);color:#fff;font-size:.68rem;font-weight:600;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .3s var(--ease-out)}
+  .dock button:hover::after{opacity:1;transform:translateX(-50%)}
+
+  /* Tastatur-Hinweis unten links */
+  .keyhint{position:fixed;left:1.4rem;bottom:1.5rem;z-index:80;display:flex;gap:.5rem;align-items:center;
+    font-size:.72rem;font-weight:600;color:var(--soft);opacity:0;transform:translateY(8px);
+    transition:opacity .6s var(--ease-out),transform .6s var(--ease-out);pointer-events:none}
+  .keyhint.show{opacity:1;transform:none}
+  .keyhint kbd{display:inline-grid;place-items:center;min-width:26px;height:26px;padding:0 .45rem;
+    border-radius:8px;background:var(--glass);border:1px solid var(--glass-border);
+    box-shadow:var(--glass-shadow);font-family:var(--text);font-size:.72rem}
 
   /* ---------- Cursor: eigenes, cleanes SVG-Asset statt Dot ---------- */
   body{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%23fff' stroke='%2314161f' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto}
@@ -103,7 +125,12 @@
   .giant .row>span{display:inline-block;transform:translateY(115%);
     transition:transform 1.1s var(--ease);transition-delay:var(--d,0s)}
   body.ready .giant .row>span{transform:none}
-  .giant .thin{font-weight:500;color:transparent;-webkit-text-stroke:1.5px var(--night)}
+  .giant .thin{font-weight:500;color:transparent;-webkit-text-stroke:1.5px var(--night);
+    background:linear-gradient(110deg,transparent 42%,rgba(69,83,232,.5) 50%,transparent 58%);
+    background-size:260% 100%;background-position:120% 0;
+    -webkit-background-clip:text;background-clip:text}
+  body.ready .giant .thin{animation:sheen 1.9s var(--ease) 1s 1 both}
+  @keyframes sheen{from{background-position:120% 0}to{background-position:-45% 0}}
   .giant .c{display:inline-block;animation:spin 9s linear infinite;transform-origin:50% 54%}
   @keyframes spin{to{transform:rotate(360deg)}}
   .hello{font-size:clamp(.95rem,1.5vw,1.1rem);font-weight:500;color:var(--soft);
@@ -142,8 +169,18 @@
   .g-card .num{position:absolute;top:1.4rem;left:1.6rem;font-size:.78rem;font-weight:600;color:var(--soft)}
   .g-card .art{position:absolute;top:2.8rem;right:-8%;width:60%;aspect-ratio:1;border-radius:32px;
     background:linear-gradient(135deg,var(--electric),var(--peri));opacity:.16;
-    transition:transform .6s var(--ease-out),opacity .4s}
+    transition:transform .6s var(--ease-out),opacity .4s;
+    animation:float 7s ease-in-out infinite}
   .g-card:hover .art{transform:rotate(-8deg) scale(1.08);opacity:.28}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+  /* "Ansehen"-Pille gleitet beim Hover herein */
+  .g-card .go-pill{position:absolute;right:1.2rem;bottom:1.2rem;display:inline-flex;align-items:center;
+    gap:.4rem;padding:.5rem .9rem;border-radius:999px;background:var(--night);color:#fff;
+    font-size:.72rem;font-weight:600;transform:translateY(180%);transition:transform .45s var(--ease)}
+  .g-card:hover .go-pill{transform:none}
+  .g-card .tag{transition:transform .35s var(--ease-out)}
+  .g-card:hover .tag{transform:translateY(-3px)}
+  .g-card:hover .tag:nth-child(2){transition-delay:.06s}
   .g-card h3{font-size:clamp(1.4rem,2.2vw,1.9rem)}
   .g-card p{font-size:.86rem;color:var(--soft)}
   .g-card .tagrow{display:flex;gap:.45rem;margin-top:.7rem;flex-wrap:wrap}
@@ -188,6 +225,17 @@
   .t-copy:hover{border-color:var(--electric)}
   .t-copy.done{border-style:solid;border-color:var(--electric);background:rgba(69,83,232,.1)}
 
+  /* iOS-Schalter */
+  .t-switch{position:relative;width:54px;height:33px;border-radius:999px;border:0;
+    background:rgba(20,22,31,.16);transition:background .35s;
+    box-shadow:inset 0 1px 3px rgba(18,20,31,.18)}
+  .t-switch::after{content:"";position:absolute;top:3px;left:3px;width:27px;height:27px;border-radius:50%;
+    background:#fff;box-shadow:0 2px 7px rgba(18,20,31,.35);transition:transform .35s var(--ease)}
+  .t-switch.on{background:var(--electric)}
+  .t-switch.on::after{transform:translateX(21px)}
+
+  .t-btn:active,.seg button:active,.t-switch:active,.t-copy:active{scale:.96}
+
   /* großes Glas-Panel mit Segment-Toggle */
   .pane-demo{margin-top:2.4rem;max-width:560px;border-radius:26px;padding:1.6rem;
     background:var(--glass);backdrop-filter:blur(26px) saturate(1.7);
@@ -216,6 +264,7 @@
   .ing .pal i{width:32px;height:32px;border-radius:10px;border:1px solid rgba(255,255,255,.9);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 3px 8px -3px rgba(18,20,31,.3);
     transition:transform .3s var(--ease-out)}
+  .ing .pal i.copied{outline:2px solid var(--electric);outline-offset:2px}
   .ing:hover .pal i{transform:translateY(-4px)}
   .ing .pal i:nth-child(2){transition-delay:.05s}
   .ing .pal i:nth-child(3){transition-delay:.1s}
@@ -233,7 +282,10 @@
   .magnet{position:relative;display:inline-grid;place-items:center;margin-top:2.4rem;
     width:clamp(110px,14vw,150px);aspect-ratio:1;border-radius:50%;
     background:var(--electric);color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;
-    overflow:hidden;will-change:transform;box-shadow:0 18px 44px -14px rgba(69,83,232,.6)}
+    will-change:transform;box-shadow:0 18px 44px -14px rgba(69,83,232,.6)}
+  .magnet::before{content:"";position:absolute;inset:-8px;border-radius:50%;
+    border:1.5px solid rgba(69,83,232,.45);animation:ring 2.8s var(--ease-out) infinite}
+  @keyframes ring{0%{transform:scale(.92);opacity:0}30%{opacity:1}100%{transform:scale(1.22);opacity:0}}
   .magnet .rip{position:absolute;inset:0;background:#fff;border-radius:50%;
     transform:scale(0);transition:transform .5s var(--ease)}
   .magnet:hover .rip{transform:scale(1.05)}
@@ -283,11 +335,15 @@
 </nav>
 
 <div class="dock" id="dock" aria-label="Panels">
-  <button class="on" data-i="0" aria-label="Panel 1">01</button>
-  <button data-i="1" aria-label="Panel 2">02</button>
-  <button data-i="2" aria-label="Panel 3">03</button>
-  <button data-i="3" aria-label="Panel 4">04</button>
-  <button data-i="4" aria-label="Panel 5">05</button>
+  <button class="on" data-i="0" data-label="Start" aria-label="Start">01</button>
+  <button data-i="1" data-label="Projekte" aria-label="Projekte">02</button>
+  <button data-i="2" data-label="Details" aria-label="Details">03</button>
+  <button data-i="3" data-label="Zutaten" aria-label="Zutaten">04</button>
+  <button data-i="4" data-label="Kontakt" aria-label="Kontakt">05</button>
+</div>
+
+<div class="keyhint" id="keyhint" aria-hidden="true">
+  <kbd>←</kbd><kbd>→</kbd><span>zum Blättern</span>
 </div>
 
 <main class="rail" id="rail">
@@ -320,16 +376,19 @@
         <span class="num">01</span><span class="art" aria-hidden="true"></span>
         <h3>Projekt Eins</h3><p>Eine Zeile Beschreibung, ruhig gesetzt.</p>
         <span class="tagrow"><span class="tag">Web</span><span class="tag">2026</span></span>
+        <span class="go-pill" aria-hidden="true">Ansehen ↗</span>
       </a>
       <a class="g-card" href="#" data-tilt>
         <span class="num">02</span><span class="art" style="background:linear-gradient(135deg,var(--peri),var(--sky))" aria-hidden="true"></span>
         <h3>Client-Referenz</h3><p>Echte Kundenseite, groß präsentiert.</p>
         <span class="tagrow"><span class="tag">Live</span><span class="tag">Referenz</span></span>
+        <span class="go-pill" aria-hidden="true">Besuchen ↗</span>
       </a>
       <a class="g-card" href="#" data-tilt>
         <span class="num">03</span><span class="art" style="background:linear-gradient(135deg,#c9cdfd,var(--peri))" aria-hidden="true"></span>
         <h3>Projekt Drei</h3><p>App, Spiel oder Library — gleiches Glas.</p>
         <span class="tagrow"><span class="tag">App</span><span class="tag">2026</span></span>
+        <span class="go-pill" aria-hidden="true">Ansehen ↗</span>
       </a>
     </div>
   </section>
@@ -346,6 +405,7 @@
       </span>Pfeil-Wechsel</a>
       <a class="t-link" href="#">Unterstrich links–rechts</a>
       <button class="t-copy" id="copy" type="button"><span id="copyTxt">E-Mail kopieren</span></button>
+      <button class="t-switch" id="tswitch" type="button" role="switch" aria-checked="false" aria-label="Demo-Schalter"></button>
     </div>
     <div class="pane-demo">
       <div class="seg" id="seg">
@@ -362,8 +422,8 @@
     <div class="ingredients">
       <div class="ing fade"><div class="lk">Display-Schrift</div><div class="v">Clash Display</div></div>
       <div class="ing fade" style="--d:.06s"><div class="lk">Text-Schrift</div><div class="v" style="font-family:var(--text);font-weight:500">Switzer</div></div>
-      <div class="ing fade" style="--d:.12s"><div class="lk">Eine Farbfamilie</div><div class="pal">
-        <i style="background:#f2f0eb"></i><i style="background:#14161f"></i><i style="background:#4553e8"></i><i style="background:#8b94ff"></i>
+      <div class="ing fade" style="--d:.12s"><div class="lk">Eine Farbfamilie — klick zum Kopieren</div><div class="pal" id="pal">
+        <i style="background:#f2f0eb" data-hex="#f2f0eb" title="#f2f0eb"></i><i style="background:#14161f" data-hex="#14161f" title="#14161f"></i><i style="background:#4553e8" data-hex="#4553e8" title="#4553e8"></i><i style="background:#8b94ff" data-hex="#8b94ff" title="#8b94ff"></i>
       </div></div>
       <div class="ing fade" style="--d:.18s"><div class="lk">Oberfläche</div><div class="v">Glas, überall</div></div>
     </div>
@@ -410,6 +470,7 @@
   const bar = document.getElementById('bar');
   const dockBtns = [...document.querySelectorAll('.dock button')];
   const blobs = [...document.querySelectorAll('.blob')];
+  const PANEL_NAMES = ['Start', 'Projekte', 'Details', 'Zutaten', 'Kontakt'];
   const update = () => {
     const max = horizontal
       ? document.documentElement.scrollWidth - innerWidth
@@ -419,6 +480,7 @@
     bar.style.width = (p * 100) + '%';
     const idx = Math.round(p * 4);
     dockBtns.forEach((b, i) => b.classList.toggle('on', i === idx));
+    document.title = `yagci.cc — 0${idx + 1} · ${PANEL_NAMES[idx]}`;
     if (horizontal && !reduced) {
       blobs[0].style.transform = `translateX(${pos * -0.06}px)`;
       blobs[1].style.transform = `translateX(${pos * -0.12}px)`;
@@ -437,11 +499,46 @@
     }
   };
   dockBtns.forEach((b) => b.addEventListener('click', () => goTo(+b.dataset.i)));
+
+  // Tastatur-Hinweis: kurz zeigen, beim ersten Blättern verabschieden
+  const keyhint = document.getElementById('keyhint');
+  let hintDone = false;
+  if (horizontal && fine) {
+    setTimeout(() => !hintDone && keyhint.classList.add('show'), 1800);
+    setTimeout(() => keyhint.classList.remove('show'), 9000);
+  }
   addEventListener('keydown', (e) => {
     if (!horizontal) return;
     const cur = Math.round(scrollX / innerWidth);
-    if (e.key === 'ArrowRight') goTo(Math.min(4, cur + 1));
-    if (e.key === 'ArrowLeft') goTo(Math.max(0, cur - 1));
+    if (e.key === 'ArrowRight') { goTo(Math.min(4, cur + 1)); hintDone = true; keyhint.classList.remove('show'); }
+    if (e.key === 'ArrowLeft') { goTo(Math.max(0, cur - 1)); hintDone = true; keyhint.classList.remove('show'); }
+  });
+
+  // Hero: Maus-Parallax — Name und Badge driften gegenläufig
+  if (fine && !reduced) {
+    const giant = document.querySelector('.giant');
+    const badge = document.querySelector('.badge');
+    addEventListener('pointermove', (e) => {
+      const nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
+      giant.style.translate = `${nx * -10}px ${ny * -6}px`;
+      badge.style.translate = `${nx * 16}px ${ny * 12}px`;
+    }, { passive: true });
+  }
+
+  // iOS-Schalter
+  const tswitch = document.getElementById('tswitch');
+  tswitch.addEventListener('click', () => {
+    const on = tswitch.classList.toggle('on');
+    tswitch.setAttribute('aria-checked', on);
+  });
+
+  // Farb-Chips kopieren
+  document.querySelectorAll('#pal i').forEach((chip) => {
+    chip.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(chip.dataset.hex); } catch {}
+      chip.classList.add('copied');
+      setTimeout(() => chip.classList.remove('copied'), 900);
+    });
   });
 
   // Fades (funktionieren horizontal wie vertikal)
