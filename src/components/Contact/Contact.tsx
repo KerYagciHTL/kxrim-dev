@@ -63,14 +63,11 @@ export function Contact({ reducedMotion }: ContactProps) {
           <a href={identity.githubUrl} target="_blank" rel="noreferrer">
             GitHub — @{identity.github}
           </a>
-          <a href="https://kxrim.is-a.dev" target="_blank" rel="noreferrer">
-            kxrim.is-a.dev
-          </a>
         </div>
 
         <footer className={styles.colophon}>
           <span className={styles.fade}>
-            © 2026 {identity.name} — {identity.location}
+            © 2026 {identity.name} — {identity.location}. All rights reserved.
           </span>
           <span className={styles.fade}>Typeset in Archivo &amp; IBM Plex Mono. No template.</span>
         </footer>
