@@ -5,6 +5,6 @@ are the property of Kerimcan Yagci. No license is granted to copy, modify,
 distribute, publish, or reuse any part of this work, in whole or in part,
 without prior written permission.
 
-Third-party components retain their own licenses: the simplex noise GLSL
-function (Ashima Arts / Stefan Gustavson, MIT) and the typefaces Archivo and
-IBM Plex Mono (SIL Open Font License 1.1) — see ASSETS.md.
+Third-party components retain their own licenses: the typefaces Clash Display
+and Switzer (ITF Free Font License, Fontshare), the libraries Lenis and three.js
+(MIT), and the devicon language icons (MIT). See ASSETS.md for details.

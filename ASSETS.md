@@ -1,4 +1,4 @@
-# Assets — yagci.cc (`site/`)
+# Assets · yagci.cc (`site/`)
 
 ## Fonts (self-hosted in `site/fonts/`, via Fontshare)
 
@@ -13,7 +13,7 @@
 | --- | --- | --- |
 | `site/icon.png` (favicon / touch icon) | Kerimcan's own GitHub avatar | his own |
 | `site/icons/*.svg` (C, C++, C#, Java, TS, Python) | [devicon](https://github.com/devicons/devicon) plain variants, recolored to `#14161f` | MIT |
-| Cursor arrows, badge, UI icons | Hand-drawn inline SVG | — |
+| Cursor arrows, badge, UI icons | Hand-drawn inline SVG | own |
 
 ## Code libraries (CDN, jsdelivr)
 
@@ -26,5 +26,5 @@
 
 | Asset | Source |
 | --- | --- |
-| Milk-glass blobs | `site/scene.js` — IcosahedronGeometry + hand-written wobble/fresnel shaders |
+| Milk-glass blobs | `site/scene.js`: IcosahedronGeometry + hand-written wobble/fresnel shaders |
 | Aurora blobs, film grain | CSS gradients + inline SVG `feTurbulence` data URI |
