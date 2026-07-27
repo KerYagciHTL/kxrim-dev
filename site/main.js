@@ -124,7 +124,7 @@ if (fine && !reduced) {
 const copyBtn = document.getElementById('copy')
 const copyTxt = document.getElementById('copyTxt')
 copyBtn.addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText('k.yagci@students.htl-leonding.ac.at') } catch { /* clipboard blocked */ }
+  try { await navigator.clipboard.writeText('kerimcan41@icloud.com') } catch { /* clipboard blocked */ }
   copyBtn.classList.add('done')
   copyTxt.textContent = 'Copied ✓'
   setTimeout(() => { copyBtn.classList.remove('done'); copyTxt.textContent = 'Copy e-mail' }, 1800)

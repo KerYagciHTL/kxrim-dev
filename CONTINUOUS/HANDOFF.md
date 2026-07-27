@@ -68,7 +68,7 @@ word Ferialpraktikum stays off the English site. Projects: KCY-Accounting (C# / 
 subway-building game, school team project). Clients (sole developer, both satisfied,
 no quotes): yagcisons.at (freight forwarding AT/EU), moe-v.de (traffic & safety,
 Berlin). Languages C/C++/C#/Java/TS/Python. Frameworks/tools: .NET, Avalonia, React,
-Vite, Tailwind, Git & Linux. Email k.yagci@students.htl-leonding.ac.at. HtmlForge + a
+Vite, Tailwind, Git & Linux. Email kerimcan41@icloud.com. HtmlForge + a
 chat app: excluded (repos not public). No testimonial quotes, ever. The word "Servus"
 must not appear on the site.
 
