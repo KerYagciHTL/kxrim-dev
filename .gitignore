@@ -1,3 +1,8 @@
 node_modules
 *.log
 .DS_Store
+
+# internal working notes, kept local, not for publication
+CLAUDE.md
+ASSETS.md
+CONTINUOUS/
