@@ -22,7 +22,7 @@
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 
-/* native scrollbar hidden — progress bar and dock take over */
+/* native scrollbar hidden, progress bar and dock take over */
 html{scrollbar-width:none}
 html::-webkit-scrollbar{display:none}
 
@@ -39,7 +39,7 @@ body{
 
 h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1;letter-spacing:-.02em}
 
-/* custom cursor asset — white arrow, electric over interactives */
+/* custom cursor asset: white arrow, electric over interactives */
 body{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%23fff' stroke='%2314161f' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto}
 a,button,[role=button],label{cursor:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M6.5 3.6v17.2c0 .55.66.82 1.04.43l4.6-4.66a.6.6 0 0 1 .43-.18h6.6c.54 0 .81-.65.43-1.03L7.53 3.17a.6.6 0 0 0-1.03.43Z' fill='%234553e8' stroke='%23fff' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, pointer}
 
@@ -264,7 +264,7 @@ body.ready .giant .thin{animation:sheen 1.9s var(--ease) 1s 1 both}
   .giant{font-size:clamp(3rem,15vw,10.5rem)}
   .g-card{min-height:250px}
   .g-card.client{min-height:280px}
-  /* touch: no hover — pills always visible */
+  /* touch: no hover, pills always visible */
   .go-pill{transform:none!important}
 }
 @media(pointer:coarse){

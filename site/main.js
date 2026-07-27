@@ -1,11 +1,11 @@
-/* Kerimcan Yagci — yagci.cc · interaction layer
+/* Kerimcan Yagci · yagci.cc · interaction layer
    © 2026 Kerimcan Yagci. All rights reserved. */
 
 const fine = matchMedia('(pointer:fine)').matches
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
 const horizontal = matchMedia('(min-width: 768px)').matches
 
-// name reveal right after load — no curtain
+// name reveal right after load (no curtain)
 addEventListener('load', () => requestAnimationFrame(() => document.body.classList.add('ready')))
 if (reduced) document.body.classList.add('ready')
 
@@ -24,7 +24,7 @@ if (!reduced && window.Lenis) {
 // Vienna clock
 const clock = document.getElementById('clock')
 const tick = () => {
-  clock.textContent = 'Ansfelden — ' + new Date().toLocaleTimeString('de-AT', { timeZone: 'Europe/Vienna' })
+  clock.textContent = 'Ansfelden · ' + new Date().toLocaleTimeString('de-AT', { timeZone: 'Europe/Vienna' })
 }
 tick()
 setInterval(tick, 1000)
@@ -44,8 +44,8 @@ const update = () => {
   const idx = Math.round(p * 4)
   dockBtns.forEach((b, i) => b.classList.toggle('on', i === idx))
   document.title = idx === 0
-    ? 'Kerimcan Yagci — Software Developer'
-    : `Kerimcan Yagci — 0${idx + 1} · ${SECTION_NAMES[idx]}`
+    ? 'Kerimcan Yagci · Software Developer'
+    : `Kerimcan Yagci · 0${idx + 1} · ${SECTION_NAMES[idx]}`
   if (horizontal && !reduced) {
     blobsCss[0].style.transform = `translateX(${pos * -0.06}px)`
     blobsCss[1].style.transform = `translateX(${pos * -0.12}px)`
@@ -89,7 +89,7 @@ const io = new IntersectionObserver(
 )
 document.querySelectorAll('.fade').forEach((el) => io.observe(el))
 
-// hero mouse parallax — name and badge drift apart
+// hero mouse parallax: name and badge drift apart
 if (fine && !reduced) {
   const giant = document.querySelector('.giant')
   const badge = document.querySelector('.badge')

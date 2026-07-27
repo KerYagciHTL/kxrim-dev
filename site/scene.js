@@ -1,4 +1,4 @@
-/* Two quiet milk-glass blobs — the page's only 3D. Phase-shifted so they
+/* Two quiet milk-glass blobs, the page's only 3D. Phase-shifted so they
    never breathe in sync; they answer mouse and scroll, nothing floats free.
    © 2026 Kerimcan Yagci. All rights reserved. */
 import * as THREE from 'three'
