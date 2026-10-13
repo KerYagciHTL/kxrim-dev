@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "homeTitle": "Kerimcan Yagci: Softwareentwickler aus Österreich",
+    "homeDescription": "Kerimcan (Kerim) Yagci geht in die HTL Leonding und baut Websites, Web-Apps und Desktop-Tools. Projekte wie Afterfall und SortingVisualizer, Kundenseiten und Kontakt.",
+    "buildTitle": "Was ich baue · Kerimcan Yagci",
+    "buildDescription": "Websites, Web-Apps auf meinem eigenen Server und kleine Desktop-Tools: was Kerimcan Yagci baut und wie.",
+    "notFoundTitle": "Seite nicht gefunden · Kerimcan Yagci"
+  },
+  "nav": {
+    "home": "Kerimcan Yagci, Startseite",
+    "build": "Was ich baue",
+    "portfolio": "Portfolio",
+    "language": "Sprache",
+    "theme": "Hell oder dunkel",
+    "pages": "Seiten dieses Bereichs",
+    "skip": "Zum Inhalt"
+  },
+  "sheet": {
+    "start": "Start",
+    "record": "Werdegang",
+    "contact": "Kontakt",
+    "steps": "Ablauf",
+    "projects": "Projekte",
+    "clients": "Kunden"
+  },
+  "work": {
+    "part": "Mein Teil",
+    "play": "Abspielen",
+    "stop": "Anhalten",
+    "demo": "Sortierlauf aus dem README"
+  },
+  "contact": {
+    "copy": "Adresse kopieren",
+    "copied": "Kopiert",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "notFound": {
+    "title": "Diese Seite gibt es nicht.",
+    "text": "Vielleicht ein alter Link. Die Startseite gibt es aber noch.",
+    "back": "Zur Startseite"
+  },
+  "hint": {
+    "keys": "Pfeiltasten oder Mausrad zum Blättern"
+  }
+}

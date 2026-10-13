@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "homeTitle": "Kerimcan Yagci: software developer from Austria",
+    "homeDescription": "Kerimcan (Kerim) Yagci studies computer science at HTL Leonding and builds websites, web apps and desktop tools. Projects like Afterfall and SortingVisualizer, client sites and contact.",
+    "buildTitle": "What I build · Kerimcan Yagci",
+    "buildDescription": "Websites, web apps on my own server and small desktop tools: what Kerimcan Yagci builds and how.",
+    "notFoundTitle": "Page not found · Kerimcan Yagci"
+  },
+  "nav": {
+    "home": "Kerimcan Yagci, home",
+    "build": "What I build",
+    "portfolio": "Portfolio",
+    "language": "Language",
+    "theme": "Light or dark",
+    "pages": "Pages of this section",
+    "skip": "Skip to content"
+  },
+  "sheet": {
+    "start": "Start",
+    "record": "Record",
+    "contact": "Contact",
+    "steps": "Process",
+    "projects": "Projects",
+    "clients": "Clients"
+  },
+  "work": {
+    "part": "My part",
+    "play": "Play",
+    "stop": "Stop",
+    "demo": "Sorting run from the README"
+  },
+  "contact": {
+    "copy": "Copy address",
+    "copied": "Copied",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "notFound": {
+    "title": "This page doesn’t exist.",
+    "text": "Maybe an old link. The start page is still there, though.",
+    "back": "Back to the start"
+  },
+  "hint": {
+    "keys": "Arrow keys or mouse wheel to turn the page"
+  }
+}

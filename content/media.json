@@ -1,0 +1,49 @@
+{
+  "afterfall-game": {
+    "src": "/img/afterfall-game.webp",
+    "width": 1600,
+    "height": 971,
+    "small": "/img/afterfall-game-800.webp"
+  },
+  "afterfall-lobby": {
+    "src": "/img/afterfall-lobby.webp",
+    "width": 1600,
+    "height": 1286,
+    "small": "/img/afterfall-lobby-800.webp"
+  },
+  "avatar": {
+    "src": "/img/avatar.webp",
+    "width": 460,
+    "height": 460
+  },
+  "moe-v-home": {
+    "src": "/img/moe-v-home.webp",
+    "width": 1600,
+    "height": 1000,
+    "small": "/img/moe-v-home-800.webp"
+  },
+  "sortingvisualizer-bubble-sort": {
+    "src": "/img/sortingvisualizer-bubble-sort.webp",
+    "poster": "/img/sortingvisualizer-bubble-sort-poster.webp",
+    "width": 480,
+    "height": 270
+  },
+  "sortingvisualizer-insertion-sort": {
+    "src": "/img/sortingvisualizer-insertion-sort.webp",
+    "poster": "/img/sortingvisualizer-insertion-sort-poster.webp",
+    "width": 480,
+    "height": 270
+  },
+  "sortingvisualizer-selection-sort": {
+    "src": "/img/sortingvisualizer-selection-sort.webp",
+    "poster": "/img/sortingvisualizer-selection-sort-poster.webp",
+    "width": 480,
+    "height": 270
+  },
+  "yagcisons-home": {
+    "src": "/img/yagcisons-home.webp",
+    "width": 1600,
+    "height": 1000,
+    "small": "/img/yagcisons-home-800.webp"
+  }
+}

@@ -1,0 +1,21 @@
+# dependencies and build output
+node_modules/
+.nuxt/
+.output/
+.data/
+.cache/
+dist/
+
+# local only
+CLAUDE.md
+backup/
+docs/PREVIEW.html
+docs/screenshots/*
+!docs/screenshots/.gitkeep
+.env
+.env.*
+*.log
+.DS_Store
+
+# the old V4 site, served until the Nuxt build goes live
+/site/

@@ -1,0 +1,73 @@
+/* Design tokens. Light is a manga manuscript sheet: paper, ink, non-repro blue guides.
+   Dark is the same sheet at night, with Amaterasu instead of the cursed seal. */
+:root {
+  --paper: #f5f4ef;
+  --ink: #151515;
+  --soft: #4b4b50;
+  --guide: #7fc4e0;
+  --guide-soft: #c6e6f2;
+  --red: #c8161d;
+  --avatar-filter: none;
+  --tone-alpha: 0.85;
+
+  /* pixel layer: body, the rim that keeps marks apart, a second accent, sparks */
+  --px-body: #151515;
+  --px-rim: #f5f4ef;
+  --px-edge: #f5f4ef;
+  --px-spark: #151515;
+  --px-seal: #151515;
+
+  --font-display: 'Dela Gothic One', 'Arial Black', system-ui, sans-serif;
+  --font-body: 'Zen Kaku Gothic New', 'Segoe UI', system-ui, sans-serif;
+  --font-dot: 'DotGothic16', ui-monospace, monospace;
+
+  --trim: 22px;
+  --inner: 58px;
+  --border: 3px;
+  --ease-sheet: cubic-bezier(0.3, 0.7, 0.2, 1);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #111215;
+    --ink: #ebe9e3;
+    --soft: #a3a3a9;
+    --guide: #2f6d8a;
+    --guide-soft: #1b313d;
+    --red: #ff4b50;
+    --avatar-filter: invert(1) brightness(0.92);
+    --tone-alpha: 0.32;
+    --px-body: #030304;
+    --px-rim: #8e1016;
+    --px-edge: #45070b;
+    --px-spark: #ff6a3d;
+    --px-seal: #d8141c;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #111215;
+  --ink: #ebe9e3;
+  --soft: #a3a3a9;
+  --guide: #2f6d8a;
+  --guide-soft: #1b313d;
+  --red: #ff4b50;
+  --avatar-filter: invert(1) brightness(0.92);
+  --tone-alpha: 0.32;
+  --px-body: #030304;
+  --px-rim: #8e1016;
+  --px-edge: #45070b;
+  --px-spark: #ff6a3d;
+  --px-seal: #d8141c;
+  color-scheme: dark;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --trim: 10px;
+    --inner: 20px;
+  }
+}
