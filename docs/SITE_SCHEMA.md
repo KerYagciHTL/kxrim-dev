@@ -138,3 +138,24 @@ Every sheet has an id, so `/#afterfall` opens that sheet. Old URLs: `/services` 
 | `npm run deploy` | builds, copies to `releases/<time>`, points `live` at it |
 | `sh scripts/deploy.sh back` | points `live` at the previous release |
 | `npm run indexnow` | pings IndexNow |
+| `npm run readme` | draws the GitHub README pages into `public/readme` (`-- live/readme` for the running site) |
+
+## 10. GitHub README
+
+`docs/README.md` is the profile README for `KerYagciHTL/KerYagciHTL`: a short chapter of five
+manuscript pages in the light theme, each one an SVG that yagci.cc draws itself
+(`scripts/readme`, served at `/readme/*.svg`, cached for an hour):
+
+| Page | Shows |
+|---|---|
+| `title.svg` | name, avatar in an ink panel with the cursed seal growing from it, the Sasuke line |
+| `numbers.svg` | contributions of the last year behind focus lines; repositories, stars, followers, busiest day; languages of the public code as screentone bars |
+| `year.svg` | the contribution calendar: every day with contributions is a flame of the seal, taller on busier days; the year spreads in week by week |
+| `lately.svg` | the four newest public happenings as a four-panel strip |
+| `next.svg` | "Continued on yagci.cc" with the turning seal |
+
+The data is public only (calendar of the profile page, REST API without a token). The pixel ink is
+the site's own code from `app/ink`, flames lick and the seal turns via CSS inside the SVG, still
+when the viewer asks for reduced motion. Fonts are inlined, since an SVG shown as an image loads
+nothing. The pages are drawn on every deploy and, with the timer in `scripts/systemd`, every
+morning straight into `live/readme`.

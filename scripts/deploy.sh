@@ -15,6 +15,8 @@ if [ "$1" = "back" ]; then
   exit 0
 fi
 
+# the GitHub README pages (public/readme); without GitHub the last ones stay
+npm run --silent readme || echo "readme: GitHub not reachable, keeping the last pages"
 npx nuxt generate
 stamp=$(date +%Y%m%d-%H%M%S)
 mkdir -p releases

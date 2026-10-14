@@ -1,0 +1,12 @@
+# Redraws the GitHub README pages straight into the running site (live/readme).
+# Install together with kxrim-readme.timer, see CLAUDE.md.
+[Unit]
+Description=yagci.cc GitHub README pages (scripts/readme into live/readme)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=fatih
+WorkingDirectory=/opt/kxrim-dev
+ExecStart=/usr/bin/npm run --silent readme -- live/readme

@@ -1,0 +1,11 @@
+# Runs kxrim-readme.service every morning; a missed run is made up after a reboot.
+[Unit]
+Description=Redraw the yagci.cc GitHub README pages every morning
+
+[Timer]
+OnCalendar=*-*-* 05:15
+RandomizedDelaySec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

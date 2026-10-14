@@ -13,7 +13,8 @@
     "og": "node scripts/og.mjs",
     "deploy": "sh scripts/deploy.sh",
     "indexnow": "node scripts/indexnow.mjs",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "readme": "esbuild scripts/readme/main.ts --bundle --platform=node --format=esm --log-level=warning --outfile=.cache/readme.mjs && node .cache/readme.mjs"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.6.0",
@@ -23,6 +24,7 @@
     "vue": "^3.5.44"
   },
   "devDependencies": {
+    "esbuild": "^0.25.12",
     "playwright-core": "^1.64.0",
     "serve": "14.2.6",
     "sharp": "^0.35.5",

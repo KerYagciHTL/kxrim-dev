@@ -8,6 +8,9 @@ dist/
 releases/
 live
 
+# drawn on deploy and once a day by scripts/readme
+public/readme/
+
 # local only
 CLAUDE.md
 backup/
