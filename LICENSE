@@ -1,10 +1,11 @@
 Copyright © 2026 Kerimcan Yagci. All rights reserved.
 
-The source code, design, copy, diagrams, and shader work in this repository
+The source code, design, copy, pixel art and screenshots in this repository
 are the property of Kerimcan Yagci. No license is granted to copy, modify,
 distribute, publish, or reuse any part of this work, in whole or in part,
 without prior written permission.
 
-Third-party components retain their own licenses: the typefaces Clash Display
-and Switzer (ITF Free Font License, Fontshare), the libraries Lenis and three.js
-(MIT), and the devicon language icons (MIT).
+Third-party components keep their own licenses: the typefaces Dela Gothic One,
+Zen Kaku Gothic New and DotGothic16 (SIL Open Font License 1.1), and the npm
+packages listed in package.json (their respective licenses). The avatar shows
+Sasuke Uchiha from Masashi Kishimoto's Naruto.
