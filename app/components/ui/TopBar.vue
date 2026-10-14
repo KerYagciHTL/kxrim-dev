@@ -6,6 +6,20 @@ const switchLocalePath = useSwitchLocalePath()
 const route = useRoute()
 const onBuild = computed(() => String(route.name ?? '').startsWith('was-ich-baue'))
 const { dark, toggle } = useTheme()
+
+// the language links re-letter the page in place instead of loading the other one
+async function switchLanguage(e: MouseEvent) {
+  const link = (e.target as Element).closest<HTMLAnchorElement>('a[hreflang]')
+  if (!link || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+  e.preventDefault()
+  const code = link.hreflang as 'de' | 'en'
+  if (code === locale.value) return
+  const hash = location.hash
+  await reletter(async () => {
+    await navigateTo(switchLocalePath(code))
+    if (hash) history.replaceState(history.state, '', location.pathname + hash)
+  })
+}
 </script>
 
 <template>
@@ -13,7 +27,7 @@ const { dark, toggle } = useTheme()
     <nav class="crumbs" :aria-label="t('nav.pages')">
       <NuxtLink class="home" :to="localePath('/')" :aria-label="t('nav.home')">
         <SealMark />
-        <span>Kerimcan Yagci</span>
+        <span translate="no">Kerimcan Yagci</span>
       </NuxtLink>
       <template v-if="onBuild">
         <span class="sep" aria-hidden="true">/</span>
@@ -23,7 +37,7 @@ const { dark, toggle } = useTheme()
     <div class="tools">
       <NuxtLink v-if="!onBuild" class="other" :to="localePath('was-ich-baue')">{{ t('nav.build') }}</NuxtLink>
       <NuxtLink v-else class="other" :to="localePath('/')">{{ t('nav.portfolio') }}</NuxtLink>
-      <div class="seg" role="group" :aria-label="t('nav.language')">
+      <div class="seg" role="group" :aria-label="t('nav.language')" translate="no" @click.capture="switchLanguage">
         <NuxtLink :to="switchLocalePath('de')" hreflang="de" lang="de" :aria-current="locale === 'de' ? 'true' : undefined">DE</NuxtLink>
         <NuxtLink :to="switchLocalePath('en')" hreflang="en" lang="en" :aria-current="locale === 'en' ? 'true' : undefined">EN</NuxtLink>
       </div>

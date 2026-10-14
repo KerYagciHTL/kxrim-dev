@@ -13,20 +13,23 @@ const sheets = computed(() => [
   { id: 'contact', label: t('sheet.contact') },
 ])
 
-const title = t('meta.buildTitle')
+// the same page in both languages: switching keeps it on screen and only swaps the text
+definePageMeta({ key: 'build' })
 const route = useRoute()
-const homeUrl = `${SITE}${localePath('/')}`
-usePageSeo({
-  title,
-  description: t('meta.buildDescription'),
-  image: `og-build-${locale.value}.png`,
-  imageAlt: title,
-  schema: buildGraph(locale.value as Locale, `${SITE}${route.path}`, title, homeUrl),
+usePageSeo(() => {
+  const title = t('meta.buildTitle')
+  return {
+    title,
+    description: t('meta.buildDescription'),
+    image: `og-build-${locale.value}.png`,
+    imageAlt: title,
+    schema: buildGraph(locale.value as Locale, `${SITE}${route.path}`, title, `${SITE}${localePath('/')}`),
+  }
 })
 </script>
 
 <template>
-  <Deck :key="locale" :sheets="sheets">
+  <Deck :sheets="sheets">
     <BuildIntroSheet />
     <AreaSheet v-for="area in areas" :key="area.id" :area="area" />
     <StepsSheet />

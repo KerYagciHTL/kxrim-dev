@@ -15,7 +15,7 @@ const tx = useText()
     </div>
 
     <div class="koma mail" data-ink="right bottom">
-      <a :href="`mailto:${profile.email}`">{{ profile.email }}</a>
+      <a :href="`mailto:${profile.email}`" translate="no">{{ profile.email }}</a>
       <CopyEmail :email="profile.email" />
     </div>
 

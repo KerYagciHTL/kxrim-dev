@@ -16,7 +16,7 @@ const jumps = [
 <template>
   <Sheet id="start" :label="t('sheet.start')" class="intro">
     <div class="hello" data-ink-safe>
-      <h1><span>Kerimcan</span> <span>Yagci</span></h1>
+      <h1 translate="no"><span>Kerimcan</span> <span>Yagci</span></h1>
       <p class="lead">{{ tx(intro.lead) }}</p>
     </div>
 

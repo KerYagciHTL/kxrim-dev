@@ -12,21 +12,24 @@ const sheets = computed(() => [
   { id: 'contact', label: t('sheet.contact') },
 ])
 
-const title = t('meta.homeTitle')
+// the same page in both languages: switching keeps it on screen and only swaps the text
+definePageMeta({ key: 'home' })
 const route = useRoute()
-const url = `${SITE}${route.path === '/' ? '/' : route.path}`
-usePageSeo({
-  title,
-  description: t('meta.homeDescription'),
-  image: `og-${locale.value}.png`,
-  imageAlt: title,
-  type: 'profile',
-  schema: homeGraph(locale.value as Locale, url, title),
+usePageSeo(() => {
+  const title = t('meta.homeTitle')
+  return {
+    title,
+    description: t('meta.homeDescription'),
+    image: `og-${locale.value}.png`,
+    imageAlt: title,
+    type: 'profile',
+    schema: homeGraph(locale.value as Locale, `${SITE}${route.path}`, title),
+  }
 })
 </script>
 
 <template>
-  <Deck :key="locale" :sheets="sheets">
+  <Deck :sheets="sheets">
     <IntroSheet />
     <WorkSheet v-for="item in work" :key="item.id" :item="item" />
     <RecordSheet />
