@@ -39,7 +39,6 @@ export interface Work {
   facts: Text[]
   shot?: Shot
   demos?: Demo[]
-  code?: { text: string; caption: Text }
   links: Link[]
   /** for schema.org: the repository and its main language */
   repo?: string

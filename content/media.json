@@ -16,6 +16,12 @@
     "width": 460,
     "height": 460
   },
+  "kerlib-window": {
+    "src": "/img/kerlib-window.webp",
+    "width": 1600,
+    "height": 994,
+    "small": "/img/kerlib-window-800.webp"
+  },
   "moe-v-home": {
     "src": "/img/moe-v-home.webp",
     "width": 1600,

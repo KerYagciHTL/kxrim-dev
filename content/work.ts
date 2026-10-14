@@ -57,19 +57,17 @@ export const work: Work[] = [
       de: 'Eine kleine Fensterbibliothek für C#, die direkt mit der Win32-API spricht. Sie öffnet Fenster, betreibt die Message-Loop und zeichnet Formen und Eingabefelder. Vom Aufbau her ist sie an Avalonia angelehnt, und außer .NET 8 braucht sie nichts.',
       en: 'A small windowing library for C# that talks to the Win32 API directly. It opens windows, runs the message loop and draws shapes and input fields. Its design borrows from Avalonia, and it needs nothing besides .NET 8.',
     },
-    facts: [{ de: 'C# · Win32 · .NET 8', en: 'C# · Win32 · .NET 8' }, { de: 'keine Abhängigkeiten', en: 'no dependencies' }],
-    code: {
-      text: `public class MainWindow : Core.Window
-{
-    public MainWindow() : base("MainWindow", 800, 600)
-    {
-        var input = new InputField(new Point(50, 50), 200, 30);
-        input.TextChanged += (_, _) =>
-            Console.WriteLine("Text geändert: " + input.Text);
-        Add(input);
-    }
-}`,
-      caption: { de: 'Ein Fenster mit einem Eingabefeld, aus dem README.', en: 'A window with one input field, from the README.' },
+    facts: [{ de: 'C# · Win32 · .NET 8', en: 'C# · Win32 · .NET 8' }, { de: 'GDI mit Double-Buffering', en: 'Double-buffered GDI' }, { de: 'keine Abhängigkeiten', en: 'no dependencies' }],
+    shot: {
+      media: 'kerlib-window',
+      alt: {
+        de: 'Ein Kerlib-Fenster in Dunkelblau: links die Features, oben Laufzeit, gezeichnete Frames und Mausposition, in der Mitte drei farbige Wellen, unten ein Eingabefeld mit Greet-Knopf und ein Event-Log',
+        en: 'A Kerlib window in dark blue: features on the left, uptime, rendered frames and mouse position on top, three coloured waves in the middle, an input field with a Greet button and an event log below',
+      },
+      caption: {
+        de: 'Ein Demo-Fenster: Wellen, die sich mit der Maus biegen, ein Eingabefeld, ein Event-Log. Jeder Pixel ist reines GDI.',
+        en: 'A demo window: waves that bend with the mouse, an input field, an event log. Every pixel is plain GDI.',
+      },
     },
     links: [{ label: { de: 'Code auf GitHub', en: 'Code on GitHub' }, href: 'https://github.com/KerYagciHTL/Kerlib' }],
     repo: 'https://github.com/KerYagciHTL/Kerlib',

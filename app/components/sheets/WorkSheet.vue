@@ -26,17 +26,12 @@ const nameParts = computed(() => props.item.name.split(/(?<=[a-z])(?=[A-Z])/))
         />
       </div>
       <SortingDemo v-else-if="item.demos" :demos="item.demos" />
-      <div v-else-if="item.code" class="frame code" data-ink="left top">
-        <pre data-scroll><code>{{ item.code.text }}</code></pre>
-      </div>
-      <figcaption v-if="item.shot?.caption || item.code" class="label" data-ink-safe>
-        {{ item.shot?.caption ? tx(item.shot.caption) : tx(item.code!.caption) }}
-      </figcaption>
+      <figcaption v-if="item.shot?.caption" class="label" data-ink-safe>{{ tx(item.shot.caption) }}</figcaption>
     </figure>
 
     <div class="text" data-ink-safe>
       <p class="label">{{ tx(item.kind) }}</p>
-      <h2 :class="{ long }"><template v-for="(part, i) in nameParts" :key="i"><wbr v-if="i" />{{ part }}</template></h2>
+      <h2 :class="{ long }" translate="no"><template v-for="(part, i) in nameParts" :key="i"><wbr v-if="i" />{{ part }}</template></h2>
       <p class="summary">{{ tx(item.summary) }}</p>
       <div v-if="item.part || item.note" class="koma tone aside">
         <div class="box">
@@ -79,18 +74,6 @@ const nameParts = computed(() => props.item.name.split(/(?<=[a-z])(?=[A-Z])/))
 .shot img {
   width: 100%;
   height: auto;
-}
-
-.code {
-  background: #101114;
-  color: #e9e7e1;
-}
-
-.code pre {
-  margin: 0;
-  padding: 18px 20px;
-  overflow: auto;
-  font: 400 13.5px/1.7 var(--font-dot);
 }
 
 .text {
@@ -160,11 +143,6 @@ h2.long {
     max-height: 58vh;
     object-fit: cover;
     object-position: top left;
-  }
-
-  .code pre {
-    font-size: 14.5px;
-    max-height: 56vh;
   }
 
   h2 {

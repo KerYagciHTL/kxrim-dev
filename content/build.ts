@@ -25,10 +25,10 @@ export const areas: Area[] = [
       { label: { de: 'moe-v.de', en: 'moe-v.de' }, href: 'https://moe-v.de' },
     ],
     shot: {
-      media: 'yagcisons-home',
+      media: 'moe-v-home',
       alt: {
-        de: 'Startseite von yagcisons.at, dunkelblau mit einer Route über Hamburg, Frankfurt und München',
-        en: 'Start page of yagcisons.at, dark blue with a route via Hamburg, Frankfurt and Munich',
+        de: 'Startseite von moe-v.de: weiß und grün, Überschrift „Baustellenabsicherung, Verkehrstechnik & Sicherheitstechnik“, daneben ein Foto einer abgesicherten Baustelle',
+        en: 'Start page of moe-v.de: white and green, headline about construction site safety and traffic engineering, next to a photo of a secured site',
       },
     },
   },
