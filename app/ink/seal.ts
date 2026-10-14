@@ -1,11 +1,11 @@
-// The cursed seal (light) and Amaterasu (dark): flames that grow on the edges of the current
-// sheet's elements and from the frame corners, and keep licking in place.
+// The cursed seal (light theme): flames that grow on the edges of the current sheet's elements
+// and from the frame corners, and keep licking in place.
 import { flameRow, seal, type Pen, type Row } from './marks'
 import { grow, type Scene, type View } from './scene'
 
-function draw(view: View, style: Pen['style']) {
+function draw(view: View) {
   const { buf, W, H, T, mobile, still } = view
-  const pen: Pen = { buf, pal: view.pal, style, step: view.step }
+  const pen: Pen = { buf, pal: view.pal, step: view.step }
   const k = mobile ? 0.55 : 1
 
   // 1. marks on the current sheet's elements
@@ -43,5 +43,4 @@ function draw(view: View, style: Pen['style']) {
   if (mobile) view.clearSafe()
 }
 
-export const cursedSeal: Scene = { fps: 6, draw: (v) => draw(v, 'seal') }
-export const amaterasu: Scene = { fps: 8, draw: (v) => draw(v, 'fire') }
+export const cursedSeal: Scene = { fps: 6, draw }

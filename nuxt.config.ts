@@ -16,7 +16,7 @@ export default defineNuxtConfig({
       meta: [
         { name: 'author', content: 'Kerimcan Yagci' },
         { name: 'theme-color', content: '#f5f4ef', media: '(prefers-color-scheme: light)' },
-        { name: 'theme-color', content: '#111215', media: '(prefers-color-scheme: dark)' },
+        { name: 'theme-color', content: '#141312', media: '(prefers-color-scheme: dark)' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [

@@ -1,12 +1,10 @@
-// The marks themselves: flames grown along a curling spine, tendrils, sparks and the three tomoe.
-// Light theme draws the cursed seal ("seal"), dark theme draws Amaterasu ("fire").
+// The cursed seal: flames grown along a curling spine, tendrils and the three tomoe.
 import { random, type Colour, type PixelBuffer } from './buffer'
 import type { Palette } from './scene'
 
 export interface Pen {
   buf: PixelBuffer
   pal: Palette
-  style: 'seal' | 'fire'
   /** animation frame counter; 0 forever when motion is reduced */
   step: number
 }
@@ -34,13 +32,12 @@ function paint(pen: Pen, pts: Point[], c: Colour, grow = 0) {
 
 /** One flame: a teardrop that curls at the tip and licks in place, frame by frame. */
 export function flame(pen: Pen, x: number, y: number, a: number, size: number, curl: number, growth: number, phase: number) {
-  const fire = pen.style === 'fire'
   const w = wobble(pen.step + phase)
-  const len = Math.max(1, size * (fire ? 2.9 : 2.6) * growth + w * (fire ? 1.4 : 0.8))
-  const pts = spine(x, y, a, curl + w * (fire ? 0.035 : 0.02), len, size * 0.55)
+  const len = Math.max(1, size * 2.6 * growth + w * 0.8)
+  const pts = spine(x, y, a, curl + w * 0.02, len, size * 0.55)
   paint(pen, pts, pen.pal.rim, 1)
   paint(pen, pts, pen.pal.body)
-  // the stroke inside bigger flames: paper in the seal, a dark ember line in the fire
+  // the paper stroke inside bigger flames
   if (size >= 6 && growth > 0.6) {
     const n = pts.length
     for (let i = Math.floor(n * 0.14); i < n * 0.55; i++) {
@@ -57,15 +54,6 @@ export function tendril(pen: Pen, x: number, y: number, a: number, len: number, 
   for (const [px, py] of spine(x, y, a, dir * 0.09, len * growth, 0.6, 6, 0.2)) pen.buf.put(px, py, pen.pal.body)
 }
 
-/** A spark that rises from a flame and starts over, two pixels tall. */
-export function ember(pen: Pen, x: number, y: number, phase: number, height: number) {
-  const t = (pen.step * 0.6 + phase) % height
-  if (t > height * 0.85) return
-  const drift = Math.round(Math.sin((pen.step + phase) * 0.7))
-  pen.buf.put(x + drift, y - t, pen.pal.spark)
-  if (t < height * 0.5) pen.buf.put(x + drift, y - t + 1, pen.pal.rim)
-}
-
 /** The three tomoe of the seal, turning slowly. */
 export function seal(pen: Pen, cx: number, cy: number, size: number, rot: number) {
   for (let i = 0; i < 3; i++) {
@@ -73,8 +61,8 @@ export function seal(pen: Pen, cx: number, cy: number, size: number, rot: number
     const x = cx + Math.cos(a) * size * 2.8
     const y = cy + Math.sin(a) * size * 2.8
     const pts = spine(x, y, a + 1.75, 0.26, size * 3.2, size * 0.8, 1.2)
-    paint(pen, pts, pen.style === 'fire' ? pen.pal.edge : pen.pal.rim, 1)
-    pen.buf.disc(x, y, size + 1, pen.style === 'fire' ? pen.pal.edge : pen.pal.rim)
+    paint(pen, pts, pen.pal.rim, 1)
+    pen.buf.disc(x, y, size + 1, pen.pal.rim)
     paint(pen, pts, pen.pal.seal)
     pen.buf.disc(x, y, size, pen.pal.seal)
   }
@@ -92,7 +80,7 @@ export interface Row {
   span: number
   size: number
   growth: number
-  /** chance of a tendril or a spark per flame */
+  /** chance of a tendril per flame */
   detail?: number
 }
 
@@ -101,7 +89,6 @@ export function flameRow(pen: Pen, row: Row) {
   const { x, y, dx, dy, nx, ny, span, size, growth } = row
   const detail = row.detail ?? 0.25
   const r = random(row.seed)
-  const fire = pen.style === 'fire'
   const normal = Math.atan2(ny, nx)
   const side = Math.sign(nx * dy - ny * dx) || 1
   // the edge line itself turns to ink first
@@ -114,16 +101,12 @@ export function flameRow(pen: Pen, row: Row) {
   while (u < span * growth) {
     const q = u / span
     const s = size * (1 - q * 0.65) * (0.75 + r() * 0.5)
-    let a = normal + side * (0.25 + r() * 0.4)
-    // fire rises: on side edges the flames bend upward
-    if (fire && Math.abs(ny) < 0.5) a = Math.atan2(Math.sin(a) * 0.45 - 0.55, Math.cos(a) * 0.45)
+    const a = normal + side * (0.25 + r() * 0.4)
     const local = clamp01((growth - q * 0.6) / 0.5)
     const bx = x + dx * u
     const by = y + dy * u
     if (local > 0.05) flame(pen, bx, by, a, s, side * (0.04 + r() * 0.06), local, i)
-    const roll = r()
-    if (!fire && roll < detail && local > 0.4) tendril(pen, bx + dx * s * 0.5 + nx * 2, by + dy * s * 0.5 + ny * 2, normal + side * 1.2, s * 1.6, -side, local)
-    if (fire && roll < detail * 2 && local > 0.3) ember(pen, bx + nx * s, by + ny * s, i * 7 + r() * 9, s * 3.5 + 6)
+    if (r() < detail && local > 0.4) tendril(pen, bx + dx * s * 0.5 + nx * 2, by + dy * s * 0.5 + ny * 2, normal + side * 1.2, s * 1.6, -side, local)
     u += s * (0.8 + r() * 0.45)
     i++
   }

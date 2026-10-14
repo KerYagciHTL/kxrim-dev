@@ -11,9 +11,12 @@
     "build": "Was ich baue",
     "portfolio": "Portfolio",
     "language": "Sprache",
-    "theme": "Hell oder dunkel",
+    "theme": "Nächstes Farbschema: {name}",
     "pages": "Seiten dieses Bereichs",
-    "skip": "Zum Inhalt"
+    "skip": "Zum Inhalt",
+    "prev": "Vorherige Seite",
+    "next": "Nächste Seite",
+    "contents": "Alle Seiten"
   },
   "sheet": {
     "start": "Start",
@@ -42,5 +45,10 @@
   },
   "hint": {
     "keys": "Pfeiltasten oder Mausrad zum Blättern"
+  },
+  "theme": {
+    "light": "Hell",
+    "dark": "Dunkel",
+    "rain": "Regen"
   }
 }

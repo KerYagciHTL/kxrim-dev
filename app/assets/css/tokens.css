@@ -1,6 +1,10 @@
-/* Design tokens. Light is a manga manuscript sheet: paper, ink, non-repro blue guides.
-   Dark is the same sheet at night, with Amaterasu instead of the cursed seal.
-   --ink-scene picks what the pixel layer draws (ink/engine.ts), --tone-kind the corner tone. */
+/* Design tokens, three themes on one manuscript sheet:
+   light  paper, ink and non-repro blue guides; the pixel layer draws the cursed seal
+   dark   the sheet at night: charcoal, bone and red; crows sit on the panels and the frame
+   rain   a rainy night: blue black and cool white; rain falls, bursts on the panels
+   Without a saved choice the system decides between light and dark (rain is only ever chosen).
+   --ink-scene picks what the pixel layer draws (ink/engine.ts), --tone-kind the corner tone,
+   --tape the correction tape of the language switch (auto: a shade lighter than the paper). */
 :root {
   --paper: #f5f4ef;
   --ink: #151515;
@@ -8,7 +12,9 @@
   --guide: #7fc4e0;
   --guide-soft: #c6e6f2;
   --red: #c8161d;
+  --tape: #bcdfee;
   --avatar-filter: none;
+  --tone-ink: #151515;
   --tone-alpha: 0.85;
   --tone-kind: dots;
   --ink-scene: seal;
@@ -34,39 +40,67 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --paper: #111215;
-    --ink: #ebe9e3;
-    --soft: #a3a3a9;
-    --guide: #2f6d8a;
-    --guide-soft: #1b313d;
-    --red: #ff4b50;
-    --avatar-filter: invert(1) brightness(0.92);
-    --tone-alpha: 0.32;
-    --px-body: #030304;
-    --px-rim: #8e1016;
-    --px-edge: #45070b;
-    --px-spark: #ff6a3d;
-    --px-seal: #d8141c;
-    --ink-scene: fire;
+    --paper: #141312;
+    --ink: #ece4d6;
+    --soft: #a0978a;
+    --guide: #4a423b;
+    --guide-soft: #2a2622;
+    --red: #e0383e;
+    --tape: auto;
+    --avatar-filter: url(#duo-dark);
+    --tone-ink: #ece4d6;
+    --tone-alpha: 0.24;
+    --tone-kind: dots;
+    --ink-scene: crows;
+    --px-body: #050505;
+    --px-rim: #cdbfa8;
+    --px-edge: #4a443d;
+    --px-spark: #e3262d;
+    --px-seal: #e3262d;
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --paper: #111215;
-  --ink: #ebe9e3;
-  --soft: #a3a3a9;
-  --guide: #2f6d8a;
-  --guide-soft: #1b313d;
-  --red: #ff4b50;
-  --avatar-filter: invert(1) brightness(0.92);
-  --tone-alpha: 0.32;
-  --px-body: #030304;
-  --px-rim: #8e1016;
-  --px-edge: #45070b;
-  --px-spark: #ff6a3d;
-  --px-seal: #d8141c;
-  --ink-scene: fire;
+  --paper: #141312;
+  --ink: #ece4d6;
+  --soft: #a0978a;
+  --guide: #4a423b;
+  --guide-soft: #2a2622;
+  --red: #e0383e;
+  --tape: auto;
+  --avatar-filter: url(#duo-dark);
+  --tone-ink: #ece4d6;
+  --tone-alpha: 0.24;
+  --tone-kind: dots;
+  --ink-scene: crows;
+  --px-body: #050505;
+  --px-rim: #cdbfa8;
+  --px-edge: #4a443d;
+  --px-spark: #e3262d;
+  --px-seal: #e3262d;
+  color-scheme: dark;
+}
+
+/* after the dark blocks, so a saved rain wins over a dark system setting */
+:root[data-theme='rain'] {
+  --paper: #0e1418;
+  --ink: #dce5e9;
+  --soft: #8d9ea7;
+  --guide: #2b5468;
+  --guide-soft: #19303b;
+  --red: #f0565b;
+  --tape: auto;
+  --avatar-filter: url(#duo-rain);
+  --tone-ink: #8fb0bf;
+  --tone-alpha: 0.26;
+  --tone-kind: rain;
+  --ink-scene: rain;
+  --px-body: #5f7f90;
+  --px-rim: #0e1418;
+  --px-edge: #5f7d8b;
+  --px-spark: #c2dbe6;
+  --px-seal: #c2dbe6;
   color-scheme: dark;
 }
 

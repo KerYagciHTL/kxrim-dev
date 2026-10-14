@@ -1,11 +1,23 @@
 <script setup lang="ts">
-// Mark and name (a breadcrumb on the second page), the link to the other page, language and theme.
+// Mark and name (a breadcrumb on the second page), the link to the other page, language and the
+// theme button, which steps through light, dark and rain. On phones the bar stays at the top,
+// slides away while reading downwards and comes back as soon as the reader scrolls up.
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
 const switchLocalePath = useSwitchLocalePath()
 const route = useRoute()
 const onBuild = computed(() => String(route.name ?? '').startsWith('was-ich-baue'))
-const { dark, toggle } = useTheme()
+const { next, toggle } = useTheme()
+const { sheets, index } = useDeck()
+const tucked = ref(false)
+
+// pixel icons on a 7 × 7 grid, each showing the theme the button switches to
+const ICONS: Record<string, [number, number, number][]> = {
+  dark: [[2, 0, 3], [1, 1, 2], [0, 2, 2], [0, 3, 2], [0, 4, 2], [1, 5, 2], [2, 6, 3], [5, 5, 1]],
+  rain: [[2, 0, 3], [1, 1, 5], [0, 2, 7], [2, 4, 1], [5, 4, 1], [1, 5, 1], [4, 5, 1], [0, 6, 1], [3, 6, 1]],
+  light: [[2, 2, 3], [2, 3, 3], [2, 4, 3], [3, 0, 1], [3, 6, 1], [0, 3, 1], [6, 3, 1], [1, 1, 1], [5, 1, 1], [1, 5, 1], [5, 5, 1]],
+}
+const themeLabel = computed(() => t('nav.theme', { name: t(`theme.${next.value}`) }))
 
 // the language links re-letter the page in place instead of loading the other one
 async function switchLanguage(e: MouseEvent) {
@@ -14,19 +26,36 @@ async function switchLanguage(e: MouseEvent) {
   e.preventDefault()
   const code = link.hreflang as 'de' | 'en'
   if (code === locale.value) return
-  const hash = location.hash
   await reletter(async () => {
     await navigateTo(switchLocalePath(code))
-    if (hash) history.replaceState(history.state, '', location.pathname + hash)
+    // the sheet in view, which may have changed while the tape was on
+    const id = index.value > 0 ? sheets.value[index.value]?.id : undefined
+    history.replaceState(history.state, '', location.pathname + (id ? `#${id}` : ''))
   })
 }
+
+let lastY = 0
+function onScroll() {
+  if (innerWidth >= 768) return
+  const y = scrollY
+  // new text of another length shifts the page a little: that is not the reader scrolling
+  if (isRelettering()) {
+    lastY = y
+    return
+  }
+  if (Math.abs(y - lastY) < 8) return
+  tucked.value = y > lastY && y > 140
+  lastY = y
+}
+onMounted(() => addEventListener('scroll', onScroll, { passive: true }))
+onBeforeUnmount(() => removeEventListener('scroll', onScroll))
 </script>
 
 <template>
-  <header class="top" data-ink-safe>
+  <header class="top" :class="{ tucked }" data-ink-safe @focusin="tucked = false">
     <nav class="crumbs" :aria-label="t('nav.pages')">
       <NuxtLink class="home" :to="localePath('/')" :aria-label="t('nav.home')">
-        <PixelMark />
+        <SealMark />
         <span translate="no">Kerimcan Yagci</span>
       </NuxtLink>
       <template v-if="onBuild">
@@ -41,17 +70,9 @@ async function switchLanguage(e: MouseEvent) {
         <NuxtLink :to="switchLocalePath('de')" hreflang="de" lang="de" :aria-current="locale === 'de' ? 'true' : undefined">DE</NuxtLink>
         <NuxtLink :to="switchLocalePath('en')" hreflang="en" lang="en" :aria-current="locale === 'en' ? 'true' : undefined">EN</NuxtLink>
       </div>
-      <button type="button" class="seg theme" :aria-label="t('nav.theme')" :aria-pressed="dark" :title="t('nav.theme')" @click="toggle">
+      <button type="button" class="seg theme" :aria-label="themeLabel" :title="themeLabel" @click="toggle">
         <svg viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true">
-          <template v-if="!dark">
-            <rect x="2" y="0" width="3" height="1" /><rect x="1" y="1" width="2" height="1" /><rect x="0" y="2" width="2" height="3" />
-            <rect x="1" y="5" width="2" height="1" /><rect x="2" y="6" width="3" height="1" /><rect x="5" y="5" width="1" height="1" />
-          </template>
-          <template v-else>
-            <rect x="2" y="2" width="3" height="3" /><rect x="3" y="0" width="1" height="1" /><rect x="3" y="6" width="1" height="1" />
-            <rect x="0" y="3" width="1" height="1" /><rect x="6" y="3" width="1" height="1" /><rect x="1" y="1" width="1" height="1" />
-            <rect x="5" y="1" width="1" height="1" /><rect x="1" y="5" width="1" height="1" /><rect x="5" y="5" width="1" height="1" />
-          </template>
+          <rect v-for="([x, y, w], i) in ICONS[next]" :key="i" :x="x" :y="y" :width="w" height="1" />
         </svg>
       </button>
     </div>
@@ -147,16 +168,38 @@ async function switchLanguage(e: MouseEvent) {
 
 @media (max-width: 767px) {
   .top {
-    position: absolute;
-    top: 34px;
-    left: 28px;
-    right: 28px;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: calc(env(safe-area-inset-top, 0px) + 10px) 20px 8px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--guide-soft);
+    transition: transform 0.28s var(--ease-sheet);
+  }
+
+  .top.tucked {
+    transform: translateY(calc(-100% - 2px));
+  }
+
+  /* bigger targets for thumbs */
+  .seg a {
+    padding: 9px 10px;
+  }
+
+  .theme {
+    padding: 8px 9px;
   }
 
   .other,
   .crumbs .sep,
   .crumbs .here {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top {
+    transition: none;
   }
 }
 </style>

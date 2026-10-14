@@ -8,9 +8,9 @@ import { PixelBuffer, colour } from './buffer'
 import { crows } from './crows'
 import { rain } from './rain'
 import type { Box, Marked, Palette, Scene, View } from './scene'
-import { amaterasu, cursedSeal } from './seal'
+import { cursedSeal } from './seal'
 
-const SCENES: Record<string, Scene> = { seal: cursedSeal, fire: amaterasu, rain, crows }
+const SCENES: Record<string, Scene> = { seal: cursedSeal, crows, rain }
 
 export class InkEngine {
   private buf: PixelBuffer

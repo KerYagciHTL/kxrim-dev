@@ -1,65 +1,44 @@
-// The small pixel mark next to the name: the GitHub avatar as a 20 × 20 pixel bust. Its idle
-// loop blinks, and the cursed seal on the cheek spreads and pulls back now and then.
+// The mark next to the name: the three tomoe of the cursed seal, drawn by the same code as the
+// seal on the avatar's corner and turning the same way, in every theme.
 import { PixelBuffer, colour } from './buffer'
+import { seal } from './marks'
 
-// '#' ink, 'r' red, '.' empty
-const BUST = [
-  '..#.....#...........',
-  '..##...##..#........',
-  '...###.##.##........',
-  '#..#########........',
-  '.###########.#......',
-  '..#############.....',
-  '################....',
-  '.#######..###.###...',
-  '..#####.##..#..###..',
-  '..####.#.....#..##..',
-  '.#####..##..##r#.##.',
-  '..####.........#.##.',
-  '..##.#........#.#.#.',
-  '...#.#.........#.##.',
-  '...#.#....###..###..',
-  '...###.........##...',
-  '....####......##....',
-  '...##############...',
-  '.#################..',
-  '###################.',
-]
+export const MARK = { size: 20, fps: 6 }
 
-function edit(rows: string[], pixels: [x: number, y: number, c: string][]) {
-  const out = rows.map((r) => [...r])
-  for (const [x, y, c] of pixels) out[y]![x] = c
-  return out.map((r) => r.join(''))
+function draw(buf: PixelBuffer, step: number, ink: string, paper: string) {
+  const i = colour(ink)
+  const p = colour(paper)
+  const c = MARK.size / 2 - 0.5
+  seal({ buf, pal: { body: i, rim: p, edge: p, spark: i, seal: i }, step }, c, c, 2.3, -step * 0.11)
 }
 
-const BLINK = edit(BUST, [[8, 10, '.'], [9, 10, '.'], [8, 11, '#'], [9, 11, '#'], [14, 10, '#']])
-const SEAL_1 = edit(BUST, [[13, 11, '#'], [17, 14, '#']])
-const SEAL_2 = edit(SEAL_1, [[12, 11, '#'], [13, 9, '#'], [16, 15, '#'], [18, 12, '#']])
-
-// one loop of 72 frames at 8 fps: rest, blink, rest, the seal spreads and pulls back, blink
-const LOOP: string[][] = []
-const hold = (frame: string[], n: number) => {
-  for (let i = 0; i < n; i++) LOOP.push(frame)
-}
-hold(BUST, 26)
-hold(BLINK, 1)
-hold(BUST, 14)
-hold(SEAL_1, 2)
-hold(SEAL_2, 10)
-hold(SEAL_1, 2)
-hold(BUST, 6)
-hold(BLINK, 1)
-hold(BUST, 10)
-
-export const MARK = { size: 20, fps: 8 }
-
-/** Draws frame `step` of the idle loop; colours are '#rrggbb'. */
-export function drawMark(buf: PixelBuffer, step: number, ink: string, red: string) {
+/** Draws frame `step` into a canvas buffer; colours are '#rrggbb'. */
+export function drawMark(buf: PixelBuffer, step: number, ink: string, paper: string) {
   buf.clear()
-  const rows = LOOP[step % LOOP.length]!
-  const c: Record<string, number> = { '#': colour(ink), r: colour(red) }
-  rows.forEach((row, y) => [...row].forEach((ch, x) => c[ch] !== undefined && buf.put(x, y, c[ch]!)))
+  draw(buf, step, ink, paper)
   buf.flush()
+}
+
+/** The first frame as horizontal runs of ink, for the server-rendered SVG. */
+export function markRuns(): { x: number; y: number; w: number }[] {
+  const ink = '#010101'
+  const image = { data: new Uint8ClampedArray(MARK.size * MARK.size * 4) }
+  const ctx = { canvas: {}, createImageData: () => image, putImageData() {} } as unknown as CanvasRenderingContext2D
+  const buf = new PixelBuffer(ctx)
+  buf.resize(MARK.size, MARK.size)
+  draw(buf, 0, ink, '#ffffff')
+  const px = new Uint32Array(image.data.buffer)
+  const want = colour(ink)
+  const runs: { x: number; y: number; w: number }[] = []
+  for (let y = 0; y < MARK.size; y++) {
+    for (let x = 0; x < MARK.size; x++) {
+      if (px[y * MARK.size + x] !== want) continue
+      const last = runs[runs.length - 1]
+      if (last && last.y === y && last.x + last.w === x) last.w++
+      else runs.push({ x, y, w: 1 })
+    }
+  }
+  return runs
 }
 
 export { PixelBuffer }

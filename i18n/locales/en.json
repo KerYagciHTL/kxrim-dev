@@ -11,9 +11,12 @@
     "build": "What I build",
     "portfolio": "Portfolio",
     "language": "Language",
-    "theme": "Light or dark",
+    "theme": "Next colour scheme: {name}",
     "pages": "Pages of this section",
-    "skip": "Skip to content"
+    "skip": "Skip to content",
+    "prev": "Previous page",
+    "next": "Next page",
+    "contents": "All pages"
   },
   "sheet": {
     "start": "Start",
@@ -42,5 +45,10 @@
   },
   "hint": {
     "keys": "Arrow keys or mouse wheel to turn the page"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "rain": "Rain"
   }
 }

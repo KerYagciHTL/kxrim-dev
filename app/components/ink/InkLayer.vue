@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// Hosts the pixel layer (cursed seal by day, Amaterasu by night) and the screentone under it.
+// Hosts the pixel layer (cursed seal, crows or rain, by theme) and the screentone under it.
 import { InkEngine } from '~/ink/engine'
 
 const ink = ref<HTMLCanvasElement>()
 const tone = ref<HTMLCanvasElement>()
 const { turns } = useDeck()
-const { dark, read } = useTheme()
+const { theme, read } = useTheme()
 let engine: InkEngine | null = null
 let frame = 0
 
@@ -29,7 +29,7 @@ onMounted(() => {
 })
 
 watch(turns, () => engine?.sheetChanged())
-watch(dark, () => nextTick(refresh))
+watch(theme, () => nextTick(refresh))
 
 onBeforeUnmount(() => {
   engine?.stop()
@@ -44,11 +44,12 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* inset alone, so on phones the canvas follows the toolbar instead of hiding under it */
 canvas {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 

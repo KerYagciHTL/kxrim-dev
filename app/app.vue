@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { THEME_KEY } from '~/composables/useTheme'
+import { PAPER, THEME_KEY } from '~/composables/useTheme'
 
 // a saved theme is applied before the first paint, so dark visitors never see a light flash
 useHead({
@@ -7,7 +7,7 @@ useHead({
     {
       key: 'theme',
       tagPosition: 'head',
-      innerHTML: `try{var t=localStorage.getItem('${THEME_KEY}');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}`,
+      innerHTML: `try{var t=localStorage.getItem('${THEME_KEY}'),c={light:'${PAPER.light}',dark:'${PAPER.dark}',rain:'${PAPER.rain}'}[t];if(c){document.documentElement.dataset.theme=t;document.querySelectorAll('meta[name=theme-color]').forEach(function(m){m.content=c})}}catch(e){}`,
     },
   ],
 })
