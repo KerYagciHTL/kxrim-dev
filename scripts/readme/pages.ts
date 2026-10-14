@@ -11,9 +11,11 @@ const ink = (canvas: ReturnType<typeof pixels>) => toPaths(canvas, 0, 0, [[RIM, 
 const fmt = (n: number) => n.toLocaleString('en-US')
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+const tagWidth = (s: string) => textWidth(s, 'Dela', 17) + 28
+
 /** A heading tag: a small white box with an inked edge. */
 function tag(x: number, y: number, s: string) {
-  const w = textWidth(s, 'Dela', 17) + 28
+  const w = tagWidth(s)
   return `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="32" fill="${C.white}" stroke="${C.ink}" stroke-width="2"/>${text(x + 14, y + 23, s, 'Dela', 17)}`
 }
 
@@ -154,85 +156,123 @@ ${tag(44, 34, 'In numbers')}`
 }
 
 // ---------------------------------------------------------------------------------------------
-// 03 the year as a cursed seal: every day with contributions sets a mark, busier days burn higher
+// 03 the year: the days as halftone dots, the cursed seal burning above them as one mass of black
+// fire, as high as each week was busy, with flame tips licking off its top
 
-const FLAME = [0, 2.6, 3.6, 4.9, 6.4]
+/** halftone dot radius per GitHub level, in SVG units: bigger dot, busier day */
+const DOT = [0, 2.2, 3.6, 5, 6.4]
 
 export function board(data: Data) {
-  const H = 300
+  const H = 360
   const weeks = Math.max(...data.days.map((d) => d.col)) + 1
-  const cell = 5 // art pixels
-  const x0 = (WIDTH - 30) / PX - weeks * cell
-  const y0 = 50
-  const today = data.days[data.days.length - 1]!
+  const pitch = 15
+  const x0 = (WIDTH - weeks * pitch) / 2
+  const gy = 195 // top of the grid
   const active = data.days.filter((d) => d.count > 0)
-  const busiest = Math.max(0, ...data.days.map((d) => d.count))
+  const busiest = data.days.reduce((a, b) => (b.count > a.count ? b : a), data.days[0]!)
 
-  // legend: five sample cells, from nothing to the busiest quarter
-  const legendX = (WIDTH - 30) / PX - 5 * cell - 14
-  const legendY = 14
-  const legend = [0, 1, 2, 3, 4].map((level, i) => ({ x: legendX + i * cell, y: legendY, level, seed: 900 + i }))
-  const cells = data.days.map((d, i) => ({ x: x0 + d.col * cell, y: y0 + d.row * cell, level: d.count ? Math.max(1, d.level) : 0, seed: i }))
-  const all = [...cells, ...legend]
+  // the height of the fire over every week, smoothed so neighbouring weeks run together
+  const sums = Array.from({ length: weeks }, () => 0)
+  for (const d of data.days) sums[d.col]! += d.count
+  const max = Math.max(1, ...sums)
+  const raw = sums.map((s) => (s ? 5 + 20 * Math.pow(s / max, 0.62) : 0))
+  const kernel = [0.12, 0.22, 0.32, 0.22, 0.12]
+  const height = raw.map((_, c) => kernel.reduce((h, w, k) => h + w * (raw[c + k - 2] ?? 0), 0))
 
-  const flames: string[] = []
+  // in art pixels
+  const ax0 = x0 / PX
+  const base = gy / PX - 2
+  const span = (weeks * pitch) / PX
+  const at = (x: number) => {
+    const f = (x - ax0) / (pitch / PX) - 0.5
+    const i = Math.floor(f)
+    const t = f - i
+    return (height[Math.max(0, i)] ?? 0) * (1 - t) + (height[Math.min(weeks - 1, i + 1)] ?? 0) * t
+  }
+
+  const frames: string[] = []
   for (let step = 0; step < 4; step++) {
     const canvas = pixels(Math.ceil(WIDTH / PX), Math.ceil(H / PX))
     const pen: Pen = { buf: canvas.buf, pal, step }
-    // lower rows last, so a flame that rises into the day above burns in front of it
-    for (const c of [...all].sort((a, b) => a.y - b.y)) {
-      if (!c.level) continue
-      const s = FLAME[c.level]!
-      const a = -Math.PI / 2 + (hash(c.seed, 1) - 0.5) * 0.5
-      const curl = (hash(c.seed, 2) < 0.5 ? -1 : 1) * (0.05 + hash(c.seed, 6) * 0.08)
-      flame(pen, c.x + 2, c.y + 4, a, s, curl, 1, c.seed)
-      // the seal's hairline swirls reach out from the busier days
-      if (c.level >= 3 && hash(c.seed, 3) < 0.45) tendril(pen, c.x + 2, c.y + 3, a + (curl < 0 ? 1.1 : -1.1), s * 1.7, curl < 0 ? 1 : -1, 1)
+    const swirl: Pen = { buf: canvas.buf, pal: { ...pal, body: RIM }, step }
+    // the mass, with a ragged top edge
+    for (let x = Math.floor(ax0); x < ax0 + span; x++) {
+      const h = at(x)
+      if (h < 1) continue
+      const top = base - h + Math.round((hash(x, 7) - 0.5) * 2)
+      for (let y = top; y <= base; y++) canvas.buf.put(x, y, INK)
     }
-    flames.push(ink(canvas))
+    // flame tips licking off the top, bigger where the fire is high
+    for (let x = Math.floor(ax0) + 2, i = 0; x < ax0 + span; x += 5 + Math.round(hash(i, 8) * 3), i++) {
+      const h = at(x)
+      if (h < 3) continue
+      const curl = (i % 2 ? -1 : 1) * (0.07 + hash(i, 9) * 0.07)
+      flame(pen, x, base - h + 2, -Math.PI / 2 + (hash(i, 10) - 0.5) * 0.5, 1.6 + h * 0.3, curl, 1, i)
+    }
+    // the seal's hairline swirls, in paper, inside the bigger fires
+    for (let x = Math.floor(ax0) + 4, i = 0; x < ax0 + span; x += 9, i++) {
+      const h = at(x)
+      if (h < 12 || hash(i, 11) < 0.35) continue
+      tendril(swirl, x, base - 2, -Math.PI / 2 + (hash(i, 12) - 0.5) * 0.9, h * 0.75, i % 2 ? 1 : -1, 1)
+    }
+    // the fire stands on a ground line
+    for (let x = Math.floor(ax0); x < ax0 + span; x++) if (at(x) >= 1) canvas.buf.put(x, base + 1, INK)
+    frames.push(ink(canvas))
   }
-  const fire = animate('f', flames, 167)
+  const fire = animate('f', frames, 167)
 
-  // empty days are dots of non-repro blue, the grid of the manuscript
-  const dots = all
-    .filter((c) => !c.level)
-    .map((c) => `M${(c.x + 2) * PX} ${(c.y + 2) * PX}h${PX}v${PX}h${-PX}z`)
+  // the days: halftone dots in ink, quiet days as dots of non-repro blue
+  const cx = (d: { col: number }) => x0 + d.col * pitch + pitch / 2
+  const cy = (d: { row: number }) => gy + d.row * pitch + pitch / 2
+  const dots = data.days
+    .filter((d) => d.count)
+    .map((d) => {
+      const r = DOT[Math.max(1, d.level)]!
+      return `M${(cx(d) - r).toFixed(1)} ${cy(d)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`
+    })
+    .join('')
+  const quiet = data.days
+    .filter((d) => !d.count)
+    .map((d) => `M${cx(d) - 1.5} ${cy(d) - 1.5}h3v3h-3z`)
     .join('')
 
-  // month names above the first week that starts in that month
+  // month names under the first week of each month
   const months: string[] = []
   let last = -1
   for (const d of data.days) {
     const m = Number(d.date.slice(5, 7)) - 1
     if (d.row === 0 && m !== last) {
-      if (last !== -1 || d.col === 0) months.push(text((x0 + d.col * cell) * PX, 92, MONTHS[m]!, 'Dot', 12, { fill: C.soft, halo: true }))
+      months.push(text(x0 + d.col * pitch + 2, gy + 7 * pitch + 20, MONTHS[m]!, 'Dot', 12, { fill: C.soft }))
       last = m
     }
   }
-  const weekdays = [
-    [1, 'Mon'],
-    [3, 'Wed'],
-    [5, 'Fri'],
-  ]
-    .map(([row, s]) => text(x0 * PX - 6, (y0 + (row as number) * cell) * PX + 12, s as string, 'Dot', 11, { fill: C.soft, anchor: 'end' }))
-    .join('')
 
-  const tx = (x0 + today.col * cell) * PX
-  const ty = (y0 + today.row * cell) * PX
+  // legend: the five dot sizes from quiet to busy
+  const lx = WIDTH - 40 - 5 * 18 - 34
+  const legend =
+    `<path fill="${C.guide}" d="M${lx - 1.5} 46.5h3v3h-3z"/>` +
+    `<path fill="${C.ink}" d="${[1, 2, 3, 4].map((l) => `M${lx + l * 18 - DOT[l]!} 48a${DOT[l]} ${DOT[l]} 0 1 0 ${2 * DOT[l]!} 0a${DOT[l]} ${DOT[l]} 0 1 0 ${-2 * DOT[l]!} 0`).join('')}"/>` +
+    text(lx - 12, 52, 'quiet', 'Dot', 11, { fill: C.soft, anchor: 'end' }) +
+    text(lx + 4 * 18 + 12, 52, 'busy', 'Dot', 11, { fill: C.soft })
+
+  const bDate = new Date(`${busiest.date}T12:00:00Z`)
+  const summary = `${fmt(data.total)} contributions on ${active.length} days`
+  const busy = `busiest: ${busiest.count} on ${bDate.getUTCDate()} ${MONTHS[bDate.getUTCMonth()]}`
   const sweep =
-    `.sw{transform-box:fill-box;transform-origin:0 0;animation:sw 3.4s steps(${weeks},end) .3s both}` +
+    `.sw{transform-box:fill-box;transform-origin:0 0;animation:sw 3.2s steps(${weeks},end) .3s both}` +
     `@keyframes sw{from{transform:scaleX(0)}to{transform:scaleX(1)}}@media (prefers-reduced-motion:reduce){.sw{animation:none}}`
 
   const body = `
-<clipPath id="spread"><rect class="sw" x="0" y="0" width="${(x0 + weeks * cell) * PX + 30}" height="${H}"/></clipPath>
-<path fill="${C.guide}" d="${dots}"/>
-<g clip-path="url(#spread)">${fire.markup}</g>
-<rect x="${tx - 1.5}" y="${ty - 1.5}" width="${cell * PX + 3}" height="${cell * PX + 3}" fill="none" stroke="${C.red}" stroke-width="2"/>
-${months.join('')}${weekdays}
+<clipPath id="spread"><rect class="sw" x="${x0}" y="0" width="${weeks * pitch}" height="${H}"/></clipPath>
+${koma(30, 76, WIDTH - 60, H - 76 - 26)}
+<path fill="${C.guide}" d="${quiet}"/>
+<g clip-path="url(#spread)">${fire.markup}<path fill="${C.ink}" d="${dots}"/></g>
+<circle cx="${cx(busiest)}" cy="${cy(busiest)}" r="${DOT[4]! + 3.5}" fill="none" stroke="${C.red}" stroke-width="2"/>
+${months.join('')}
 ${tag(40, 30, 'The last year')}
-${text(218, 52, `${fmt(data.total)} contributions on ${active.length} days, ${busiest} on the busiest`, 'Zen', 15)}
-${text(legendX * PX - 8, (legendY + 4) * PX, 'quiet', 'Dot', 11, { fill: C.soft, anchor: 'end' })}
-${text((legendX + 5 * cell) * PX + 8, (legendY + 4) * PX, 'busy', 'Dot', 11, { fill: C.soft })}`
+${text(40 + tagWidth('The last year') + 18, 52, summary, 'Zen', 15)}
+${text(40 + tagWidth('The last year') + 18 + textWidth(summary, 'Zen', 15) + 16, 52, busy, 'Dot', 13, { fill: C.red })}
+${legend}`
   return sheet(H, 3, body, fonts('Dela', 'Zen', 'Dot') + fire.css + sweep)
 }
 
