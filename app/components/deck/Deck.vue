@@ -4,13 +4,14 @@
 import type { SheetInfo } from '~/composables/useDeck'
 
 const props = defineProps<{ sheets: SheetInfo[] }>()
-const { sheets, index, turns, goTo } = useDeck()
+const { sheets, index, turns, goTo, inkPage } = useDeck()
 const route = useRoute()
 index.value = 0
 // labels change with the language while the deck stays
 watchEffect(() => (sheets.value = props.sheets))
 
 const deck = ref<HTMLElement>()
+const ink = ref<HTMLCanvasElement>()
 const blur = ref<SVGFEGaussianBlurElement>()
 const still = import.meta.client && matchMedia('(prefers-reduced-motion: reduce)').matches
 const wide = () => innerWidth >= 768
@@ -118,6 +119,7 @@ function onKey(e: KeyboardEvent) {
 
 onMounted(() => {
   goTo.value = (i: number) => go(i)
+  if (ink.value && deck.value) inkPage.value = { canvas: ink.value, host: deck.value }
   addEventListener('keydown', onKey)
   addEventListener('wheel', onWheel, { passive: false })
   // phones: the sheet in the middle of the screen counts as current
@@ -145,6 +147,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   goTo.value = null
+  if (inkPage.value?.canvas === ink.value) inkPage.value = null
   removeEventListener('keydown', onKey)
   removeEventListener('wheel', onWheel)
   io?.disconnect()
@@ -155,6 +158,8 @@ onBeforeUnmount(() => {
 <template>
   <main id="main" ref="deck" class="deck" tabindex="-1" @scroll.passive="onScroll">
     <slot />
+    <!-- the ink that belongs to elements: it scrolls with them, so it never lags behind -->
+    <canvas ref="ink" class="ink-page" aria-hidden="true" />
   </main>
   <DeckPager />
   <svg class="fx" aria-hidden="true" width="0" height="0">
@@ -169,6 +174,15 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 2;
   outline: none;
+}
+
+.ink-page {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
 }
 
 .fx {
@@ -191,7 +205,8 @@ onBeforeUnmount(() => {
     display: none;
   }
 
-  .deck.moving {
+  /* the sheets blur while they move, the ink stays sharp */
+  .deck.moving > :deep(.sheet) {
     filter: url(#deck-blur);
   }
 }

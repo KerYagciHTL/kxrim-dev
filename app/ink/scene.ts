@@ -1,5 +1,11 @@
-// What a scene gets to draw one frame: the pixel buffer, the colours, the clock, and where the
-// page's elements are, all in art pixels (one art pixel is `scale` CSS pixels).
+// What a scene gets to draw one frame: two pixel buffers, the colours, the clock, and where the
+// page's elements are, all in art pixels (one art pixel is `scale` CSS pixels) and measured from
+// the top left of the screen.
+//
+// Two layers, so nothing lags behind when the page scrolls:
+//   page   lives inside the deck and scrolls with the content: marks that belong to an element
+//   frame  is fixed to the screen: the frame corners, crows on the frame, rain
+// Both take screen coordinates; the page buffer shifts them onto the page by itself.
 import type { Colour, PixelBuffer } from './buffer'
 
 export interface Palette {
@@ -22,10 +28,15 @@ export interface Marked extends Box {
   edges: Set<string>
   /** its position among all marked elements, a stable seed */
   i: number
+  /** at least partly on screen right now */
+  seen: boolean
 }
 
 export interface View {
+  /** the layer fixed to the screen */
   buf: PixelBuffer
+  /** the layer that scrolls with the content */
+  page: PixelBuffer
   pal: Palette
   /** frame counter at the scene's own frame rate; 0 forever when motion is reduced */
   step: number
@@ -35,18 +46,25 @@ export interface View {
   W: number
   H: number
   T: number
+  /** every element with data-ink and every text box on the page, also those off screen */
   marked: Marked[]
   safe: Box[]
   /** milliseconds since the current sheet came into view, and since the page loaded */
   sheetAge: number
   pageAge: number
-  /** clears every text box, so text stays readable */
-  clearSafe(): void
+  /** clears every text box in one layer, so text stays readable */
+  clearSafe(layer: PixelBuffer): void
 }
 
+/**
+ * `page` draws what belongs to the elements; it runs at the scene's frame rate only, because
+ * that layer scrolls by itself. `frame` draws what is fixed to the screen; it also runs while
+ * the page scrolls.
+ */
 export interface Scene {
   fps: number
-  draw(view: View): void
+  page?(view: View): void
+  frame(view: View): void
 }
 
 /** 0..1 growth from `from` over `ms`, in 48 steps so the pixels do not shimmer. */
@@ -65,3 +83,4 @@ export function hash(a: number, b = 0) {
 }
 
 export const inside = (b: Box, x: number, y: number) => x >= b.L && x <= b.R && y >= b.T && y <= b.B
+export const overlaps = (a: Box, b: Box) => a.L < b.R && a.R > b.L && a.T < b.B && a.B > b.T

@@ -35,7 +35,7 @@ defineProps<{ id: string; label: string }>()
   }
 
   /* room for the folio at the very end */
-  .sheet:last-child {
+  .sheet:last-of-type {
     padding-bottom: 96px;
   }
 

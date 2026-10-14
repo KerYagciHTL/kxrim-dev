@@ -25,10 +25,17 @@ export function random(seed: number): () => number {
 export class PixelBuffer {
   width = 0
   height = 0
+  /** shifts every drawing call, so callers can draw in screen coordinates on a page canvas */
+  dx = 0
+  dy = 0
   private image: ImageData | null = null
   private data: Uint32Array = new Uint32Array(0)
 
   constructor(private readonly ctx: CanvasRenderingContext2D) {}
+
+  get canvas() {
+    return this.ctx.canvas
+  }
 
   resize(width: number, height: number) {
     this.width = width
@@ -44,8 +51,8 @@ export class PixelBuffer {
   }
 
   put(x: number, y: number, c: Colour) {
-    const xi = Math.round(x)
-    const yi = Math.round(y)
+    const xi = Math.round(x + this.dx)
+    const yi = Math.round(y + this.dy)
     if (xi >= 0 && yi >= 0 && xi < this.width && yi < this.height) this.data[yi * this.width + xi] = c
   }
 
@@ -61,10 +68,10 @@ export class PixelBuffer {
 
   /** Clears a rectangle given in art pixels, with a one pixel margin. */
   erase(x0: number, y0: number, x1: number, y1: number) {
-    const ax = Math.max(0, Math.floor(x0) - 1)
-    const bx = Math.min(this.width, Math.ceil(x1) + 1)
-    const ay = Math.max(0, Math.floor(y0) - 1)
-    const by = Math.min(this.height, Math.ceil(y1) + 1)
+    const ax = Math.max(0, Math.floor(x0 + this.dx) - 1)
+    const bx = Math.min(this.width, Math.ceil(x1 + this.dx) + 1)
+    const ay = Math.max(0, Math.floor(y0 + this.dy) - 1)
+    const by = Math.min(this.height, Math.ceil(y1 + this.dy) + 1)
     if (ax >= bx) return
     for (let y = ay; y < by; y++) this.data.fill(0, y * this.width + ax, y * this.width + bx)
   }

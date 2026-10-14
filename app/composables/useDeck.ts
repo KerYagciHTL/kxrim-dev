@@ -8,6 +8,8 @@ export interface SheetInfo {
 
 // set by the deck on the client, called by the pager and in-page links (never serialised)
 const goTo = shallowRef<((i: number) => void) | null>(null)
+/** the deck's own ink canvas, which scrolls with the sheets, for the ink layer */
+const inkPage = shallowRef<{ canvas: HTMLCanvasElement; host: HTMLElement } | null>(null)
 
 export function useDeck() {
   const sheets = useState<SheetInfo[]>('deck-sheets', () => [])
@@ -20,5 +22,5 @@ export function useDeck() {
     if (i >= 0) goTo.value?.(i)
   }
 
-  return { sheets, index, turns, goTo, go }
+  return { sheets, index, turns, goTo, go, inkPage }
 }

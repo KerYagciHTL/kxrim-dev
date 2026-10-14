@@ -83,11 +83,18 @@ Every sheet has an id, so `/#afterfall` opens that sheet. Old URLs: `/services` 
 ## 6. Ink layer (`app/ink`)
 
 - `buffer.ts`: a pixel buffer, one art pixel is 4 CSS pixels (3 on phones).
-- `engine.ts`: measures the page every frame and hands it to the theme's scene
-  (`--ink-scene`); also paints the corner screentone (`--tone-kind`: dots or rain lines).
+- Two layers, so nothing lags behind or gets cut while the page scrolls: a **page layer**, a
+  canvas inside the deck that scrolls with the sheets (marks that belong to an element, the
+  crow on a panel), and a **screen layer**, fixed and hung from the bottom of the screen
+  (frame corners, crows on the frame, rain). The screen layer has a fixed size, so a phone
+  toolbar sliding in and out moves it instead of stretching it.
+- `engine.ts`: measures the page and hands it to the theme's scene (`--ink-scene`); redraws
+  both layers at the scene's frame rate and only the screen layer while scrolling; also paints
+  the corner screentone (`--tone-kind`: dots or rain lines).
 - `scene.ts`: what a scene gets (buffer, colours, clock, element boxes) and small helpers.
 - `seal.ts` + `marks.ts`: the cursed seal (light): flames on a curling spine, tendrils, tomoe.
-- `crows.ts`: crow sprites with a moonlit outline, landing, idling, feathers (dark).
+- `crows.ts`: crow sprites with a moonlit outline, landing, idling, feathers (dark). Crows are
+  never cut by text boxes: a panel crow only sits where no text is above the panel.
 - `rain.ts`: drops, splashes on panel tops, drips, rings on the frame (rain).
 - `mark.ts`: the turning seal next to the name; the server renders its first frame as SVG.
 - The DOM steers it: `data-ink="right bottom left top seal"` grows marks on those edges of an

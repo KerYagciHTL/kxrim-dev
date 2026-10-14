@@ -90,17 +90,18 @@ function drip(view: View, m: Box & { i: number }, ground: number) {
   } else ripple(view, x, ground, Math.floor((py - ground) / 5))
 }
 
+// all of it lives on the screen layer: drops fall through the screen, not through the page
 export const rain: Scene = {
   fps: 15,
-  draw(view) {
+  frame(view) {
     const { H, T, mobile } = view
     const ground = H - T
-    const roofs = view.marked
+    const roofs = view.marked.filter((m) => m.seen)
     const g = grow(view, view.pageAge, 0, 30000)
     const [few, many] = mobile ? [18, 40] : [44, 96]
     const n = Math.round(few + (many - few) * g)
     for (let i = 0; i < n; i++) drop(view, i, roofs, ground)
     for (const m of roofs) drip(view, m, ground)
-    view.clearSafe()
+    view.clearSafe(view.buf)
   },
 }

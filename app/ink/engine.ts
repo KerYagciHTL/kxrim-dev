@@ -1,5 +1,7 @@
-// Runs the pixel layer over the whole viewport and the screentone under it.
-// Which scene it draws comes from the CSS token --ink-scene, so each theme brings its own.
+// Runs the pixel layers and the screentone under them. Which scene it draws comes from the CSS
+// token --ink-scene, so each theme brings its own. There are two layers (see scene.ts): one fixed
+// to the screen, one inside the deck that scrolls with the content, so marks that belong to an
+// element stay glued to it while the page moves.
 //
 // The DOM tells the scenes what to do:
 //   data-ink="right bottom left top seal"  the scene decorates these edges of the element
@@ -12,10 +14,17 @@ import { cursedSeal } from './seal'
 
 const SCENES: Record<string, Scene> = { seal: cursedSeal, crows, rain }
 
+/** extra canvas above the screen on phones, so a toolbar that slides away never shows a gap */
+const HEADROOM = 140
+
 export class InkEngine {
   private buf: PixelBuffer
+  private page: PixelBuffer | null = null
+  private host: HTMLElement | null = null
   private scale = 4
   private trim = 5
+  /** CSS size of the screen layer, and the viewport width it was made for */
+  private size = { w: 0, h: 0, vw: 0 }
   private palette: Palette | null = null
   private scene: Scene = cursedSeal
   private step = 0
@@ -25,21 +34,50 @@ export class InkEngine {
   private last = 0
   private running = false
   private readonly still = matchMedia('(prefers-reduced-motion: reduce)').matches
+  private readonly watchHost = new ResizeObserver(() => this.sizePage())
 
   constructor(
     private readonly canvas: HTMLCanvasElement,
     private readonly tone: HTMLCanvasElement,
   ) {
-    const ctx = canvas.getContext('2d')
+    this.buf = new PixelBuffer(this.context(canvas))
+  }
+
+  private context(c: HTMLCanvasElement) {
+    const ctx = c.getContext('2d')
     if (!ctx) throw new Error('2d canvas not available')
-    this.buf = new PixelBuffer(ctx)
+    return ctx
   }
 
   private get mobile() {
     return innerWidth < 768
   }
 
-  /** Re-reads the scene, colours and sizes; call after a resize or a theme change. */
+  /** The canvas that scrolls with the content, and the element it lives in (the deck). */
+  attachPage(canvas: HTMLCanvasElement | null, host: HTMLElement | null) {
+    this.watchHost.disconnect()
+    this.page = canvas && host ? new PixelBuffer(this.context(canvas)) : null
+    this.host = canvas && host ? host : null
+    if (this.host) this.watchHost.observe(this.host)
+    this.sizePage()
+  }
+
+  private sizePage() {
+    if (!this.page || !this.host) return
+    const P = this.scale
+    // never larger than the content, or the canvas itself would make the page longer
+    const w = Math.max(1, Math.floor(this.host.scrollWidth / P))
+    const h = Math.max(1, Math.floor(this.host.scrollHeight / P))
+    if (w !== this.page.width || h !== this.page.height) {
+      this.page.resize(w, h)
+      const c = this.page.canvas
+      c.style.width = `${w * P}px`
+      c.style.height = `${h * P}px`
+    }
+    this.render()
+  }
+
+  /** Re-reads the scene, colours and sizes; call after a theme change. */
   refresh() {
     const css = getComputedStyle(document.documentElement)
     const v = (name: string) => css.getPropertyValue(name).trim()
@@ -53,9 +91,27 @@ export class InkEngine {
     this.scene = SCENES[v('--ink-scene')] ?? cursedSeal
     this.scale = this.mobile ? 3 : 4
     this.trim = Math.round(parseFloat(v('--trim')) / this.scale)
-    this.buf.resize(Math.ceil(innerWidth / this.scale), Math.ceil(innerHeight / this.scale))
+    // the screen layer hangs from the bottom of the screen with a fixed size, so a phone's
+    // toolbar sliding in and out moves it instead of stretching it
+    const P = this.scale
+    const w = Math.ceil(innerWidth / P)
+    const h = Math.ceil((innerHeight + (this.mobile ? HEADROOM : 0)) / P)
+    this.buf.resize(w, h)
+    this.size = { w: w * P, h: h * P, vw: innerWidth }
+    for (const c of [this.canvas, this.tone]) {
+      c.style.width = `${this.size.w}px`
+      c.style.height = `${this.size.h}px`
+    }
     this.drawTone(v('--tone-ink') || v('--ink'), parseFloat(v('--tone-alpha')), v('--tone-kind') === 'rain')
+    this.sizePage()
     this.render()
+  }
+
+  /** On resize: a phone toolbar only changes the height a little, that needs no new canvas. */
+  resized() {
+    const fits = this.mobile && innerWidth === this.size.vw && innerHeight <= this.size.h && innerHeight > this.size.h - HEADROOM * 2
+    if (fits) this.render()
+    else this.refresh()
   }
 
   /** The marks on a sheet's own element start growing again from small. */
@@ -83,43 +139,72 @@ export class InkEngine {
   stop() {
     this.running = false
     cancelAnimationFrame(this.raf)
+    this.watchHost.disconnect()
   }
 
+  /** Both layers. While the page scrolls only `renderScreen` is needed: the page layer moves along. */
   render() {
+    this.draw(true)
+  }
+
+  renderScreen() {
+    this.draw(false)
+  }
+
+  private draw(withPage: boolean) {
     if (!this.palette) return
     const { buf, scale: P } = this
-    const onScreen = (b: DOMRect) => !(b.right < 0 || b.left > innerWidth || b.bottom < 0 || b.top > innerHeight)
     const box = (b: DOMRect): Box => ({ L: b.left / P, T: b.top / P, R: b.right / P, B: b.bottom / P })
+    const seen = (b: DOMRect) => !(b.right < 0 || b.left > innerWidth || b.bottom < 0 || b.top > innerHeight)
 
     const marked: Marked[] = []
     document.querySelectorAll<HTMLElement>('[data-ink]').forEach((el, i) => {
       const b = el.getBoundingClientRect()
-      if (onScreen(b)) marked.push({ ...box(b), edges: new Set((el.dataset.ink ?? '').split(' ')), i })
+      if (b.width || b.height) marked.push({ ...box(b), edges: new Set((el.dataset.ink ?? '').split(' ')), i, seen: seen(b) })
     })
     const safe: Box[] = []
     document.querySelectorAll<HTMLElement>('[data-ink-safe]').forEach((el) => {
       const b = el.getBoundingClientRect()
-      if (onScreen(b)) safe.push(box(b))
+      if (b.width || b.height) safe.push(box(b))
     })
+
+    // screen coordinates onto each canvas: the screen layer's top sits above the screen by the
+    // headroom; the page layer starts at the deck's own top left corner
+    buf.dy = (this.size.h - innerHeight) / P
+    const page = this.page && this.host ? this.page : null
+    if (page && this.host) {
+      const r = this.host.getBoundingClientRect()
+      page.dx = (this.host.scrollLeft - r.left) / P
+      page.dy = (this.host.scrollTop - r.top) / P
+    }
 
     const now = performance.now()
     const view: View = {
       buf,
+      page: page ?? buf,
       pal: this.palette,
       step: this.still ? 0 : this.step,
       still: this.still,
       mobile: this.mobile,
-      W: buf.width,
-      H: buf.height,
+      W: innerWidth / P,
+      H: innerHeight / P,
       T: this.trim,
       marked,
       safe,
       sheetAge: now - this.sheetSince,
       pageAge: now - this.pageSince,
-      clearSafe: () => safe.forEach((s) => buf.erase(s.L, s.T, s.R, s.B)),
+      clearSafe: (layer) => safe.forEach((s) => layer.erase(s.L, s.T, s.R, s.B)),
+    }
+
+    if (page && withPage) {
+      page.clear()
+      this.scene.page?.(view)
+      page.flush()
     }
     buf.clear()
-    this.scene.draw(view)
+    // without a page canvas (the error page) everything shares the screen layer
+    if (!page) this.scene.page?.(view)
+    this.scene.frame(view)
     buf.flush()
   }
 
@@ -129,8 +214,10 @@ export class InkEngine {
    */
   private drawTone(ink: string, alpha: number, lines: boolean) {
     const dpr = Math.min(2, devicePixelRatio || 1)
-    const w = innerWidth
-    const h = innerHeight
+    const w = this.size.w
+    const h = this.size.h
+    // the visible screen is the lower part of the canvas
+    const top = h - innerHeight
     this.tone.width = Math.round(w * dpr)
     this.tone.height = Math.round(h * dpr)
     const c = this.tone.getContext('2d')
@@ -141,8 +228,8 @@ export class InkEngine {
     c.strokeStyle = ink
     c.globalAlpha = alpha
     const spots: [number, number, number][] = this.mobile
-      ? [[0, h, h * 0.3]]
-      : [[0, h, h * 0.5], [w, h, h * 0.4], [w, 0, h * 0.24]]
+      ? [[0, h, innerHeight * 0.3]]
+      : [[0, h, innerHeight * 0.5], [w, h, innerHeight * 0.4], [w, top, innerHeight * 0.24]]
     const strength = (x: number, y: number) => {
       let r = 0
       for (const [cx, cy, R] of spots) {
