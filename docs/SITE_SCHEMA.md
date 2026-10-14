@@ -149,7 +149,7 @@ SVG that yagci.cc draws itself
 
 | Page | Shows |
 |---|---|
-| `title.svg` | name, avatar in an ink panel with the cursed seal growing from it, the Sasuke line |
+| `title.svg` | name, and the site's mark big in an ink panel: the three tomoe turning in a halo of screentone, the seal's flames growing from the panel, the Sasuke line (no avatar: GitHub shows it right beside the README) |
 | `numbers.svg` | contributions of the last year behind focus lines; repositories, stars, followers, busiest day; languages of the public code as screentone bars |
 | `year.svg` | the contribution calendar: days as halftone dots (bigger on busier days, quiet days blue), and above them the cursed seal as one mass of black fire, as high as each week was busy, with licking tips and paper swirls; the year spreads in week by week, the busiest day has a red ring |
 | `lately.svg` | the four newest public happenings as a four-panel strip |

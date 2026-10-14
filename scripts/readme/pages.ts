@@ -1,6 +1,5 @@
 // The five pages of the GitHub README, a short chapter on manga manuscript paper in the site's
 // light theme. Every page is one SVG; the pixel ink is drawn by the site's own code.
-import { readFileSync } from 'node:fs'
 import { flame, flameRow, seal, tendril, type Pen } from '../../app/ink/marks'
 import { hash } from '../../app/ink/scene'
 import type { Data, Happening } from './github'
@@ -32,16 +31,36 @@ function turningSeals(h: number, seals: [x: number, y: number, size: number, dir
 }
 
 // ---------------------------------------------------------------------------------------------
-// 01 title: name, avatar in an ink panel with the cursed seal growing from it
+// 01 title: name, and the mark of the site: the three tomoe of the cursed seal, big and turning in
+// an ink panel, with the seal's flames growing from it. (GitHub already shows the avatar beside it.)
+
+/** Screentone that thickens away from a clear middle, so whatever sits there glows. */
+function haloTone(cx: number, cy: number, r0: number, r1: number, box: { x: number; y: number; s: number }) {
+  const a = 6 / Math.SQRT2
+  let d = ''
+  for (let i = -60; i <= 60; i++) {
+    for (let j = -60; j <= 60; j++) {
+      const x = cx + (i + j) * a
+      const y = cy + (j - i) * a
+      if (x < box.x || y < box.y || x > box.x + box.s || y > box.y + box.s) continue
+      const t = (Math.hypot(x - cx, y - cy) - r0) / (r1 - r0)
+      if (t <= 0) continue
+      const r = 1.6 * Math.min(1, t) ** 1.2
+      if (r < 0.3) continue
+      d += `M${(x - r).toFixed(1)} ${y.toFixed(1)}a${r.toFixed(2)} ${r.toFixed(2)} 0 1 0 ${(2 * r).toFixed(2)} 0a${r.toFixed(2)} ${r.toFixed(2)} 0 1 0 ${(-2 * r).toFixed(2)} 0`
+    }
+  }
+  return `<path fill="${C.ink}" d="${d}"/>`
+}
 
 export function title() {
   const H = 400
-  const avatar = `data:image/webp;base64,${readFileSync('public/img/avatar.webp').toString('base64')}`
   const box = { x: 600, y: 52, s: 234 }
   const L = box.x / PX
   const T = box.y / PX
   const R = (box.x + box.s) / PX
   const B = (box.y + box.s) / PX
+  const mid = { x: box.x + box.s / 2, y: box.y + box.s / 2 - 8 }
   const t = 8 / PX
   const b = (H - 8) / PX
 
@@ -50,26 +69,28 @@ export function title() {
     const canvas = pixels(Math.ceil(WIDTH / PX), Math.ceil(H / PX))
     const pen: Pen = { buf: canvas.buf, pal, step }
     flameRow(pen, { seed: 20, x: R, y: T + (B - T) * 0.34, dx: 0, dy: 1, nx: 1, ny: 0, span: (B - T) * 0.52, size: 5.5, growth: 1, detail: 0.2 })
-    flameRow(pen, { seed: 21, x: R - 1, y: B, dx: -1, dy: 0, nx: 0, ny: 1, span: (R - L) * 0.32, size: 5, growth: 1, detail: 0.2 })
-    flameRow(pen, { seed: 3, x: t, y: b, dx: 1, dy: 0, nx: 0, ny: -1, span: 46, size: 6.2, growth: 1 })
-    flameRow(pen, { seed: 4, x: t, y: b, dx: 0, dy: -1, nx: 1, ny: 0, span: 9, size: 4.5, growth: 1 })
+    flameRow(pen, { seed: 22, x: L, y: T + (B - T) * 0.62, dx: 0, dy: -1, nx: -1, ny: 0, span: (B - T) * 0.4, size: 5, growth: 1, detail: 0.2 })
+    flameRow(pen, { seed: 23, x: L + 1, y: T, dx: 1, dy: 0, nx: 0, ny: -1, span: (R - L) * 0.28, size: 4.5, growth: 1, detail: 0.2 })
+    flameRow(pen, { seed: 3, x: t, y: b, dx: 1, dy: 0, nx: 0, ny: -1, span: 40, size: 5.2, growth: 1 })
+    flameRow(pen, { seed: 4, x: t, y: b, dx: 0, dy: -1, nx: 1, ny: 0, span: 8, size: 4, growth: 1 })
     flames.push(ink(canvas))
   }
   const fire = animate('f', flames, 167)
-  const seals = turningSeals(H, [[L - 2, T - 2, 2.3, -1], [t + 15, b - 17, 2.3, 1]])
+  const seals = turningSeals(H, [[mid.x / PX, mid.y / PX, 6.4, -1], [t + 13, b - 15, 2, 1]])
 
   const nameSize = fit('Kerimcan', 'Dela', 82, 500)
   const why = wrap('He gets things done on his own. Same with my client projects.', 'Zen', 14, 206)
   const body = `
 ${cornerTone(WIDTH - 8, 8, 170, { x: 9, y: 9, w: WIDTH - 18, h: H - 18 })}
-${koma(box.x, box.y, box.s, box.s, 4, C.white)}
-<image href="${avatar}" x="${box.x + 4}" y="${box.y + 4}" width="${box.s - 8}" height="${box.s - 8}" preserveAspectRatio="xMidYMid slice"/>
+<clipPath id="pm"><rect x="${box.x + 4}" y="${box.y + 4}" width="${box.s - 8}" height="${box.s - 8}"/></clipPath>
+${koma(box.x, box.y, box.s, box.s, 4)}
+<g clip-path="url(#pm)">${haloTone(mid.x, mid.y, 64, 138, box)}</g>
 ${fire.markup}${seals.markup}
-${text(44, 128, 'Kerimcan', 'Dela', nameSize)}
-${text(44, 128 + nameSize * 1.02, 'Yagci', 'Dela', nameSize)}
-${text(46, 262, 'Software developer from Austria', 'ZenBold', 22)}
-${text(46, 294, 'C#  ·  Java  ·  TypeScript', 'Dot', 15, { fill: C.soft })}
-${text(46, 318, 'HTL Leonding  ·  Ansfelden near Linz', 'Dot', 15, { fill: C.soft })}
+${text(44, 124, 'Kerimcan', 'Dela', nameSize)}
+${text(44, 124 + nameSize * 1.02, 'Yagci', 'Dela', nameSize)}
+${text(46, 254, 'Software developer from Austria', 'ZenBold', 22)}
+${text(46, 284, 'C#  ·  Java  ·  TypeScript', 'Dot', 15, { fill: C.soft })}
+${text(46, 307, 'HTL Leonding  ·  Ansfelden near Linz', 'Dot', 15, { fill: C.soft })}
 ${narration(552, 262, 234, 'Why Sasuke?', why)}`
   return sheet(H, 1, body, fonts('Dela', 'Zen', 'ZenBold', 'Dot') + fire.css + seals.css)
 }
