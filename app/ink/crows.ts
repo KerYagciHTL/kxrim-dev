@@ -1,0 +1,155 @@
+// Crows at night: black birds with a moonlit outline and red eyes. One lands on the current
+// sheet's main panel shortly after it comes into view; more gather on the bottom of the frame
+// the longer a visitor stays. They blink, caw now and then, turn around, and lose a feather.
+import { hash, type Scene, type View } from './scene'
+
+// facing right, anchor is the middle of the feet; '#' body, 'r' eye
+const PERCH = [
+  '..........###...',
+  '.........#####..',
+  '........##r#####',
+  '........#######.',
+  '.......######...',
+  '.....########...',
+  '...##########...',
+  '.############...',
+  '############....',
+  '##...######.....',
+  '#......#.#......',
+  '......##.##.....',
+]
+const CAW = PERCH.map((row, y) => (y === 2 ? '........##r###.#' : y === 3 ? '........######.#' : row))
+const BLINK = PERCH.map((row) => row.replace('r', '#'))
+const WINGS_UP = [
+  '#...............',
+  '##.........###..',
+  '.###......#####.',
+  '..####...###r###',
+  '...#####.######.',
+  '....###########.',
+  '.....#########..',
+  '......#######...',
+  '.......####.....',
+  '........#.......',
+]
+const WINGS_DOWN = [
+  '...........###..',
+  '..........#####.',
+  '..#......###r###',
+  '.####...#######.',
+  '..##############',
+  '...###########..',
+  '....#########...',
+  '.....######.....',
+  '......###.......',
+  '.......#........',
+]
+const FEATHER = [
+  ['..#', '.#.', '#..'],
+  ['.#.', '.#.', '.#.'],
+]
+
+const FLIGHT = 16 // frames from off screen to the perch
+
+/** Draws a sprite with its feet at (x, y); `s` blows every pixel up for crows close to the eye. */
+function sprite(view: View, rows: string[], x: number, y: number, flip: boolean, s = 1) {
+  const { pal } = view
+  const h = rows.length
+  const w = rows[0]!.length
+  const put = (px: number, py: number, c: number) => {
+    for (let a = 0; a < s; a++) for (let b = 0; b < s; b++) view.buf.put(ox + px * s + b, oy + py * s + a, c)
+  }
+  const at = (cx: number, cy: number) => rows[cy]?.[flip ? w - 1 - cx : cx]
+  const filled = (cx: number, cy: number) => {
+    const c = at(cx, cy)
+    return c !== undefined && c !== '.'
+  }
+  const ox = Math.round(x - (w * s) / 2)
+  const oy = Math.round(y - h * s + 1)
+  // outline first: moonlight on the upper side, a dim edge everywhere else
+  for (let cy = -1; cy <= h; cy++) {
+    for (let cx = -1; cx <= w; cx++) {
+      if (filled(cx, cy)) continue
+      if (filled(cx, cy + 1)) put(cx, cy, pal.rim)
+      else if (filled(cx - 1, cy) || filled(cx + 1, cy) || filled(cx, cy - 1)) put(cx, cy, pal.edge)
+    }
+  }
+  for (let cy = 0; cy < h; cy++) {
+    for (let cx = 0; cx < w; cx++) {
+      const c = at(cx, cy)
+      if (c === '#') put(cx, cy, pal.body)
+      else if (c === 'r') put(cx, cy, pal.spark)
+    }
+  }
+}
+
+/** A perched crow that blinks, caws and turns around on its own clock. */
+function perched(view: View, seed: number, x: number, y: number, since: number, s = 1) {
+  const t = view.step - since
+  const turn = Math.floor((t + hash(seed, 1) * 90) / (70 + hash(seed, 2) * 60))
+  const flip = (turn + Math.floor(hash(seed, 3) * 2)) % 2 === 1
+  const blink = (t + Math.floor(hash(seed, 4) * 31)) % 31 === 0
+  const cawAt = (t + Math.floor(hash(seed, 5) * 140)) % 140
+  const rows = cawAt < 3 ? CAW : blink ? BLINK : PERCH
+  sprite(view, rows, x, y, flip, s)
+}
+
+/** Flies in on a shallow curve from above the far side, then sits. */
+function arriving(view: View, seed: number, x: number, y: number, landAt: number, s = 1) {
+  const t = view.step - landAt
+  if (t >= 0) return perched(view, seed, x, y, landAt, s)
+  const p = 1 + t / FLIGHT
+  if (p <= 0) return
+  const from = x > view.W / 2 ? -1 : 1
+  const sx = x + from * (1 - p) * view.W * 0.35
+  const sy = y - (1 - p * p) * (y + 14 * s)
+  const rows = Math.floor(view.step / 2) % 2 ? WINGS_UP : WINGS_DOWN
+  sprite(view, rows, sx, sy + 2 * s, from === 1, s)
+}
+
+/** A feather that sways down to the bottom of the frame. */
+function feather(view: View, seed: number, x: number, y: number, since: number, ground: number) {
+  const t = view.step - since
+  if (t < 0) return
+  const fy = y + t * 0.9
+  if (fy > ground - 2) return
+  const fx = x + Math.sin(t * 0.25 + seed) * 4
+  const shape = FEATHER[Math.floor(t / 4 + seed) % 2]!
+  shape.forEach((row, cy) => [...row].forEach((c, cx) => c === '#' && view.buf.put(fx + cx, fy + cy, cy === 0 ? view.pal.rim : view.pal.edge)))
+}
+
+export const crows: Scene = {
+  fps: 8,
+  draw(view) {
+    const { W, H, T, mobile, step } = view
+    const fps = crows.fps
+    const ground = H - T
+    const sheetFrames = Math.floor((view.sheetAge / 1000) * fps)
+    const pageFrames = Math.floor((view.pageAge / 1000) * fps)
+
+    // the current sheet's main panel gets one crow, a moment after the sheet arrives
+    const panel = view.marked.find((m) => m.edges.has('top') || m.edges.has('seal')) ?? view.marked[0]
+    if (panel && panel.T > 16) {
+      const x = panel.L + (panel.R - panel.L) * (0.62 + 0.2 * hash(panel.i, 6))
+      const landAt = view.still ? -1e9 : step - sheetFrames + 10 + FLIGHT
+      arriving(view, 100 + panel.i, x, panel.T - 1, landAt)
+      if (!view.still) feather(view, panel.i, x, panel.T + 2, landAt + 4, ground)
+    }
+
+    // crows gather on the bottom of the frame; the first one sits close, so it is drawn bigger
+    const spots: [x: number, size: number][] = mobile ? [[0.14, 1], [0.86, 1]] : [[0.07, 2], [0.93, 1], [0.3, 1]]
+    spots.forEach(([at, size], k) => {
+      const landAt = view.still || k === 0 ? -1e9 : step - pageFrames + k * 12 * fps
+      arriving(view, k, W * at, ground, landAt, size)
+    })
+
+    // now and then a loose feather drifts down from the top
+    if (!view.still) {
+      const every = 13 * fps
+      const n = Math.floor(step / every)
+      feather(view, n, W * (0.2 + 0.6 * hash(n, 11)), -4, n * every, ground)
+    }
+
+    view.clearSafe()
+  },
+}

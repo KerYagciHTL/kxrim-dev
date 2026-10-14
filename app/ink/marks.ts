@@ -1,14 +1,7 @@
 // The marks themselves: flames grown along a curling spine, tendrils, sparks and the three tomoe.
 // Light theme draws the cursed seal ("seal"), dark theme draws Amaterasu ("fire").
 import { random, type Colour, type PixelBuffer } from './buffer'
-
-export interface Palette {
-  body: Colour
-  rim: Colour
-  edge: Colour
-  spark: Colour
-  seal: Colour
-}
+import type { Palette } from './scene'
 
 export interface Pen {
   buf: PixelBuffer

@@ -1,5 +1,6 @@
 /* Design tokens. Light is a manga manuscript sheet: paper, ink, non-repro blue guides.
-   Dark is the same sheet at night, with Amaterasu instead of the cursed seal. */
+   Dark is the same sheet at night, with Amaterasu instead of the cursed seal.
+   --ink-scene picks what the pixel layer draws (ink/engine.ts), --tone-kind the corner tone. */
 :root {
   --paper: #f5f4ef;
   --ink: #151515;
@@ -9,6 +10,8 @@
   --red: #c8161d;
   --avatar-filter: none;
   --tone-alpha: 0.85;
+  --tone-kind: dots;
+  --ink-scene: seal;
 
   /* pixel layer: body, the rim that keeps marks apart, a second accent, sparks */
   --px-body: #151515;
@@ -44,6 +47,7 @@
     --px-edge: #45070b;
     --px-spark: #ff6a3d;
     --px-seal: #d8141c;
+    --ink-scene: fire;
     color-scheme: dark;
   }
 }
@@ -62,6 +66,7 @@
   --px-edge: #45070b;
   --px-spark: #ff6a3d;
   --px-seal: #d8141c;
+  --ink-scene: fire;
   color-scheme: dark;
 }
 
