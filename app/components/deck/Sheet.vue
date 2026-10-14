@@ -1,0 +1,33 @@
+<script setup lang="ts">
+// One manga page of the deck. Each sheet component sets its own grid on this root.
+defineProps<{ id: string; label: string }>()
+</script>
+
+<template>
+  <section :id="id" class="sheet" :aria-label="label">
+    <slot />
+  </section>
+</template>
+
+<style>
+.sheet {
+  position: relative;
+  padding: 40px 28px 48px;
+  display: grid;
+  gap: 24px;
+}
+
+.sheet:first-of-type {
+  padding-top: 104px;
+}
+
+@media (min-width: 768px) {
+  .sheet {
+    flex: 0 0 100vw;
+    height: 100vh;
+    padding: calc(var(--inner) + 46px) calc(var(--inner) + 44px) calc(var(--inner) + 50px) !important;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+}
+</style>

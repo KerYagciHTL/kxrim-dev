@@ -9,13 +9,13 @@
     "preview": "serve -l tcp://127.0.0.1:3390 --no-clipboard .output/public",
     "typecheck": "nuxt typecheck",
     "images": "node scripts/images.mjs",
+    "fonts": "node scripts/fonts.mjs",
     "og": "node scripts/og.mjs",
     "deploy": "sh scripts/deploy.sh",
     "indexnow": "node scripts/indexnow.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/fonts": "^1.0.1",
     "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/robots": "^7.0.2",
     "@nuxtjs/sitemap": "^9.1.0",

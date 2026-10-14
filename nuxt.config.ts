@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
 
-  modules: ['@nuxtjs/i18n', '@nuxtjs/sitemap', '@nuxtjs/robots', '@nuxt/fonts'],
+  modules: ['@nuxtjs/i18n', '@nuxtjs/sitemap', '@nuxtjs/robots'],
 
-  css: ['~/assets/css/tokens.css', '~/assets/css/base.css'],
+  css: ['~/assets/css/fonts.css', '~/assets/css/tokens.css', '~/assets/css/base.css'],
 
   // components are used by their file name, without folder prefixes
   components: [{ path: '~/components', pathPrefix: false }],
@@ -20,6 +20,8 @@ export default defineNuxtConfig({
         { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
+        { rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/dela-gothic-one-400-latin.woff2', crossorigin: '' },
+        { rel: 'preload', as: 'font', type: 'font/woff2', href: '/fonts/zen-kaku-gothic-new-400-latin.woff2', crossorigin: '' },
         { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
         { rel: 'icon', type: 'image/png', href: '/icon.png' },
         { rel: 'apple-touch-icon', href: '/icon.png' },
@@ -57,15 +59,6 @@ export default defineNuxtConfig({
 
   robots: {
     groups: [{ userAgent: '*', allow: '/' }],
-  },
-
-  fonts: {
-    defaults: { styles: ['normal'], subsets: ['latin', 'latin-ext'] },
-    families: [
-      { name: 'Dela Gothic One', provider: 'google', weights: [400] },
-      { name: 'Zen Kaku Gothic New', provider: 'google', weights: [400, 500, 700] },
-      { name: 'DotGothic16', provider: 'google', weights: [400] },
-    ],
   },
 
   nitro: {
