@@ -144,8 +144,10 @@ Every sheet has an id, so `/#afterfall` opens that sheet. Old URLs: `/services` 
 
 `docs/README.md` is the profile README for `KerYagciHTL/KerYagciHTL`: a short chapter of five
 manuscript pages in the light theme and nothing else (no text between them, his wish), each one an
-SVG that yagci.cc draws itself
-(`scripts/readme`, served at `/readme/*.svg`, cached for an hour):
+SVG that yagci.cc draws itself (`scripts/readme`). The README links them without the file ending,
+`/readme/title` and so on (a rewrite in `serve.json`): Cloudflare forces four hours of cache on
+`.svg` files, but passes the `no-cache` of extensionless URLs on, so GitHub's image proxy picks up
+every redraw at once.
 
 | Page | Shows |
 |---|---|

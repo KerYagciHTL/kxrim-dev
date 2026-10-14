@@ -67,7 +67,7 @@
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=3600"
+          "value": "no-cache, max-age=0"
         }
       ]
     },
@@ -110,6 +110,10 @@
     {
       "source": "/en/what-i-build",
       "destination": "/en/what-i-build/index.html"
+    },
+    {
+      "source": "/readme/:page([a-z]+)",
+      "destination": "/readme/:page.svg"
     }
   ]
 }
