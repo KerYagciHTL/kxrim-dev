@@ -42,6 +42,17 @@ h3 {
   font-family: var(--font-display);
   font-weight: 400;
   text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+/* long German words in big type would leave a phone screen otherwise */
+@media (max-width: 767px) {
+  h1,
+  h2,
+  h3 {
+    hyphens: auto;
+    hyphenate-limit-chars: 7 3 3;
+  }
 }
 
 p {

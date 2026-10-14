@@ -64,7 +64,7 @@ const shot = computed(() => (props.area.shot ? mediaOf(props.area.shot.media) : 
 }
 
 h2 {
-  font-size: clamp(36px, 10vw, 72px);
+  font-size: clamp(32px, 9vw, 72px);
   line-height: 0.98;
 }
 

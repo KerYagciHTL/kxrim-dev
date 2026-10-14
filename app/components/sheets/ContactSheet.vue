@@ -5,6 +5,8 @@ import { contact, profile } from '~~/content/profile'
 defineProps<{ text: Text }>()
 const { t } = useI18n()
 const tx = useText()
+// on narrow screens the address breaks after the @, never inside a word
+const [mailUser, mailHost] = profile.email.split('@')
 </script>
 
 <template>
@@ -15,7 +17,7 @@ const tx = useText()
     </div>
 
     <div class="koma mail" data-ink="right bottom">
-      <a :href="`mailto:${profile.email}`" translate="no">{{ profile.email }}</a>
+      <a :href="`mailto:${profile.email}`" translate="no">{{ mailUser }}@<wbr />{{ mailHost }}</a>
       <CopyEmail :email="profile.email" />
     </div>
 
