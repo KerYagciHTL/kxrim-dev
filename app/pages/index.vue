@@ -12,8 +12,12 @@ const sheets = computed(() => [
   { id: 'contact', label: t('sheet.contact') },
 ])
 
-// the same page in both languages: switching keeps it on screen and only swaps the text
-definePageMeta({ key: 'home' })
+// the same page in both languages: switching keeps it on screen, where the reader is, and only
+// swaps the text (route names are "<page>___<locale>")
+definePageMeta({
+  key: 'home',
+  scrollToTop: (to, from) => String(to.name).split('___')[0] !== String(from.name).split('___')[0],
+})
 const route = useRoute()
 usePageSeo(() => {
   const title = t('meta.homeTitle')

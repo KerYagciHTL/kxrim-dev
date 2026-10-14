@@ -76,6 +76,12 @@ function step(by: number) {
 function onWheel(e: WheelEvent) {
   if (!wide() || e.ctrlKey) return
   e.preventDefault()
+  // the language switch is re-lettering the sheet in view: this gesture is spent on it
+  if (isRelettering()) {
+    spent = true
+    wheelAt = performance.now()
+    return
+  }
   const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1
   const d = (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX) * unit
   const strength = Math.abs(d)
@@ -99,7 +105,9 @@ function onKey(e: KeyboardEvent) {
   if (!wide() || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return
   if ((e.target as HTMLElement).closest('input, textarea, select, [contenteditable]')) return
   const moves: Record<string, number> = { ArrowRight: 1, PageDown: 1, ArrowLeft: -1, PageUp: -1 }
-  if (e.key in moves) {
+  if ((e.key in moves || e.key === 'Home' || e.key === 'End') && isRelettering()) {
+    e.preventDefault()
+  } else if (e.key in moves) {
     e.preventDefault()
     step(moves[e.key]!)
   } else if (e.key === 'Home' || e.key === 'End') {

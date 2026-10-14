@@ -1,6 +1,7 @@
 // Switching the language re-letters the page the way a manga gets translated: every line on
 // screen is covered with correction tape, the text underneath changes, and the tape comes off
 // again over the new words. Text marked translate="no" (names, the address) stays as it is.
+// The deck does not turn while it runs; on phones a swipe ends it at once (the text still swaps).
 import { nextTick } from 'vue'
 
 interface Line {
@@ -16,6 +17,9 @@ const SKIP = '[translate="no"], [aria-hidden="true"], .visually-hidden'
 
 let busy = false
 
+/** true while the tape is on screen; the deck ignores the wheel and the keys meanwhile */
+export const isRelettering = () => busy
+
 const frame = () => new Promise<void>((done) => requestAnimationFrame(() => done()))
 
 function backgroundOf(el: Element | null): string {
@@ -25,6 +29,11 @@ function backgroundOf(el: Element | null): string {
     if (c && c !== 'transparent' && (!alpha || Number(alpha[1]) > 0.5)) return c
   }
   return getComputedStyle(document.body).backgroundColor
+}
+
+function visible(el: Element, r: DOMRect) {
+  const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+  return !hit || el.contains(hit) || hit.contains(el)
 }
 
 /** The visible lines of text, one rectangle per line and background. */
@@ -40,6 +49,8 @@ function linesOnScreen(): Line[] {
       const bg = backgroundOf(n.parentElement)
       for (const r of range.getClientRects()) {
         if (r.width < 2 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue
+        // text under the phone's top bar or the folio is not on screen, it needs no tape
+        if (!visible(n.parentElement!, r)) continue
         // pieces of one line (a bold word, a link) become one strip
         const prev = out[out.length - 1]
         if (prev && prev.bg === bg && Math.abs(prev.y - r.top) < 4 && r.left >= prev.x && r.left - (prev.x + prev.w) < 12) {
@@ -54,10 +65,12 @@ function linesOnScreen(): Line[] {
   return out
 }
 
-function lay(layer: HTMLElement, lines: Line[], mix: number): HTMLElement[] {
+/** `tape` is a colour, or 'auto' for a shade lighter than whatever is behind each line */
+function lay(layer: HTMLElement, lines: Line[], tape: string): HTMLElement[] {
   return lines.map((l) => {
     const strip = document.createElement('i')
-    strip.style.cssText = `left:${l.x - 2}px;top:${l.y}px;width:${l.w + 4}px;height:${l.h}px;background:color-mix(in srgb, ${l.bg} ${mix}%, #fff)`
+    const colour = tape === 'auto' ? `color-mix(in srgb, ${l.bg} 86%, #fff)` : tape
+    strip.style.cssText = `left:${l.x - 2}px;top:${l.y}px;width:${l.w + 4}px;height:${l.h}px;background:${colour}`
     strip.append(document.createElement('b'))
     layer.append(strip)
     return strip
@@ -93,21 +106,30 @@ export async function reletter(swap: () => Promise<void>) {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('animate' in Element.prototype)) return swap()
   busy = true
   const html = document.documentElement
-  // light paper gets near white tape, dark paper a tape only a little lighter than itself
-  const mix = getComputedStyle(html).colorScheme.includes('dark') ? 86 : 22
+  const tape = getComputedStyle(html).getPropertyValue('--tape').trim() || 'auto'
   const layer = document.createElement('div')
   layer.className = 'reletter'
   layer.setAttribute('aria-hidden', 'true')
   document.body.append(layer)
+  // a swipe on a phone scrolls the text away from its tape: drop the tape, keep the swap
+  let aborted = false
+  const abort = () => {
+    aborted = true
+    layer.getAnimations({ subtree: true }).forEach((a) => a.finish())
+    layer.style.visibility = 'hidden'
+  }
+  addEventListener('touchmove', abort, { passive: true })
   try {
-    const old = lay(layer, linesOnScreen(), mix)
+    const old = lay(layer, linesOnScreen(), tape)
     await sweep(old, 'cover')
     html.classList.add('relettering')
     await swap()
+    if (aborted) return
     await nextTick()
     await frame()
     await frame()
-    const fresh = lay(layer, linesOnScreen(), mix)
+    if (aborted) return
+    const fresh = lay(layer, linesOnScreen(), tape)
     for (const s of fresh) s.style.opacity = '0'
     await Promise.all([
       ...old.map((s) => s.animate({ opacity: [1, 0] }, { duration: 120, fill: 'forwards' }).finished),
@@ -115,8 +137,9 @@ export async function reletter(swap: () => Promise<void>) {
     ])
     for (const s of old) s.remove()
     html.classList.remove('relettering')
-    await sweep(fresh, 'reveal')
+    if (!aborted) await sweep(fresh, 'reveal')
   } finally {
+    removeEventListener('touchmove', abort)
     layer.remove()
     html.classList.remove('relettering')
     busy = false
