@@ -26,7 +26,7 @@ async function switchLanguage(e: MouseEvent) {
   <header class="top" data-ink-safe>
     <nav class="crumbs" :aria-label="t('nav.pages')">
       <NuxtLink class="home" :to="localePath('/')" :aria-label="t('nav.home')">
-        <SealMark />
+        <PixelMark />
         <span translate="no">Kerimcan Yagci</span>
       </NuxtLink>
       <template v-if="onBuild">
