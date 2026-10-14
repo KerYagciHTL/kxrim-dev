@@ -12,13 +12,28 @@ of Sasuke with the cursed seal on his face, so the whole page comes from that wo
   ruler ticks, centre marks). They never print in a real manga; here they frame the page.
 - **Ink panels** (koma) with thick borders, **screentone** (dot rasters) inside some panels,
   and gradient screentone in the corners of the screen.
-- **The cursed seal (Fluchmal)** as 1-bit pixel art: flames grow from the frame corners and
-  from the edge of the current sheet's main element. While a visitor stays on a sheet they
-  keep growing, then lick in place at 6 frames per second. Three tomoe turn slowly.
-- **Dark mode is Amaterasu**: the same flame language as black fire with a red rim and
-  rising sparks, the tomoe turn red. (Lightning, "Chidori", was tried and rejected.)
+- **Three themes**, one button in the top bar steps through them (light, dark, rain). Each
+  has its own colours and its own pixel layer:
+  - **Light: the cursed seal (Fluchmal)** as 1-bit pixel art. Flames grow from the frame
+    corners and from the edge of the current sheet's main element. While a visitor stays on a
+    sheet they keep growing, then lick in place at 6 frames per second. Three tomoe turn slowly.
+  - **Dark: crows.** Charcoal, bone and red. A crow with a red eye lands on the sheet's main
+    panel shortly after it comes into view; more gather on the bottom of the frame over time
+    (the first one big, close to the eye). They blink, caw, turn around and lose feathers.
+  - **Rain.** Blue black and cool white. Pixel rain bursts on the top edge of every panel,
+    drips off their lower edges and rings on the frame; the corner tone becomes the slanted
+    line tone manga uses for rain. It starts as a drizzle and gets heavier.
+  - Without a saved choice the system picks light or dark. Lightning ("Chidori") and black
+    fire ("Amaterasu") were tried and rejected.
+- **The mark** next to the name is the seal from the avatar's corner: the same drawing code at
+  half the size, turning constantly, in every theme.
 - Pages turn **sideways**, like a book. The content gets a short horizontal motion blur while
   it moves; the ink layer stays sharp in front.
+- **Switching the language re-letters the page** like a manga translation: every visible line
+  gets a strip of correction tape, the text changes underneath, the tape comes off again.
+  Light paper gets blue tape (the guide colour), the night themes a tape a shade lighter than
+  the paper. Names and the address (`translate="no"`) keep their text. The page stays where it
+  is; the deck does not turn while the tape is on, and on phones a swipe ends it at once.
 
 ## 2. Stack
 
@@ -59,30 +74,39 @@ Every sheet has an id, so `/#afterfall` opens that sheet. Old URLs: `/services` 
 - Desktop (768 px and wider): one sheet per screen, side by side. Mouse wheel, arrow keys,
   Page Up/Down, Home/End and the page numbers turn one sheet. The current sheet goes into the
   URL hash.
-- Phones: a normal vertical page; the ink layer gives way around text.
+- Phones: one vertical page, like a webtoon. Every sheet starts under a guide line with its
+  page number. The top bar stays fixed, slides away while reading down and comes back on the
+  way up. At the bottom a folio shows "03 / 08" between previous and next; tapping the number
+  lists all pages and links the other part of the site. The ink layer gives way around text.
 - Reduced motion: no smooth turning, no blur, the ink is drawn once and stands still.
 
 ## 6. Ink layer (`app/ink`)
 
 - `buffer.ts`: a pixel buffer, one art pixel is 4 CSS pixels (3 on phones).
-- `marks.ts`: flames on a curling spine, tendrils, sparks, the three tomoe.
-- `engine.ts`: draws every frame: marks on the current sheet's element, then clears every
-  text box, then the frame corners on top.
+- `engine.ts`: measures the page every frame and hands it to the theme's scene
+  (`--ink-scene`); also paints the corner screentone (`--tone-kind`: dots or rain lines).
+- `scene.ts`: what a scene gets (buffer, colours, clock, element boxes) and small helpers.
+- `seal.ts` + `marks.ts`: the cursed seal (light): flames on a curling spine, tendrils, tomoe.
+- `crows.ts`: crow sprites with a moonlit outline, landing, idling, feathers (dark).
+- `rain.ts`: drops, splashes on panel tops, drips, rings on the frame (rain).
+- `mark.ts`: the turning seal next to the name; the server renders its first frame as SVG.
 - The DOM steers it: `data-ink="right bottom left top seal"` grows marks on those edges of an
   element; `data-ink-safe` keeps a box free of element marks.
 - Colours come from CSS tokens (`--px-body`, `--px-rim`, `--px-edge`, `--px-spark`, `--px-seal`).
+- The DOM side of the language switch lives in `app/utils/reletter.ts`.
 
 ## 7. Look
 
-| Token | Light | Dark |
-|---|---|---|
-| paper | `#f5f4ef` | `#111215` |
-| ink | `#151515` | `#ebe9e3` |
-| guide / guide soft | `#7fc4e0` / `#c6e6f2` | `#2f6d8a` / `#1b313d` |
-| red (active page, focus) | `#c8161d` | `#ff4b50` |
+| Token | Light | Dark (crows) | Rain |
+|---|---|---|---|
+| paper | `#f5f4ef` | `#141312` | `#0e1418` |
+| ink | `#151515` | `#ece4d6` | `#dce5e9` |
+| guide / guide soft | `#7fc4e0` / `#c6e6f2` | `#4a423b` / `#2a2622` | `#2b5468` / `#19303b` |
+| red (active page, focus) | `#c8161d` | `#e0383e` | `#f0565b` |
 
 - Square corners everywhere; borders are 3 px ink (panels) or 2 px (boxes, buttons).
-- The avatar is the original image; in dark mode it is inverted (white ink on black).
+- The avatar is the original image; at night an SVG filter (in the layout) prints it in the
+  theme's own ink and paper colours.
 - Narration boxes (white box inside a screentone panel) carry the short asides.
 
 ## 8. SEO
